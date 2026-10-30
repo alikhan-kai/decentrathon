@@ -1,0 +1,701 @@
+{
+ "active_steps": 16,
+ "ops_by_shape": [
+  {
+   "op": "aten::mm",
+   "shapes": "[[2048, 1536], [1536, 8960]]",
+   "ms_per_step": 35.30297674999983,
+   "count_per_step": 15.75
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[2048, 8960], [8960, 1536]]",
+   "ms_per_step": 32.26090493750083,
+   "count_per_step": 15.75
+  },
+  {
+   "op": "aten::copy_",
+   "shapes": "[[4, 512, 8960], [4, 512, 8960], []]",
+   "ms_per_step": 16.674984312500108,
+   "count_per_step": 31.5
+  },
+  {
+   "op": "bitsandbytes::dequantize_4bit",
+   "shapes": "[[6881280, 1], [215040], [], [], [], []]",
+   "ms_per_step": 15.754565249999883,
+   "count_per_step": 84.0
+  },
+  {
+   "op": "aten::_efficient_attention_backward",
+   "shapes": "[[4, 512, 12, 128], [4, 512, 12, 128], [4, 512, 12, 128], [4, 512, 12, 128], [4, 12, 512, 512], [4, 512, 12, 128], [], [], [], [], [4, 12, 512], [], [], [], [], [], [], [], [], []]",
+   "ms_per_step": 11.995034750000633,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[512, 1536], [1536, 151936]]",
+   "ms_per_step": 11.402743437499929,
+   "count_per_step": 1.0625
+  },
+  {
+   "op": "aten::copy_",
+   "shapes": "[[4, 512, 1536], [4, 512, 1536], []]",
+   "ms_per_step": 10.944206937499693,
+   "count_per_step": 119.625
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1720, 1536], [1536, 8960]]",
+   "ms_per_step": 10.923990124999778,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[512, 151936], [151936, 1536], [512, 1536]]",
+   "ms_per_step": 10.353126187499663,
+   "count_per_step": 1.0625
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1720, 8960], [8960, 1536]]",
+   "ms_per_step": 10.167756499999902,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1624, 1536], [1536, 8960]]",
+   "ms_per_step": 9.879074437500211,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1528, 1536], [1536, 8960]]",
+   "ms_per_step": 8.861739062499488,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1484, 1536], [1536, 8960]]",
+   "ms_per_step": 8.616311250000086,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1624, 8960], [8960, 1536]]",
+   "ms_per_step": 8.401556374998647,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1528, 8960], [8960, 1536]]",
+   "ms_per_step": 8.227158249999746,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1516, 1536], [1536, 8960]]",
+   "ms_per_step": 8.157673125000025,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1484, 8960], [8960, 1536]]",
+   "ms_per_step": 8.022665999999852,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "SwiGLUBackward",
+   "shapes": "[[4, 512, 8960]]",
+   "ms_per_step": 7.9467700625,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1516, 8960], [8960, 1536]]",
+   "ms_per_step": 7.686888874999997,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1264, 1536], [1536, 8960]]",
+   "ms_per_step": 7.29354962499917,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1248, 1536], [1536, 8960]]",
+   "ms_per_step": 7.161928125000151,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::add_",
+   "shapes": "[[4, 512, 1536], [4, 512, 1536], []]",
+   "ms_per_step": 7.102725125001889,
+   "count_per_step": 46.3125
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1268, 1536], [1536, 8960]]",
+   "ms_per_step": 6.995003937500005,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1180, 1536], [1536, 8960]]",
+   "ms_per_step": 6.707846562500083,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1264, 8960], [8960, 1536]]",
+   "ms_per_step": 6.67518481249956,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1168, 1536], [1536, 8960]]",
+   "ms_per_step": 6.5849409374997485,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1248, 8960], [8960, 1536]]",
+   "ms_per_step": 6.383579187500349,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1168, 8960], [8960, 1536]]",
+   "ms_per_step": 6.269741750000394,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1268, 8960], [8960, 1536]]",
+   "ms_per_step": 6.250227500000102,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1180, 8960], [8960, 1536]]",
+   "ms_per_step": 6.191809499999771,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1116, 1536], [1536, 8960]]",
+   "ms_per_step": 6.183266812500485,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[2048, 1536], [1536, 1536]]",
+   "ms_per_step": 6.063264624999516,
+   "count_per_step": 15.5625
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[1116, 8960], [8960, 1536]]",
+   "ms_per_step": 6.012620437499835,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::_efficient_attention_forward",
+   "shapes": "[[4, 512, 12, 128], [4, 512, 12, 128], [4, 512, 12, 128], [4, 12, 512, 512], [], [], [], [], [], [], [], [], [], []]",
+   "ms_per_step": 5.748309875000064,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::copy_",
+   "shapes": "[[151936, 1536], [151936, 1536], []]",
+   "ms_per_step": 5.524678874999961,
+   "count_per_step": 1.0
+  },
+  {
+   "op": "SwiGLU",
+   "shapes": "[[4, 512, 8960], [4, 512, 8960]]",
+   "ms_per_step": 4.717832187500404,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[940, 8960], [8960, 1536]]",
+   "ms_per_step": 4.698052687499963,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::copy_",
+   "shapes": "[[4, 430, 8960], [4, 430, 8960], []]",
+   "ms_per_step": 4.683358874999453,
+   "count_per_step": 10.5
+  },
+  {
+   "op": "aten::mm",
+   "shapes": "[[940, 1536], [1536, 8960]]",
+   "ms_per_step": 4.419388249999946,
+   "count_per_step": 5.25
+  },
+  {
+   "op": "aten::copy_",
+   "shapes": "[[4, 406, 8960], [4, 406, 8960], []]",
+   "ms_per_step": 4.381046250000014,
+   "count_per_step": 10.5
+  }
+ ],
+ "ops_by_name": [
+  {
+   "op": "aten::mm",
+   "ms_per_step": 318.48705306249224,
+   "count_per_step": 643.125
+  },
+  {
+   "op": "aten::copy_",
+   "ms_per_step": 129.99680443750472,
+   "count_per_step": 1659.8125
+  },
+  {
+   "op": "aten::mul",
+   "ms_per_step": 46.89110512499697,
+   "count_per_step": 850.0
+  },
+  {
+   "op": "aten::_efficient_attention_backward",
+   "ms_per_step": 38.38266437500022,
+   "count_per_step": 28.0
+  },
+  {
+   "op": "aten::add_",
+   "ms_per_step": 33.88638425000142,
+   "count_per_step": 664.0
+  },
+  {
+   "op": "SwiGLUBackward",
+   "ms_per_step": 29.486580437499693,
+   "count_per_step": 28.0
+  },
+  {
+   "op": "bitsandbytes::gemm_4bit",
+   "ms_per_step": 22.693166000000385,
+   "count_per_step": 196.0
+  },
+  {
+   "op": "bitsandbytes::dequantize_4bit",
+   "ms_per_step": 18.105054500001007,
+   "count_per_step": 193.0
+  },
+  {
+   "op": "SwiGLU",
+   "ms_per_step": 17.55630062499984,
+   "count_per_step": 28.0
+  },
+  {
+   "op": "aten::_efficient_attention_forward",
+   "ms_per_step": 16.741455249999454,
+   "count_per_step": 28.0
+  },
+  {
+   "op": "aten::add",
+   "ms_per_step": 14.300005624999443,
+   "count_per_step": 426.0
+  },
+  {
+   "op": "aten::addmm",
+   "ms_per_step": 12.772650062499485,
+   "count_per_step": 84.0
+  },
+  {
+   "op": "aten::sum",
+   "ms_per_step": 6.053426625000357,
+   "count_per_step": 125.0
+  },
+  {
+   "op": "aten::native_dropout",
+   "ms_per_step": 5.058179437500543,
+   "count_per_step": 56.0
+  },
+  {
+   "op": "aten::native_dropout_backward",
+   "ms_per_step": 4.445239562500654,
+   "count_per_step": 54.0
+  },
+  {
+   "op": "aten::pow",
+   "ms_per_step": 4.3726342500005275,
+   "count_per_step": 169.0
+  },
+  {
+   "op": "aten::fill_",
+   "ms_per_step": 3.976493062500606,
+   "count_per_step": 226.3125
+  },
+  {
+   "op": "aten::cat",
+   "ms_per_step": 3.1895390000012074,
+   "count_per_step": 58.0
+  },
+  {
+   "op": "_FusedHeadLoss",
+   "ms_per_step": 3.0846614375000496,
+   "count_per_step": 1.0
+  },
+  {
+   "op": "aten::mean",
+   "ms_per_step": 2.7692888125002932,
+   "count_per_step": 59.0
+  },
+  {
+   "op": "aten::neg",
+   "ms_per_step": 2.6894136874997634,
+   "count_per_step": 111.0
+  },
+  {
+   "op": "aten::div",
+   "ms_per_step": 2.2979601874998483,
+   "count_per_step": 63.0
+  },
+  {
+   "op": "bitsandbytes::dequantize_blockwise",
+   "ms_per_step": 1.1589170000018347,
+   "count_per_step": 193.0
+  },
+  {
+   "op": "aten::where",
+   "ms_per_step": 0.5192363125002308,
+   "count_per_step": 56.0
+  },
+  {
+   "op": "aten::_foreach_mul_",
+   "ms_per_step": 0.2514323749997275,
+   "count_per_step": 3.0
+  },
+  {
+   "op": "aten::rsqrt",
+   "ms_per_step": 0.17552668750048447,
+   "count_per_step": 57.0
+  },
+  {
+   "op": "aten::_foreach_addcdiv_",
+   "ms_per_step": 0.15245874999988882,
+   "count_per_step": 1.0
+  },
+  {
+   "op": "aten::_foreach_addcmul_",
+   "ms_per_step": 0.11805349999978353,
+   "count_per_step": 1.0
+  },
+  {
+   "op": "Buffer Flush",
+   "ms_per_step": 0.11775543750002908,
+   "count_per_step": 0.75
+  },
+  {
+   "op": "aten::_foreach_lerp_",
+   "ms_per_step": 0.11492131249995872,
+   "count_per_step": 1.0
+  },
+  {
+   "op": "Command Buffer Full",
+   "ms_per_step": 0.11310175000008894,
+   "count_per_step": 129.75
+  },
+  {
+   "op": "aten::nonzero",
+   "ms_per_step": 0.10362925000024185,
+   "count_per_step": 5.0
+  },
+  {
+   "op": "aten::_index_put_impl_",
+   "ms_per_step": 0.09923387499988895,
+   "count_per_step": 3.0
+  },
+  {
+   "op": "aten::index",
+   "ms_per_step": 0.09883175000014033,
+   "count_per_step": 3.0
+  },
+  {
+   "op": "aten::_foreach_add_",
+   "ms_per_step": 0.0870900000000911,
+   "count_per_step": 1.0
+  },
+  {
+   "op": "aten::_amp_foreach_non_finite_check_and_unscale_",
+   "ms_per_step": 0.08567012500004785,
+   "count_per_step": 1.0
+  },
+  {
+   "op": "aten::_foreach_sqrt",
+   "ms_per_step": 0.08058812500033673,
+   "count_per_step": 1.0
+  },
+  {
+   "op": "aten::_foreach_div_",
+   "ms_per_step": 0.08028243749998365,
+   "count_per_step": 1.0
+  },
+  {
+   "op": "aten::_foreach_norm",
+   "ms_per_step": 0.059866750000037425,
+   "count_per_step": 1.0
+  },
+  {
+   "op": "aten::gather",
+   "ms_per_step": 0.04283306249993621,
+   "count_per_step": 1.0
+  }
+ ],
+ "total_gpu_ms_per_step": 740.5934123125004,
+ "modules": [
+  {
+   "phase": "fwd",
+   "module": "bnb_Linear4bit",
+   "ms_per_step": 226.97050324999773
+  },
+  {
+   "phase": "bwd",
+   "module": "bnb_Linear4bit",
+   "ms_per_step": 204.34450687500626
+  },
+  {
+   "phase": "bwd",
+   "module": "Attention",
+   "ms_per_step": 51.71157249999875
+  },
+  {
+   "phase": "bwd",
+   "module": "RMSNorm",
+   "ms_per_step": 46.110945500003304
+  },
+  {
+   "phase": "fwd",
+   "module": "head_loss_fused",
+   "ms_per_step": 41.82265424999947
+  },
+  {
+   "phase": "bwd",
+   "module": "MLP",
+   "ms_per_step": 29.486580437499693
+  },
+  {
+   "phase": "fwd",
+   "module": "Attention",
+   "ms_per_step": 25.96919443750115
+  },
+  {
+   "phase": "bwd",
+   "module": "rotary",
+   "ms_per_step": 18.394500312502643
+  },
+  {
+   "phase": "fwd",
+   "module": "MLP",
+   "ms_per_step": 17.55630062499984
+  },
+  {
+   "phase": "fwd",
+   "module": "RMSNorm",
+   "ms_per_step": 16.030016562500606
+  },
+  {
+   "phase": "fwd",
+   "module": "rotary",
+   "ms_per_step": 13.609800687498925
+  },
+  {
+   "phase": "bwd",
+   "module": "nn_Linear",
+   "ms_per_step": 11.007436999997415
+  },
+  {
+   "phase": "bwd",
+   "module": "Dropout",
+   "ms_per_step": 7.391714062501018
+  },
+  {
+   "phase": "fwd",
+   "module": "LoRA_Linear4bit",
+   "ms_per_step": 6.930945062495483
+  },
+  {
+   "phase": "fwd",
+   "module": "nn_Linear",
+   "ms_per_step": 6.2708313749969005
+  },
+  {
+   "phase": "fwd",
+   "module": "DecoderLayer",
+   "ms_per_step": 5.96898350000043
+  },
+  {
+   "phase": "fwd",
+   "module": "Dropout",
+   "ms_per_step": 5.058179437500543
+  },
+  {
+   "phase": "bwd",
+   "module": "LoRA_Linear4bit",
+   "ms_per_step": 2.7470612499986093
+  },
+  {
+   "phase": "bwd",
+   "module": "DecoderLayer",
+   "ms_per_step": 1.5235254375012228
+  },
+  {
+   "phase": "fwd",
+   "module": "optimizer",
+   "ms_per_step": 0.8072701874997802
+  },
+  {
+   "phase": "fwd",
+   "module": "unattributed",
+   "ms_per_step": 0.7854525000013822
+  },
+  {
+   "phase": "bwd",
+   "module": "unattributed",
+   "ms_per_step": 0.18091156249991763
+  },
+  {
+   "phase": "bwd",
+   "module": "head_loss_fused",
+   "ms_per_step": 0.10577162499997575
+  },
+  {
+   "phase": "fwd",
+   "module": "Embedding",
+   "ms_per_step": 0.0428330624999362
+  }
+ ],
+ "modules_total": [
+  {
+   "module": "bnb_Linear4bit",
+   "ms_per_step": 431.315010125004
+  },
+  {
+   "module": "Attention",
+   "ms_per_step": 77.6807669374999
+  },
+  {
+   "module": "RMSNorm",
+   "ms_per_step": 62.14096206250391
+  },
+  {
+   "module": "MLP",
+   "ms_per_step": 47.04288106249953
+  },
+  {
+   "module": "head_loss_fused",
+   "ms_per_step": 41.92842587499944
+  },
+  {
+   "module": "rotary",
+   "ms_per_step": 32.00430100000157
+  },
+  {
+   "module": "nn_Linear",
+   "ms_per_step": 17.278268374994315
+  },
+  {
+   "module": "Dropout",
+   "ms_per_step": 12.449893500001561
+  },
+  {
+   "module": "LoRA_Linear4bit",
+   "ms_per_step": 9.678006312494093
+  },
+  {
+   "module": "DecoderLayer",
+   "ms_per_step": 7.492508937501653
+  },
+  {
+   "module": "unattributed",
+   "ms_per_step": 0.9663640625012999
+  },
+  {
+   "module": "optimizer",
+   "ms_per_step": 0.8072701874997802
+  },
+  {
+   "module": "Embedding",
+   "ms_per_step": 0.0428330624999362
+  }
+ ],
+ "attributed_ms_per_step": 740.827491500001,
+ "stack_samples": {},
+ "coverage": 1.0003160697673095,
+ "dtypes": {
+  "Embedding": [
+   "torch.float32"
+  ],
+  "RMSNorm": [
+   "torch.float32"
+  ],
+  "bnb_Linear4bit": [
+   "torch.float16",
+   "torch.float32"
+  ],
+  "Dropout": [
+   "torch.float32"
+  ],
+  "nn_Linear": [
+   "torch.float16"
+  ],
+  "LoRA_Linear4bit": [
+   "torch.float32"
+  ],
+  "rotary": [
+   "torch.float32"
+  ],
+  "Attention": [
+   "torch.float16"
+  ],
+  "MLP": [
+   "torch.float32"
+  ],
+  "DecoderLayer": [
+   "torch.float32"
+  ],
+  "head_loss_fused": [
+   "torch.float32"
+  ]
+ },
+ "weights": {
+  "Embedding": {
+   "dtype": "torch.float32",
+   "requires_grad": false
+  },
+  "RMSNorm": {
+   "dtype": "torch.float32",
+   "requires_grad": false
+  },
+  "bnb_Linear4bit": {
+   "dtype": "torch.uint8",
+   "requires_grad": false
+  },
+  "nn_Linear": {
+   "dtype": "torch.float32",
+   "requires_grad": true
+  },
+  "LoRA_Linear4bit": {
+   "dtype": "torch.uint8",
+   "requires_grad": false
+  }
+ },
+ "calls_per_step": {
+  "Embedding": 1,
+  "DecoderLayer": 28,
+  "RMSNorm": 57,
+  "Attention": 28,
+  "LoRA_Linear4bit": 56,
+  "bnb_Linear4bit": 196,
+  "Dropout": 56,
+  "nn_Linear": 112,
+  "rotary": 28,
+  "MLP": 28,
+  "head_loss_fused": 1
+ },
+ "errors": [],
+ "exit_code": 0,
+ "wall_s": 170.4
+}

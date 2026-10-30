@@ -1,0 +1,5 @@
+prepare_data: ok
+pytest_solution: ok
+pytest_tests: ok
+run_task_solution: ok
+op_profile: ok
