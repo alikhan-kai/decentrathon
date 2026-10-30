@@ -1,0 +1,137 @@
+Testing /tmp/rotary-head-correct-r6/head_loss.original.py on cpu
+CPU HARNESS: NumPy scalar-index compatibility fix; kernel math unchanged
+EVIDENCE MODE: cpu; candidate=/tmp/rotary-head-correct-r6/head_loss.original.py; TRITON_INTERPRET=1; BLOCK=32
+test_actual_kernel_and_nondifferentiable_metrics (__main__.HeadLossRegression.test_actual_kernel_and_nondifferentiable_metrics) ... ok
+test_all_ignored_zero_denom_nan_loss_zero_gradients (__main__.HeadLossRegression.test_all_ignored_zero_denom_nan_loss_zero_gradients) ... 
+  test_all_ignored_zero_denom_nan_loss_zero_gradients (__main__.HeadLossRegression.test_all_ignored_zero_denom_nan_loss_zero_gradients) (upstream=1.0) ... FAIL
+  test_all_ignored_zero_denom_nan_loss_zero_gradients (__main__.HeadLossRegression.test_all_ignored_zero_denom_nan_loss_zero_gradients) (upstream=65536.0) ... FAIL
+  test_all_ignored_zero_denom_nan_loss_zero_gradients (__main__.HeadLossRegression.test_all_ignored_zero_denom_nan_loss_zero_gradients) (upstream=0.0) ... FAIL
+  test_all_ignored_zero_denom_nan_loss_zero_gradients (__main__.HeadLossRegression.test_all_ignored_zero_denom_nan_loss_zero_gradients) (upstream=nan) ... FAIL
+  test_all_ignored_zero_denom_nan_loss_zero_gradients (__main__.HeadLossRegression.test_all_ignored_zero_denom_nan_loss_zero_gradients) (upstream=inf) ... FAIL
+test_cuda_real_gradscaler_fp32_parameter_fp32_hidden (__main__.HeadLossRegression.test_cuda_real_gradscaler_fp32_parameter_fp32_hidden) ... skipped 'CUDA-only: real GradScaler evidence unavailable on CPU'
+test_cuda_training_vocabulary_tail_and_multichunk (__main__.HeadLossRegression.test_cuda_training_vocabulary_tail_and_multichunk) ... skipped 'CUDA-only: full training vocabulary'
+test_installed_hooks_shifted_labels_left_padding_metrics (__main__.HeadLossRegression.test_installed_hooks_shifted_labels_left_padding_metrics) ... /home/homelab/.t3/projects/decentrathon/.venv/lib/python3.13/site-packages/torch/jit/_script.py:365: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+HOOK EVIDENCE: real tiny Qwen2, real Trainer.compute_loss
+FAIL
+test_large_upstream_recovers_exp_minus20_before_fp16_store (__main__.HeadLossRegression.test_large_upstream_recovers_exp_minus20_before_fp16_store) ... 
+  test_large_upstream_recovers_exp_minus20_before_fp16_store (__main__.HeadLossRegression.test_large_upstream_recovers_exp_minus20_before_fp16_store) (dtype=torch.float16) ... FAIL
+  test_large_upstream_recovers_exp_minus20_before_fp16_store (__main__.HeadLossRegression.test_large_upstream_recovers_exp_minus20_before_fp16_store) (dtype=torch.float32) ... FAIL
+test_no_grad_multichunk_metrics (__main__.HeadLossRegression.test_no_grad_multichunk_metrics) ... ok
+test_random_multichunk_fp16_projection_fp32_ce (__main__.HeadLossRegression.test_random_multichunk_fp16_projection_fp32_ce) ... ok
+test_repeated_backward_uses_each_upstream_with_retain_graph (__main__.HeadLossRegression.test_repeated_backward_uses_each_upstream_with_retain_graph) ... 
+  test_repeated_backward_uses_each_upstream_with_retain_graph (__main__.HeadLossRegression.test_repeated_backward_uses_each_upstream_with_retain_graph) (upstream=65536.0) ... FAIL
+test_small_weight_recovers_dh_before_fp16_gemm_rounding (__main__.HeadLossRegression.test_small_weight_recovers_dh_before_fp16_gemm_rounding) ... FAIL
+
+======================================================================
+FAIL: test_all_ignored_zero_denom_nan_loss_zero_gradients (__main__.HeadLossRegression.test_all_ignored_zero_denom_nan_loss_zero_gradients) (upstream=1.0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/rotary-head-correct-r6/test_head_loss_regression.py", line 234, in test_all_ignored_zero_denom_nan_loss_zero_gradients
+    self.assertTrue(torch.isfinite(h.grad).all().item())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_all_ignored_zero_denom_nan_loss_zero_gradients (__main__.HeadLossRegression.test_all_ignored_zero_denom_nan_loss_zero_gradients) (upstream=65536.0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/rotary-head-correct-r6/test_head_loss_regression.py", line 234, in test_all_ignored_zero_denom_nan_loss_zero_gradients
+    self.assertTrue(torch.isfinite(h.grad).all().item())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_all_ignored_zero_denom_nan_loss_zero_gradients (__main__.HeadLossRegression.test_all_ignored_zero_denom_nan_loss_zero_gradients) (upstream=0.0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/rotary-head-correct-r6/test_head_loss_regression.py", line 234, in test_all_ignored_zero_denom_nan_loss_zero_gradients
+    self.assertTrue(torch.isfinite(h.grad).all().item())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_all_ignored_zero_denom_nan_loss_zero_gradients (__main__.HeadLossRegression.test_all_ignored_zero_denom_nan_loss_zero_gradients) (upstream=nan)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/rotary-head-correct-r6/test_head_loss_regression.py", line 234, in test_all_ignored_zero_denom_nan_loss_zero_gradients
+    self.assertTrue(torch.isfinite(h.grad).all().item())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_all_ignored_zero_denom_nan_loss_zero_gradients (__main__.HeadLossRegression.test_all_ignored_zero_denom_nan_loss_zero_gradients) (upstream=inf)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/rotary-head-correct-r6/test_head_loss_regression.py", line 234, in test_all_ignored_zero_denom_nan_loss_zero_gradients
+    self.assertTrue(torch.isfinite(h.grad).all().item())
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_installed_hooks_shifted_labels_left_padding_metrics (__main__.HeadLossRegression.test_installed_hooks_shifted_labels_left_padding_metrics)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/rotary-head-correct-r6/test_head_loss_regression.py", line 313, in test_installed_hooks_shifted_labels_left_padding_metrics
+    self.assert_close(loss, row.sum() / 9.)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/rotary-head-correct-r6/test_head_loss_regression.py", line 160, in assert_close
+    torch.testing.assert_close(actual, expected, atol=atol, rtol=rtol, check_dtype=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/homelab/.t3/projects/decentrathon/.venv/lib/python3.13/site-packages/torch/testing/_comparison.py", line 1600, in assert_close
+    raise error_metas[0].to_error(msg)
+AssertionError: Scalars are not close!
+
+Expected 2.8515310287475586 but got 1.9115958213806152.
+Absolute difference: 0.9399352073669434 (up to 0.001 allowed)
+Relative difference: 0.3296247517179496 (up to 0.001 allowed)
+
+======================================================================
+FAIL: test_large_upstream_recovers_exp_minus20_before_fp16_store (__main__.HeadLossRegression.test_large_upstream_recovers_exp_minus20_before_fp16_store) (dtype=torch.float16)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/rotary-head-correct-r6/test_head_loss_regression.py", line 187, in test_large_upstream_recovers_exp_minus20_before_fp16_store
+    self.assertGreater(h.grad[0, 1].item(), 1e-4)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0.0 not greater than 0.0001
+
+======================================================================
+FAIL: test_large_upstream_recovers_exp_minus20_before_fp16_store (__main__.HeadLossRegression.test_large_upstream_recovers_exp_minus20_before_fp16_store) (dtype=torch.float32)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/rotary-head-correct-r6/test_head_loss_regression.py", line 187, in test_large_upstream_recovers_exp_minus20_before_fp16_store
+    self.assertGreater(h.grad[0, 1].item(), 1e-4)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0.0 not greater than 0.0001
+
+======================================================================
+FAIL: test_repeated_backward_uses_each_upstream_with_retain_graph (__main__.HeadLossRegression.test_repeated_backward_uses_each_upstream_with_retain_graph) (upstream=65536.0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/rotary-head-correct-r6/test_head_loss_regression.py", line 251, in test_repeated_backward_uses_each_upstream_with_retain_graph
+    self.assert_close(h.grad, ref, atol=2e-7, rtol=3e-3)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/rotary-head-correct-r6/test_head_loss_regression.py", line 160, in assert_close
+    torch.testing.assert_close(actual, expected, atol=atol, rtol=rtol, check_dtype=False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/homelab/.t3/projects/decentrathon/.venv/lib/python3.13/site-packages/torch/testing/_comparison.py", line 1600, in assert_close
+    raise error_metas[0].to_error(msg)
+AssertionError: Tensor-likes are not close!
+
+Mismatched elements: 2 / 4 (50.0%)
+Greatest absolute difference: 0.00135040283203125 at index (0, 0) (up to 2e-07 allowed)
+Greatest relative difference: 1.0 at index (0, 0) (up to 0.003 allowed)
+
+======================================================================
+FAIL: test_small_weight_recovers_dh_before_fp16_gemm_rounding (__main__.HeadLossRegression.test_small_weight_recovers_dh_before_fp16_gemm_rounding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/rotary-head-correct-r6/test_head_loss_regression.py", line 197, in test_small_weight_recovers_dh_before_fp16_gemm_rounding
+    self.assertGreater(h.grad[0, 1].item(), 2e-4)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0.0 not greater than 0.0002
+
+----------------------------------------------------------------------
+Ran 10 tests in 5.556s
+
+FAILED (failures=10, skipped=2)
