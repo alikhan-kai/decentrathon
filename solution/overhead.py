@@ -10,7 +10,8 @@ Derived from feat/overhead (Alikhan-kai). Each flag is separate; a failed import
 
 ENABLED = True
 DEVICE_MAP = True
-FAST_MAP = False  # switched on in the next commit
+FAST_MAP = True
+_orig_map_rows = None
 _patched = False
 
 
@@ -26,6 +27,32 @@ def _patch_device_map(sft):
     sft.resolve_device_map = resolve_device_map
 
 
+def _patch_fast_map(sft):
+    global _orig_map_rows
+    from datasets import Dataset
+    from soup_cli.data.loss_mask import NoCausalLossTargetError, ensure_causal_loss_target
+
+    _orig_map_rows = sft._map_text_sft_rows
+
+    def fast_map_text_sft_rows(rows, *, format_row, split, max_length):
+        results = []
+        for i, row in enumerate(rows):
+            try:
+                formatted = format_row(row)
+                labels = formatted.get("labels")
+                if labels is not None:
+                    ensure_causal_loss_target(labels, max_length=max_length)
+            except NoCausalLossTargetError as exc:
+                raise ValueError(f"{split} row {i + 1}: {exc}") from exc
+            results.append(formatted)
+        if not results:
+            return Dataset.from_dict({})
+        keys = [k for k in results[0] if k != "messages"]
+        return Dataset.from_dict({k: [d[k] for d in results] for k in keys})
+
+    sft._map_text_sft_rows = fast_map_text_sft_rows
+
+
 def patch():
     global _patched
     if _patched:
@@ -34,4 +61,6 @@ def patch():
 
     if DEVICE_MAP:
         _patch_device_map(sft)
+    if FAST_MAP:
+        _patch_fast_map(sft)
     _patched = True
