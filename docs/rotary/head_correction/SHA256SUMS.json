@@ -1,6 +1,8 @@
 {
+  "CUDA_RUNNER.md": "a0cd7d92fa3ee4802768df7d53ea3c8c35cefa98373eeec7e4db846917627f85",
   "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
   "NOTICE": "a6508c6a00ae7606c639b03af66d4c4af34d360f7a90d2af9af027439030e6b8",
+  "README.md": "817074b30ee0a58d4e78236f52057f6ce283f388ae2b5f1fe5492e1c012aacbe",
   "adversarial_cpu_results.json": "f2e6c5a06bd49576f55028b6dd04e60168f3ee49b9d6c9464b9a927c71a27726",
   "head_loss.correct-r6.py": "124a4b5a201118b6f910591de56d48b6520b75d0387ca89f2ddc3fa97b6ddde8",
   "head_loss.original.py": "9692acc5d32318872f7b50b67e4e4c8d61d86a33dea2458f06443eddfd1c3934",
