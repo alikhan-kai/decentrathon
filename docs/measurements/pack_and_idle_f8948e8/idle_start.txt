@@ -1,0 +1,110 @@
+active steps: 16; total GPU ms/step: 601.8342309375006; attributed ms/step: 601.8463408125006; coverage: 1.000020121612194
+
+== top ATen ops by self GPU time (all shapes of an op summed) ==
+   255.25 ms/step     643.1 calls/step  aten::mm
+   118.93 ms/step    1603.8 calls/step  aten::copy_
+    33.84 ms/step      28.0 calls/step  aten::_efficient_attention_backward
+    29.61 ms/step      28.0 calls/step  SwiGLUBackward
+    28.14 ms/step     607.0 calls/step  aten::add_
+    17.58 ms/step      28.0 calls/step  SwiGLU
+    16.46 ms/step     196.0 calls/step  bitsandbytes::gemm_4bit
+    15.34 ms/step     193.0 calls/step  bitsandbytes::dequantize_4bit
+    13.44 ms/step     370.0 calls/step  aten::add
+    12.86 ms/step      28.0 calls/step  aten::_efficient_attention_forward
+    12.47 ms/step     344.0 calls/step  aten::mul
+     9.76 ms/step      84.0 calls/step  aten::addmm
+     6.01 ms/step      56.0 calls/step  FusedRMSNormBackward
+     5.01 ms/step      56.0 calls/step  aten::native_dropout
+     4.45 ms/step      54.0 calls/step  aten::native_dropout_backward
+     4.22 ms/step      57.0 calls/step  FusedRMSNorm
+     3.87 ms/step     226.3 calls/step  aten::fill_
+     3.14 ms/step      69.0 calls/step  aten::sum
+     2.98 ms/step       1.0 calls/step  _FusedHeadLoss
+     2.93 ms/step      58.0 calls/step  aten::cat
+
+== top ops with input shapes ==
+    28.13 ms/step      15.8/step  aten::mm  [[2048, 1536], [1536, 8960]]
+    26.52 ms/step      15.8/step  aten::mm  [[2048, 8960], [8960, 1536]]
+    15.68 ms/step      31.5/step  aten::copy_  [[4, 512, 8960], [4, 512, 8960], []]
+    13.57 ms/step      84.0/step  bitsandbytes::dequantize_4bit  [[6881280, 1], [215040], [], [], [], []]
+    10.54 ms/step       5.2/step  aten::_efficient_attention_backward  [[4, 512, 12, 128], [4, 512, 12, 128], [4, 512, 12, 128], [4, 512, 12, 128], [4, 12, 512, 512], [4, 512, 12, 1
+     9.41 ms/step     109.1/step  aten::copy_  [[4, 512, 1536], [4, 512, 1536], []]
+     8.67 ms/step       5.2/step  aten::mm  [[1720, 1536], [1536, 8960]]
+     8.39 ms/step       5.2/step  aten::mm  [[1720, 8960], [8960, 1536]]
+     8.10 ms/step       1.1/step  aten::mm  [[512, 1536], [1536, 151936]]
+     7.98 ms/step       5.2/step  SwiGLUBackward  [[4, 512, 8960]]
+     7.81 ms/step       5.2/step  aten::mm  [[1624, 1536], [1536, 8960]]
+     7.29 ms/step       1.1/step  aten::mm  [[512, 151936], [151936, 1536], [512, 1536]]
+     6.94 ms/step       5.2/step  aten::mm  [[1528, 1536], [1536, 8960]]
+     6.85 ms/step       5.2/step  aten::mm  [[1484, 1536], [1536, 8960]]
+     6.84 ms/step       5.2/step  aten::mm  [[1624, 8960], [8960, 1536]]
+     6.82 ms/step       5.2/step  aten::mm  [[1516, 1536], [1536, 8960]]
+     6.79 ms/step       5.2/step  aten::mm  [[1528, 8960], [8960, 1536]]
+     6.56 ms/step       5.2/step  aten::mm  [[1484, 8960], [8960, 1536]]
+     6.51 ms/step       5.2/step  aten::mm  [[1516, 8960], [8960, 1536]]
+     5.60 ms/step       5.2/step  aten::mm  [[1264, 1536], [1536, 8960]]
+
+== GPU ms/step by source module (fwd/bwd) ==
+   180.87  bwd  bnb_Linear4bit
+   180.29  fwd  bnb_Linear4bit
+    46.55  bwd  Attention
+    32.32  fwd  head_loss_fused
+    29.61  bwd  MLP
+    21.13  fwd  Attention
+    18.05  bwd  rotary
+    17.58  fwd  MLP
+    12.81  fwd  rotary
+    12.03  bwd  RMSNorm
+     9.86  bwd  nn_Linear
+     7.40  bwd  Dropout
+     6.59  fwd  LoRA_Linear4bit
+     5.76  fwd  DecoderLayer
+     5.73  fwd  nn_Linear
+     5.01  fwd  Dropout
+     4.22  fwd  RMSNorm
+     2.71  bwd  LoRA_Linear4bit
+     1.52  bwd  DecoderLayer
+     0.81  fwd  optimizer
+     0.68  fwd  unattributed
+     0.16  bwd  unattributed
+     0.09  bwd  head_loss_fused
+     0.04  fwd  Embedding
+
+== by module, fwd+bwd ==
+   361.16  bnb_Linear4bit
+    67.68  Attention
+    47.20  MLP
+    32.41  head_loss_fused
+    30.86  rotary
+    16.25  RMSNorm
+    15.60  nn_Linear
+    12.41  Dropout
+     9.31  LoRA_Linear4bit
+     7.28  DecoderLayer
+     0.84  unattributed
+     0.81  optimizer
+     0.04  Embedding
+
+== GPU idle (profiler windows of the active steps; profiler overhead included) ==
+GPU busy fraction 0.805 over 16 steps; CUDA kernels/step 5250; launch calls/step 5250; CPU ms in launch calls/step 65.7
+busy < 85%: kernel launches per step by source
+   1270.1  bwd  bnb_Linear4bit
+   1183.4  fwd  bnb_Linear4bit
+    495.0  bwd  rotary
+    463.2  bwd  nn_Linear
+    294.0  fwd  Attention
+    280.0  fwd  nn_Linear
+    280.0  fwd  rotary
+    277.0  bwd  Attention
+    168.1  fwd  LoRA_Linear4bit
+    136.1  fwd  unattributed
+    112.0  bwd  LoRA_Linear4bit
+    111.0  bwd  RMSNorm
+     81.0  bwd  Dropout
+     57.0  fwd  RMSNorm
+     56.1  fwd  Dropout
+
+dtypes of module outputs: {'Embedding': ['torch.float32'], 'RMSNorm': ['torch.float32'], 'bnb_Linear4bit': ['torch.float16', 'torch.float32'], 'Dropout': ['torch.float32'], 'nn_Linear': ['torch.float16'], 'LoRA_Linear4bit': ['torch.float32'], 'rotary': ['torch.float32'], 'Attention': ['torch.float16'], 'MLP': ['torch.float32'], 'DecoderLayer': ['torch.float32'], 'head_loss_fused': ['torch.float32']}
+weights: {'Embedding': {'dtype': 'torch.float32', 'requires_grad': False}, 'RMSNorm': {'dtype': 'torch.float32', 'requires_grad': False}, 'bnb_Linear4bit': {'dtype': 'torch.uint8', 'requires_grad': False}, 'nn_Linear': {'dtype': 'torch.float32', 'requires_grad': True}, 'LoRA_Linear4bit': {'dtype': 'torch.uint8', 'requires_grad': False}}
+calls per step: {'Embedding': 1, 'DecoderLayer': 28, 'RMSNorm': 57, 'Attention': 28, 'LoRA_Linear4bit': 56, 'bnb_Linear4bit': 196, 'Dropout': 56, 'nn_Linear': 112, 'rotary': 28, 'MLP': 28, 'head_loss_fused': 1}
+errors: []
