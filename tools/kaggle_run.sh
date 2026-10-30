@@ -11,8 +11,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-MODE="${1:?usage: KAGGLE_USERNAME=<login> tools/kaggle_run.sh <unit|quick|full|full_profile|check_and_ops|pack_check|quick_ab|pack_and_idle|robust> [BRANCH] [MODULE_TEST]}"
-case "$MODE" in unit|quick|full|full_profile|check_and_ops|pack_check|quick_ab|pack_and_idle|robust) ;; *) echo "bad MODE: $MODE"; exit 2;; esac
+MODE="${1:?usage: KAGGLE_USERNAME=<login> tools/kaggle_run.sh <unit|quick|full|full_profile|check_and_ops|pack_check|quick_ab|ab_overhead|pack_and_idle|robust> [BRANCH] [MODULE_TEST]}"
+case "$MODE" in unit|quick|full|full_profile|check_and_ops|pack_check|quick_ab|ab_overhead|pack_and_idle|robust) ;; *) echo "bad MODE: $MODE"; exit 2;; esac
 BRANCH="${2:-$(git rev-parse --abbrev-ref HEAD)}"
 MODULE_TEST="${3:-}"
 [ "$MODE" != unit ] || MODULE_TEST="${MODULE_TEST:-solution/}"   # a file or a directory
