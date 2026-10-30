@@ -229,6 +229,77 @@ def attribute(prof, steps, cpu_fallback=False):
             "attributed_ms_per_step": sum(r["ms_per_step"] for r in rows)}
 
 
+IDLE_BUSY_LIMIT = 0.85
+LAUNCH_NAMES = ("cudaLaunchKernel", "cuLaunchKernel", "cudaLaunchKernelExC", "cuLaunchKernelEx")
+
+
+def label_finder(events):
+    """(phase, module label) of a CPU event: nearest MOD:: range, else the forward module of its autograd node."""
+    forward_index = {}
+    for ev in events:
+        sq = getattr(ev, "sequence_nr", -1)
+        if sq is not None and sq >= 0 and not getattr(ev, "fwd_thread", 0):
+            forward_index[(ev.thread, sq)] = ev
+
+    def find(ev):
+        label, phase = module_of(ev), "fwd"
+        node = ev
+        while label is None and node is not None:
+            sq, ft = getattr(node, "sequence_nr", -1), getattr(node, "fwd_thread", 0)
+            if sq is not None and sq >= 0 and ft:
+                fwd = forward_index.get((ft, sq))
+                if fwd is not None:
+                    label, phase = module_of(fwd), "bwd"
+            node = getattr(node, "cpu_parent", None)
+        return phase, label or "unattributed"
+
+    return find
+
+
+def idle_stats(prof, steps):
+    """How busy the GPU is inside the active ProfilerStep windows, how many CUDA kernels a step launches and how much
+    CPU time the launch calls take (cudaLaunchKernel and friends, profiler overhead included). Same events as the
+    harness profile (tools/op_profile.py copies the idea of harness/_train.py's profiler, the harness is not touched)."""
+    from torch.autograd import DeviceType
+
+    events = list(prof.events())
+    windows = sorted((ev.time_range.start, ev.time_range.end) for ev in events
+                     if ev.device_type == DeviceType.CPU and ev.name.startswith("ProfilerStep"))
+    kernels = sorted((ev.time_range.start, ev.time_range.end) for ev in events
+                     if ev.device_type == DeviceType.CUDA and not getattr(ev, "is_user_annotation", False)
+                     and not ev.name.startswith("ProfilerStep"))
+    n_kernels = sum(1 for ev in events if ev.device_type == DeviceType.CUDA
+                    and not getattr(ev, "is_user_annotation", False) and not ev.name.startswith("ProfilerStep")
+                    and not ev.name.startswith(("Memcpy", "Memset")))
+    launches = [ev for ev in events if ev.device_type == DeviceType.CPU and ev.name.startswith(LAUNCH_NAMES)]
+    result = {"windows_found": len(windows), "kernels_all": len(kernels), "kernel_launches_per_step": n_kernels / steps,
+              "launch_calls_per_step": len(launches) / steps}
+    busy_total = span_total = 0.0
+    per_step = []
+    for start, end in windows:
+        busy, cursor = 0.0, start
+        for ks, ke in kernels:                      # union of the kernel intervals clipped to the window
+            ks, ke = max(ks, cursor), min(ke, end)
+            if ke > ks:
+                busy += ke - ks
+                cursor = ke
+        per_step.append({"step_ms": (end - start) / 1e3, "gpu_busy_ms": busy / 1e3, "busy": busy / (end - start)})
+        busy_total, span_total = busy_total + busy, span_total + (end - start)
+    result["per_step"] = per_step
+    result["gpu_busy_fraction"] = busy_total / span_total if span_total else None
+    result["launch_cpu_ms_per_step"] = sum(ev.time_range.elapsed_us() for ev in launches) / 1e3 / steps
+    find = label_finder(events)
+    sources = defaultdict(float)
+    for ev in events:
+        found = getattr(ev, "kernels", None)
+        if found:
+            sources[find(ev)] += len(found)
+    result["launch_sources_per_step"] = [{"phase": p, "module": m, "kernels_per_step": n / steps}
+                                         for (p, m), n in sorted(sources.items(), key=lambda kv: -kv[1])]
+    result["busy_limit"] = IDLE_BUSY_LIMIT
+    return result
+
+
 def stack_samples(prof, names):
     samples = {}
     for ev in prof.events():
@@ -245,6 +316,10 @@ def analyse(prof, steps, cpu_fallback=False):
             result.update(fn())
         except Exception:  # noqa: BLE001
             STATE["errors"].append(f"{name}: {traceback.format_exc()}")
+    try:
+        result["idle"] = idle_stats(prof, steps)
+    except Exception:  # noqa: BLE001
+        STATE["errors"].append(f"idle: {traceback.format_exc()}")
     try:
         result["stack_samples"] = stack_samples(prof, {r["op"] for r in result.get("ops_by_name", [])[:20]})
     except Exception:  # noqa: BLE001
@@ -273,6 +348,15 @@ def report(result):
     lines += ["", "== by module, fwd+bwd =="]
     for r in result.get("modules_total", []):
         lines.append(f"{r['ms_per_step']:9.2f}  {r['module']}")
+    idle = result.get("idle")
+    if idle:
+        lines += ["", "== GPU idle (profiler windows of the active steps; profiler overhead included) ==",
+                  f"GPU busy fraction {'n/a' if idle['gpu_busy_fraction'] is None else format(idle['gpu_busy_fraction'], '.3f')} over {idle['windows_found']} steps; "
+                  f"CUDA kernels/step {idle['kernel_launches_per_step']:.0f}; launch calls/step {idle['launch_calls_per_step']:.0f}; "
+                  f"CPU ms in launch calls/step {idle['launch_cpu_ms_per_step']:.1f}"]
+        if idle["gpu_busy_fraction"] is not None and idle["gpu_busy_fraction"] < idle["busy_limit"]:
+            lines.append(f"busy < {idle['busy_limit']:.0%}: kernel launches per step by source")
+            lines += [f"{r['kernels_per_step']:9.1f}  {r['phase']}  {r['module']}" for r in idle["launch_sources_per_step"][:15]]
     lines += ["", f"dtypes of module outputs: {result.get('dtypes')}", f"weights: {result.get('weights')}",
               f"calls per step: {result.get('calls_per_step')}", f"errors: {result.get('errors')}"]
     return "\n".join(lines)

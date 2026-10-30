@@ -1,7 +1,7 @@
 """Build kaggle/soup_kernel_debug.ipynb from templates/kaggle_notebook.ipynb.
 
     python3 tools/build_notebook.py --username NAME [--branch main] [--commit SHA] [--repo URL]
-        [--mode quick|unit|full|full_profile|check_and_ops|pack_check|quick_ab] [--module-test solution/test_x.py]
+        [--mode quick|unit|full|full_profile|check_and_ops|pack_check|quick_ab|pack_and_idle] [--module-test solution/test_x.py]
         [--slug soup-kernel-debug]
 Writes kaggle/build/<username>/soup_kernel_debug.ipynb and kernel-metadata.json (the folder is in
 .gitignore, so nobody's build conflicts with anybody else's). No tokens are touched.
@@ -130,6 +130,33 @@ def build(repo_url, branch, commit, mode, username, module_test):
         '    """Replace solution/ by the one of git revision `rev` (whole folder, no leftovers)."""\n'
         '    shutil.rmtree(REPO / "solution")\n'
         '    return stage(f"git_solution_{rev[:7]}", ["git", "checkout", rev, "--", "solution"])\n\n'
+        'def pack_and_idle():\n'
+        '    """One session: accuracy of the packed path (tools/pack_accuracy.py), then the GPU idle profile of start and\n'
+        '    of this commit (tools/op_profile.py, 24 steps each)."""\n'
+        '    import yaml\n'
+        '    stage("warm_model", ["python", "-c", "from huggingface_hub import snapshot_download as d; "\n'
+        '                                          "print(d(\'Qwen/Qwen2.5-1.5B-Instruct\'))"])\n'
+        '    stage("pack_accuracy", ["python", "tools/pack_accuracy.py", "--out", str(OUT / "pack_accuracy.json")])\n'
+        '    mine = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()\n'
+        '    stage("fetch_start", ["git", "fetch", "-q", "origin", "start"])\n'
+        '    start = subprocess.run(["git", "rev-parse", "FETCH_HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()\n'
+        '    (OUT / "idle_commits.txt").write_text(f"start {start}\\nthis {mine}\\n")\n'
+        '    sys.path.insert(0, str(REPO / "harness"))\n'
+        '    from common import OFFLINE_ENV\n'
+        '    for tag, rev in (("start", start), ("this", mine)):\n'
+        '        swap_solution(rev)\n'
+        '        run_dir = REPO / "runs_idle" / tag\n'
+        '        run_dir.mkdir(parents=True, exist_ok=True)\n'
+        '        cfg = yaml.safe_load((REPO / "task/task.yaml").read_text())\n'
+        '        cfg["data"]["train"], cfg["output"] = str(REPO / "data/train.jsonl"), str(run_dir / "adapter")\n'
+        '        cfg["training"]["seed"] = 1\n'
+        '        (run_dir / "task.yaml").write_text(yaml.safe_dump(cfg, sort_keys=False, allow_unicode=True))\n'
+        '        env = dict(OFFLINE_ENV, SOUP_DB_PATH=str(run_dir / "experiments.db"),\n'
+        '                   TRITON_CACHE_DIR=str(run_dir / "triton_cache"),\n'
+        '                   TORCHINDUCTOR_CACHE_DIR=str(run_dir / "inductor_cache"))\n'
+        '        stage(f"idle_{tag}", ["python", "tools/op_profile.py", "--config", str(run_dir / "task.yaml"),\n'
+        '                              "--out", str(OUT / f"idle_{tag}.json")], env=env)\n'
+        '    swap_solution(mine)\n\n'
         'def ab():\n'
         '    """Same T4 session: start (A) / this commit (B) / start (A) so session drift shows."""\n'
         '    mine = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()\n'
@@ -149,6 +176,8 @@ def build(repo_url, branch, commit, mode, username, module_test):
         'if MODE == "unit":\n'
         '    assert MODULE_TEST, "unit mode needs MODULE_TEST"\n'
         '    stage("pytest_unit", ["python", "-m", "pytest", *MODULE_TEST.split(), "-q", "-rs"])\n'
+        'elif MODE == "pack_and_idle":\n'
+        '    pack_and_idle()\n'
         'elif MODE == "quick_ab":\n'
         '    pytests()\n'
         '    ab()\n'
@@ -170,7 +199,7 @@ def build(repo_url, branch, commit, mode, username, module_test):
         '    if MODE == "full_profile":\n'
         '        base_profile()\n'
         'else:\n'
-        '    raise SystemExit("MODE must be unit, quick, full, full_profile, check_and_ops, pack_check or quick_ab")\n'))
+        '    raise SystemExit("MODE must be unit, quick, full, full_profile, check_and_ops, pack_check, quick_ab or pack_and_idle")\n'))
     out.append(code(
         'for pattern in ("runs*/**/train.log", "runs*/eval_*.log", "runs*/result.json",\n'
         '                "runs*/checks.json", "runs*/**/metrics.json", "runs*/solution_profile/profile.json",\n'
@@ -193,7 +222,7 @@ def main():
     p.add_argument("--branch", default="main")
     p.add_argument("--commit", default="")
     p.add_argument("--mode", default="quick",
-                   choices=("quick", "unit", "full", "full_profile", "check_and_ops", "pack_check", "quick_ab"))
+                   choices=("quick", "unit", "full", "full_profile", "check_and_ops", "pack_check", "quick_ab", "pack_and_idle"))
     p.add_argument("--module-test", default="", help="unit mode: path of one test file")
     p.add_argument("--slug", default="soup-kernel-debug")
     a = p.parse_args()
