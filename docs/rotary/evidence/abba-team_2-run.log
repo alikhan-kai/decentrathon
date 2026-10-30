@@ -1,0 +1,8 @@
+[run_task] warm-up done in 13.58 s
+[run_task] solution_1: training ...
+[run_task] solution_1: ok, 77.54 s, peak 8383 MiB
+[run_task] eval solution ...
+
+=== result ===
+solution  time     77.5 s   peak   8383 MiB   eval loss 2.04965
+written: /kaggle/working/rotary-abba-ymkerack/team_2/runs/result.json

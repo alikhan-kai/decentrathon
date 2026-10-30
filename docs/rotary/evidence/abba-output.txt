@@ -1,0 +1,52 @@
+ROOT /kaggle/working/rotary-abba-ymkerack
+
+rotary_1 exit 0
+[run_task] warm-up done in 13.54 s
+[run_task] solution_1: training ...
+[run_task] solution_1: ok, 69.27 s, peak 8367 MiB
+[run_task] eval solution ...
+
+=== result ===
+solution  time     69.3 s   peak   8367 MiB   eval loss 2.04965
+written: /kaggle/working/rotary-abba-ymkerack/rotary_1/runs/result.json
+
+MEASUREMENT {"label": "rotary_1", "summary": {"ok": true, "runs": 1, "wall_s": 69.27, "gpu_peak_mib": 8367, "train_loop_s": 47.43, "eval_loss": 2.04965}, "own_kernel_ms": {"rmsnorm_fwd_kernel": 288.987, "nf4_dequant_kernel": 2037.234, "ember_rope_joint": 389.856, "head_loss_kernel": 201.432, "rmsnorm_bwd_kernel": 393.78}, "timed_loop_s": 41.33, "share_pct": 8.011829179772562, "apply_s": 7.33, "median_step_s": 0.6723, "before": "Tesla T4, 300 MHz, 405 MHz, 53, 10.62 W, 0 %, 0 MiB\nTesla T4, 300 MHz, 405 MHz, 39, 9.83 W, 0 %, 0 MiB", "after": "Tesla T4, 795 MHz, 5000 MHz, 75, 33.79 W, 0 %, 0 MiB\nTesla T4, 300 MHz, 405 MHz, 39, 9.93 W, 0 %, 0 MiB"}
+
+team_1 exit 0
+[run_task] warm-up done in 13.48 s
+[run_task] solution_1: training ...
+[run_task] solution_1: ok, 76.8 s, peak 8383 MiB
+[run_task] eval solution ...
+
+=== result ===
+solution  time     76.8 s   peak   8383 MiB   eval loss 2.04966
+written: /kaggle/working/rotary-abba-ymkerack/team_1/runs/result.json
+
+MEASUREMENT {"label": "team_1", "summary": {"ok": true, "runs": 1, "wall_s": 76.8, "gpu_peak_mib": 8383, "train_loop_s": 54.91, "eval_loss": 2.04966}, "own_kernel_ms": {"rmsnorm_fwd_kernel": 288.357, "nf4_dequant_kernel": 2117.278, "head_loss_kernel": 211.692, "rmsnorm_bwd_kernel": 391.314}, "timed_loop_s": 49.288, "share_pct": 6.104205891900665, "apply_s": 7.38, "median_step_s": 0.8065, "before": "Tesla T4, 735 MHz, 5000 MHz, 75, 33.88 W, 0 %, 0 MiB\nTesla T4, 300 MHz, 405 MHz, 39, 13.09 W, 0 %, 0 MiB", "after": "Tesla T4, 795 MHz, 5000 MHz, 77, 34.67 W, 0 %, 0 MiB\nTesla T4, 300 MHz, 405 MHz, 37, 10.13 W, 0 %, 0 MiB"}
+
+team_2 exit 0
+[run_task] warm-up done in 13.58 s
+[run_task] solution_1: training ...
+[run_task] solution_1: ok, 77.54 s, peak 8383 MiB
+[run_task] eval solution ...
+
+=== result ===
+solution  time     77.5 s   peak   8383 MiB   eval loss 2.04965
+written: /kaggle/working/rotary-abba-ymkerack/team_2/runs/result.json
+
+MEASUREMENT {"label": "team_2", "summary": {"ok": true, "runs": 1, "wall_s": 77.54, "gpu_peak_mib": 8383, "train_loop_s": 55.63, "eval_loss": 2.04965}, "own_kernel_ms": {"rmsnorm_fwd_kernel": 289.541, "nf4_dequant_kernel": 2143.931, "head_loss_kernel": 212.337, "rmsnorm_bwd_kernel": 392.491}, "timed_loop_s": 49.985, "share_pct": 6.078423527058118, "apply_s": 7.34, "median_step_s": 0.8189, "before": "Tesla T4, 735 MHz, 5000 MHz, 77, 35.06 W, 0 %, 0 MiB\nTesla T4, 300 MHz, 405 MHz, 37, 10.03 W, 0 %, 0 MiB", "after": "Tesla T4, 795 MHz, 5000 MHz, 77, 34.59 W, 0 %, 0 MiB\nTesla T4, 300 MHz, 405 MHz, 36, 9.64 W, 0 %, 0 MiB"}
+
+rotary_2 exit 0
+[run_task] warm-up done in 13.58 s
+[run_task] solution_1: training ...
+[run_task] solution_1: ok, 76.44 s, peak 8367 MiB
+[run_task] eval solution ...
+
+=== result ===
+solution  time     76.4 s   peak   8367 MiB   eval loss 2.04969
+written: /kaggle/working/rotary-abba-ymkerack/rotary_2/runs/result.json
+
+MEASUREMENT {"label": "rotary_2", "summary": {"ok": true, "runs": 1, "wall_s": 76.44, "gpu_peak_mib": 8367, "train_loop_s": 54.49, "eval_loss": 2.04969}, "own_kernel_ms": {"rmsnorm_fwd_kernel": 290.891, "nf4_dequant_kernel": 2142.482, "ember_rope_joint": 391.499, "head_loss_kernel": 212.593, "rmsnorm_bwd_kernel": 392.465}, "timed_loop_s": 48.289, "share_pct": 7.102921990515438, "apply_s": 7.46, "median_step_s": 0.7976, "before": "Tesla T4, 795 MHz, 5000 MHz, 77, 34.49 W, 0 %, 0 MiB\nTesla T4, 300 MHz, 405 MHz, 36, 12.01 W, 0 %, 0 MiB", "after": "Tesla T4, 735 MHz, 5000 MHz, 77, 34.49 W, 0 %, 0 MiB\nTesla T4, 300 MHz, 405 MHz, 36, 9.84 W, 0 %, 0 MiB"}
+
+ALL_MEASUREMENTS [{"label": "rotary_1", "summary": {"ok": true, "runs": 1, "wall_s": 69.27, "gpu_peak_mib": 8367, "train_loop_s": 47.43, "eval_loss": 2.04965}, "own_kernel_ms": {"rmsnorm_fwd_kernel": 288.987, "nf4_dequant_kernel": 2037.234, "ember_rope_joint": 389.856, "head_loss_kernel": 201.432, "rmsnorm_bwd_kernel": 393.78}, "timed_loop_s": 41.33, "share_pct": 8.011829179772562, "apply_s": 7.33, "median_step_s": 0.6723, "before": "Tesla T4, 300 MHz, 405 MHz, 53, 10.62 W, 0 %, 0 MiB\nTesla T4, 300 MHz, 405 MHz, 39, 9.83 W, 0 %, 0 MiB", "after": "Tesla T4, 795 MHz, 5000 MHz, 75, 33.79 W, 0 %, 0 MiB\nTesla T4, 300 MHz, 405 MHz, 39, 9.93 W, 0 %, 0 MiB"}, {"label": "team_1", "summary": {"ok": true, "runs": 1, "wall_s": 76.8, "gpu_peak_mib": 8383, "train_loop_s": 54.91, "eval_loss": 2.04966}, "own_kernel_ms": {"rmsnorm_fwd_kernel": 288.357, "nf4_dequant_kernel": 2117.278, "head_loss_kernel": 211.692, "rmsnorm_bwd_kernel": 391.314}, "timed_loop_s": 49.288, "share_pct": 6.104205891900665, "apply_s": 7.38, "median_step_s": 0.8065, "before": "Tesla T4, 735 MHz, 5000 MHz, 75, 33.88 W, 0 %, 0 MiB\nTesla T4, 300 MHz, 405 MHz, 39, 13.09 W, 0 %, 0 MiB", "after": "Tesla T4, 795 MHz, 5000 MHz, 77, 34.67 W, 0 %, 0 MiB\nTesla T4, 300 MHz, 405 MHz, 37, 10.13 W, 0 %, 0 MiB"}, {"label": "team_2", "summary": {"ok": true, "runs": 1, "wall_s": 77.54, "gpu_peak_mib": 8383, "train_loop_s": 55.63, "eval_loss": 2.04965}, "own_kernel_ms": {"rmsnorm_fwd_kernel": 289.541, "nf4_dequant_kernel": 2143.931, "head_loss_kernel": 212.337, "rmsnorm_bwd_kernel": 392.491}, "timed_loop_s": 49.985, "share_pct": 6.078423527058118, "apply_s": 7.34, "median_step_s": 0.8189, "before": "Tesla T4, 735 MHz, 5000 MHz, 77, 35.06 W, 0 %, 0 MiB\nTesla T4, 300 MHz, 405 MHz, 37, 10.03 W, 0 %, 0 MiB", "after": "Tesla T4, 795 MHz, 5000 MHz, 77, 34.59 W, 0 %, 0 MiB\nTesla T4, 300 MHz, 405 MHz, 36, 9.64 W, 0 %, 0 MiB"}, {"label": "rotary_2", "summary": {"ok": true, "runs": 1, "wall_s": 76.44, "gpu_peak_mib": 8367, "train_loop_s": 54.49, "eval_loss": 2.04969}, "own_kernel_ms": {"rmsnorm_fwd_kernel": 290.891, "nf4_dequant_kernel": 2142.482, "ember_rope_joint": 391.499, "head_loss_kernel": 212.593, "rmsnorm_bwd_kernel": 392.465}, "timed_loop_s": 48.289, "share_pct": 7.102921990515438, "apply_s": 7.46, "median_step_s": 0.7976, "before": "Tesla T4, 795 MHz, 5000 MHz, 77, 34.49 W, 0 %, 0 MiB\nTesla T4, 300 MHz, 405 MHz, 36, 12.01 W, 0 %, 0 MiB", "after": "Tesla T4, 735 MHz, 5000 MHz, 77, 34.49 W, 0 %, 0 MiB\nTesla T4, 300 MHz, 405 MHz, 36, 9.84 W, 0 %, 0 MiB"}]
+EXPORT /kaggle/working/team-rotary-abba-evidence.zip 17576977

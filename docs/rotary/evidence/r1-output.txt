@@ -1,0 +1,166 @@
+
+Tesla T4, 0 MiB
+Tesla T4, 0 MiB
+
+SOURCE_BUNDLE_SHA256 b5f8651218da44934208f8f3bbb878bd1baef3375d1f1bb02de37fd7a6066064
+CANDIDATE_ROOT /kaggle/working/team-rotary-r1-ifsh2gia
+TEAM_ROOT /kaggle/working/team-check4-r1-w16q2ufk
+
+.......ss.....................s..s..s..s..s..s..s..s..s..s..s..s........ [ 24%]
+...s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s.. [ 49%]
+s..s............................................s..s..s..s..s..s..s...s. [ 74%]
+.s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s.....s..s.......... [ 99%]
+..                                                                       [100%]
+=============================== warnings summary ===============================
+solution/test_nf4.py: 14 warnings
+  /usr/local/lib/python3.13/dist-packages/torch/jit/_script.py:365: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+solution/test_rotary.py: 18 warnings
+  /usr/local/lib/python3.13/dist-packages/torch/jit/_script.py:1488: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+solution/test_rotary.py::test_jit_trace_uses_serializable_eager_graph
+  /usr/local/lib/python3.13/dist-packages/torch/jit/_trace.py:1006: DeprecationWarning: `torch.jit.trace` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+solution/test_rotary.py::test_jit_trace_uses_serializable_eager_graph
+  /usr/local/lib/python3.13/dist-packages/torch/jit/_serialization.py:89: DeprecationWarning: `torch.jit.save` is deprecated. Please switch to `torch.export`.
+    warnings.warn(
+
+solution/test_rotary.py::test_jit_trace_uses_serializable_eager_graph
+  /usr/local/lib/python3.13/dist-packages/torch/jit/_serialization.py:176: DeprecationWarning: `torch.jit.load` is deprecated. Please switch to `torch.export`.
+    warnings.warn(
+
+solution/test_rotary.py::test_named_inputs_keep_names_on_eager_fallback[cpu]
+  /usr/local/lib/python3.13/dist-packages/torch/_tensor.py:1393: UserWarning: Named tensors and all their associated APIs are an experimental feature and subject to change. Please do not use them for anything important until they are released as stable. (Triggered internally at /pytorch/c10/core/TensorImpl.h:1973.)
+    return super().refine_names(names)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+223 passed, 67 skipped, 36 warnings in 24.99s
+
+unit.log EXIT 0
+........................................................................ [ 91%]
+.......                                                                  [100%]
+=============================== warnings summary ===============================
+../../../usr/local/lib/python3.13/dist-packages/torch/jit/_script.py:365: 14 warnings
+  /usr/local/lib/python3.13/dist-packages/torch/jit/_script.py:365: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+79 passed, 14 warnings in 0.39s
+
+regression.log EXIT 0
+wrote 256 training rows and 256 eval rows to /kaggle/working/team-rotary-r1-ifsh2gia/data
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+prepare.log EXIT 0
+wrote 256 training rows and 256 eval rows to /kaggle/working/team-check4-r1-w16q2ufk/data
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+prepare.log EXIT 0
+
+[run_task] warm-up done in 13.49 s
+[run_task] solution_1: training ...
+[run_task] solution_1: ok, 68.01 s, peak 8383 MiB
+[run_task] eval solution ...
+
+=== result ===
+solution  time     68.0 s   peak   8383 MiB   eval loss 2.04965
+written: /kaggle/working/team-check4-r1-w16q2ufk/runs/result.json
+
+team-harness.log EXIT 0
+TEAM_SUMMARY {"solution": {"ok": true, "runs": 1, "wall_s": 68.01, "gpu_peak_mib": 8383, "train_loop_s": 46.3, "eval_loss": 2.04965}}
+TEAM_KERNELS solution {"own_kernel_ms": {"rmsnorm_fwd_kernel": 285.826, "nf4_dequant_kernel": 2032.196, "example_swiglu_fwd_kernel": 1107.847, "head_loss_kernel": 199.487, "rmsnorm_bwd_kernel": 393.349, "example_swiglu_bwd_kernel": 1870.069}, "triton_launches": {"rmsnorm_fwd_kernel": 3648, "nf4_dequant_kernel": 24896, "example_swiglu_fwd_kernel": 1792, "head_loss_kernel": 138, "rmsnorm_bwd_kernel": 3584, "example_swiglu_bwd_kernel": 1792}, "timed_loop_s": 40.887}
+
+[run_task] warm-up done in 13.33 s
+[run_task] base_1: training ...
+[run_task] base_1: ok, 84.55 s, peak 14345 MiB
+[run_task] solution_1: training ...
+[run_task] solution_1: ok, 75.63 s, peak 8367 MiB
+[run_task] eval base ...
+[run_task] eval solution ...
+
+=== result ===
+base      time     84.5 s   peak  14345 MiB   eval loss 2.04964
+solution  time     75.6 s   peak   8367 MiB   eval loss 2.04966
+speedup 1.118x   memory base/solution 1.714x   eval loss vs base 0.001 %
+written: /kaggle/working/team-rotary-r1-ifsh2gia/runs/result.json
+
+candidate-harness.log EXIT 0
+PASS  1. every base and solution run finished                                            1 base and 1 solution runs of 1 each
+PASS  2. no ready-made kernel libraries                                                  loaded: none; imported in solution/: none; packages changed during the run: none
+PASS  3. own @triton.jit kernels in solution/ run in training                            ember_rope_joint (solution/rotary.py), head_loss_kernel (solution/head_loss.py), nf4_dequant_kernel (solution/nf4.py), rmsnorm_bwd_kernel (solution/rmsnorm.py), rmsnorm_fwd_kernel (solution/rmsnorm.py); not launched in every solution run: _rope_rotate_block; the example's kernels do not count, under any name: example_swiglu_fwd_kernel, example_swiglu_bwd_kernel
+PASS  4. own kernels together take >= 5% of the training time                            7.1% of the training time (lowest of 1 runs, steps 3+)
+PASS  5. same task and Soup outputs (steps, adapter, settings, tokens, metrics, rewind)  identical within tolerance
+PASS  6. loss curve follows the base                                                     solution_1: first step 0.00%, mean of all steps 0.01% (max 1% and 3%)
+PASS  7. quality: eval loss at most 0.5% above the base                                  +0.001%
+PASS  8. not worse than the base on time or memory (10% margin)                          time x0.895, memory x0.583 of the base
+PASS  9. clean measurement (a T4, idle GPUs, one GPU, harness allocator, peaks agree)    clean
+PASS  10. Soup regression tests with your patches                                        79 passed, 14 warnings in 0.29s
+
+ALL CHECKS PASSED
+
+checks.log EXIT 0
+CANDIDATE_SUMMARY {"base": {"ok": true, "runs": 1, "wall_s": 84.55, "gpu_peak_mib": 14345, "train_loop_s": 62.94, "eval_loss": 2.04964}, "solution": {"ok": true, "runs": 1, "wall_s": 75.63, "gpu_peak_mib": 8367, "train_loop_s": 54.03, "eval_loss": 2.04966}, "ratios": {"speedup": 1.1179, "memory_ratio": 1.7145, "quality_delta_pct": 0.001}}
+CANDIDATE_KERNELS base {"own_kernel_ms": {}, "triton_launches": {}, "timed_loop_s": 60.532}
+CANDIDATE_KERNELS solution {"own_kernel_ms": {"rmsnorm_fwd_kernel": 289.903, "nf4_dequant_kernel": 2129.737, "ember_rope_joint": 389.755, "example_swiglu_fwd_kernel": 1106.559, "head_loss_kernel": 212.005, "rmsnorm_bwd_kernel": 392.853, "example_swiglu_bwd_kernel": 1857.828}, "triton_launches": {"rmsnorm_fwd_kernel": 3648, "nf4_dequant_kernel": 24896, "ember_rope_joint": 3584, "example_swiglu_fwd_kernel": 1792, "head_loss_kernel": 138, "rmsnorm_bwd_kernel": 3584, "example_swiglu_bwd_kernel": 1792}, "timed_loop_s": 47.766}
+CHECKS {
+  "result_sha256": "bd04b7027d76e0df872bef8d1c2f09589f2f8967e24670ffeba842483f458c60",
+  "solution_sha256": "a100a238e2552bbec53fdf62d04266711fce84eeeb10edf8e6e80ac3bb97eaa0",
+  "checks": [
+    {
+      "check": "1. every base and solution run finished",
+      "ok": true,
+      "detail": "1 base and 1 solution runs of 1 each"
+    },
+    {
+      "check": "2. no ready-made kernel libraries",
+      "ok": true,
+      "detail": "loaded: none; imported in solution/: none; packages changed during the run: none"
+    },
+    {
+      "check": "3. own @triton.jit kernels in solution/ run in training",
+      "ok": true,
+      "detail": "ember_rope_joint (solution/rotary.py), head_loss_kernel (solution/head_loss.py), nf4_dequant_kernel (solution/nf4.py), rmsnorm_bwd_kernel (solution/rmsnorm.py), rmsnorm_fwd_kernel (solution/rmsnorm.py); not launched in every solution run: _rope_rotate_block; the example's kernels do not count, under any name: example_swiglu_fwd_kernel, example_swiglu_bwd_kernel"
+    },
+    {
+      "check": "4. own kernels together take >= 5% of the training time",
+      "ok": true,
+      "detail": "7.1% of the training time (lowest of 1 runs, steps 3+)"
+    },
+    {
+      "check": "5. same task and Soup outputs (steps, adapter, settings, tokens, metrics, rewind)",
+      "ok": true,
+      "detail": "identical within tolerance"
+    },
+    {
+      "check": "6. loss curve follows the base",
+      "ok": true,
+      "detail": "solution_1: first step 0.00%, mean of all steps 0.01% (max 1% and 3%)"
+    },
+    {
+      "check": "7. quality: eval loss at most 0.5% above the base",
+      "ok": true,
+      "detail": "+0.001%"
+    },
+    {
+      "check": "8. not worse than the base on time or memory (10% margin)",
+      "ok": true,
+      "detail": "time x0.895, memory x0.583 of the base"
+    },
+    {
+      "check": "9. clean measurement (a T4, idle GPUs, one GPU, harness allocator, peaks agree)",
+      "ok": true,
+      "detail": "clean"
+    },
+    {
+      "check": "10. Soup regression tests with your patches",
+      "ok": true,
+      "detail": "79 passed, 14 warnings in 0.29s"
+    }
+  ],
+  "notes": []
+}
+
+DIAGNOSTIC_EXPORT /kaggle/working/team-rotary-r1-evidence.zip 13106748
