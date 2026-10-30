@@ -1,0 +1,13 @@
+{
+  "id": "KAGGLE_USERNAME/soup-kernel-debug",
+  "title": "soup-kernel-debug",
+  "code_file": "soup_kernel_debug.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "dataset_sources": [],
+  "competition_sources": [],
+  "kernel_sources": []
+}
