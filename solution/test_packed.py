@@ -55,6 +55,13 @@ def patched():
     packed.unpatch()
 
 
+@pytest.fixture(autouse=True)
+def clean_stats():
+    """The tests' counters must not end up in packed_stats_<pid>.json at exit."""
+    yield
+    packed.reset_stats()
+
+
 def run(model, ids, mask):
     out = model.model(input_ids=ids, attention_mask=mask)
     return out, loss_of(model, out.last_hidden_state, ids, mask)
@@ -70,9 +77,10 @@ def test_plan():
     assert lens == LENS and flat.numel() == sum(LENS)
     assert torch.equal(mask.reshape(-1)[flat], torch.ones(sum(LENS), dtype=torch.long))
     assert positions.shape == (1, sum(LENS)) and positions.max() == max(LENS) - 1
-    assert packed.plan(make_batch(left=True)[1]) is None            # left padding -> fallback
-    assert packed.plan(make_batch([9, 9, 9])[1]) is None            # no pad -> nothing to gain
-    assert packed.plan(torch.tensor([[1, 0, 1], [1, 1, 1]])) is None  # hole
+    assert packed.plan(make_batch(left=True)[1]) == "left_pad_or_hole"
+    assert packed.plan(make_batch([9, 9, 9])[1]) == "no_pad"        # nothing to gain
+    assert packed.plan(torch.tensor([[1, 0, 1], [1, 1, 1]])) == "left_pad_or_hole"
+    assert packed.plan(torch.tensor([[1, 1], [0, 0]])) == "empty_row"
 
 
 def test_packed_matches_padded(patched):
@@ -164,6 +172,19 @@ def test_lora_accepts_packed(patched):
     new_grads = {n: g for n, g in grads(model).items() if "lora" in n}
     assert new_grads.keys() == ref_grads.keys() and len(ref_grads) == 8
     assert max((new_grads[n] - ref_grads[n]).abs().max().item() for n in ref_grads) < TOL
+
+
+def test_stats_count_steps_and_fallbacks(patched):
+    model = tiny_model()
+    before = packed.stats()
+    ids, mask = make_batch()
+    model.model(input_ids=ids, attention_mask=mask)
+    ids2, mask2 = make_batch([9, 9, 9])
+    model.model(input_ids=ids2, attention_mask=mask2)
+    after = packed.stats()
+    assert after["packed_steps"] == before["packed_steps"] + 1
+    assert after["n_real"][-1] == sum(LENS) and after["n_padded"][-1] == len(LENS) * max(LENS)
+    assert after["fallbacks"].get("no_pad", 0) == before["fallbacks"].get("no_pad", 0) + 1
 
 
 def test_patch_is_idempotent():

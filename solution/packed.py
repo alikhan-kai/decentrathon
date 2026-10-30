@@ -27,40 +27,79 @@ dropout off (or on the first step, B = 0) the results agree to float rounding (s
 No triton import here: the test runs on CPU.
 """
 
+import atexit
+import json
+import os
+from collections import Counter
+
 import torch
 
 ENABLED = True
 
 _STATE = {"lens": None}      # row lengths of the batch currently inside the packed Qwen2Model.forward
+# Passive counters (no GPU sync: the lengths are already on the CPU): one [real tokens, B * longest row] pair per
+# packed step and the number of fallbacks by reason. Written to packed_stats_<pid>.json (cwd) at exit.
+_STATS = {"packed_steps": [], "fallbacks": Counter()}
 _ORIGINAL = {}
 _patched = False
 
 
 def plan(attention_mask):
-    """Row lengths and flat indices of the real tokens of a right-padded [B, T] mask, or None if the mask is not
-    right-padded, has an empty row, or has no pad at all. One device sync."""
+    """Row lengths and flat indices of the real tokens of a right-padded [B, T] mask, or the reason (str) why it
+    cannot be packed: not_2d, left_pad_or_hole, empty_row, no_pad. One device sync."""
     if attention_mask.dim() != 2:
-        return None
+        return "not_2d"
     b, t = attention_mask.shape
     mask = attention_mask.to(torch.long)
     lens = mask.sum(1)
     broken = (mask[:, 1:] > mask[:, :-1]).any().to(torch.long).view(1)
     *lens, broken = torch.cat([lens, broken]).tolist()
-    if broken or min(lens) == 0 or min(lens) == t and max(lens) == t:
-        return None
+    if broken:
+        return "left_pad_or_hole"
+    if min(lens) == 0:
+        return "empty_row"
+    if min(lens) == t:
+        return "no_pad"
     positions = torch.cat([torch.arange(n) for n in lens])
     rows = torch.repeat_interleave(torch.arange(b) * t, torch.tensor(lens))
     device = attention_mask.device
     return lens, (positions + rows).to(device), positions.to(device).unsqueeze(0)
 
 
-def _eligible(model, input_ids, attention_mask, position_ids, past_key_values, inputs_embeds, use_cache, kwargs):
-    return (model.training and torch.is_grad_enabled() and input_ids is not None and inputs_embeds is None
-            and attention_mask is not None and attention_mask.shape == input_ids.shape
-            and position_ids is None and past_key_values is None and not use_cache
-            and getattr(model.config, "_attn_implementation", None) == "sdpa"
-            and not model.has_sliding_layers
-            and not kwargs.get("output_attentions") and not kwargs.get("output_hidden_states"))
+def _reason(model, input_ids, attention_mask, position_ids, past_key_values, inputs_embeds, use_cache, kwargs):
+    """None if the call may be packed, else why not."""
+    if not (model.training and torch.is_grad_enabled()):
+        return "not_training"
+    if input_ids is None or inputs_embeds is not None:
+        return "no_input_ids"
+    if attention_mask is None or attention_mask.shape != input_ids.shape:
+        return "no_2d_mask"
+    if position_ids is not None or past_key_values is not None or use_cache:
+        return "position_ids_or_cache"
+    if getattr(model.config, "_attn_implementation", None) != "sdpa" or model.has_sliding_layers:
+        return "not_sdpa_or_sliding"
+    if kwargs.get("output_attentions") or kwargs.get("output_hidden_states"):
+        return "output_attentions_or_hidden"
+    return None
+
+
+def stats():
+    """Counters of this process: packed steps as [real tokens N, padded tokens B * longest row] and fallbacks by reason."""
+    steps = _STATS["packed_steps"]
+    return {"packed_steps": len(steps), "fallbacks": dict(_STATS["fallbacks"]),
+            "n_real": [n for n, _ in steps], "n_padded": [p for _, p in steps],
+            "real_over_padded": (sum(n for n, _ in steps) / sum(p for _, p in steps)) if steps else None}
+
+
+def reset_stats():
+    _STATS["packed_steps"].clear()
+    _STATS["fallbacks"].clear()
+
+
+def _dump_stats():
+    if _STATS["packed_steps"] or _STATS["fallbacks"]:
+        with open(f"packed_stats_{os.getpid()}.json", "w") as handle:
+            json.dump(stats(), handle)
 
 
 def _install():
@@ -74,14 +113,16 @@ def _install():
 
     def model_forward(self, input_ids=None, attention_mask=None, position_ids=None, past_key_values=None,
                       inputs_embeds=None, use_cache=None, **kwargs):
-        found = None
-        if _eligible(self, input_ids, attention_mask, position_ids, past_key_values, inputs_embeds, use_cache, kwargs):
-            found = plan(attention_mask)
+        found = _reason(self, input_ids, attention_mask, position_ids, past_key_values, inputs_embeds, use_cache, kwargs)
         if found is None:
+            found = plan(attention_mask)
+        if isinstance(found, str):
+            _STATS["fallbacks"][found] += 1
             return original_model_forward(self, input_ids=input_ids, attention_mask=attention_mask,
                                           position_ids=position_ids, past_key_values=past_key_values,
                                           inputs_embeds=inputs_embeds, use_cache=use_cache, **kwargs)
         lens, flat_index, positions = found
+        _STATS["packed_steps"].append((sum(lens), len(lens) * attention_mask.shape[1]))
         hidden_states = self.embed_tokens(input_ids.reshape(-1)[flat_index]).unsqueeze(0)        # [1, N, H]
         position_embeddings = self.rotary_emb(hidden_states, positions)
         _STATE["lens"] = lens
@@ -128,6 +169,7 @@ def patch():
     global _patched
     if not _patched:
         _install()
+        atexit.register(_dump_stats)
         _patched = True
 
 

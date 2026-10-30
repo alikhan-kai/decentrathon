@@ -1,7 +1,7 @@
 """Build kaggle/soup_kernel_debug.ipynb from templates/kaggle_notebook.ipynb.
 
     python3 tools/build_notebook.py --username NAME [--branch main] [--commit SHA] [--repo URL]
-        [--mode quick|unit|full|full_profile|check_and_ops] [--module-test solution/test_x.py]
+        [--mode quick|unit|full|full_profile|check_and_ops|pack_check|quick_ab] [--module-test solution/test_x.py]
         [--slug soup-kernel-debug]
 Writes kaggle/build/<username>/soup_kernel_debug.ipynb and kernel-metadata.json (the folder is in
 .gitignore, so nobody's build conflicts with anybody else's). No tokens are touched.
@@ -126,6 +126,20 @@ def build(repo_url, branch, commit, mode, username, module_test):
         '               TORCHINDUCTOR_CACHE_DIR=str(run_dir / "inductor_cache"))\n'
         '    stage("op_profile", ["python", "tools/op_profile.py", "--config", str(run_dir / "task.yaml"),\n'
         '                         "--out", str(OUT / "op_profile.json")], env=env)\n\n'
+        'def swap_solution(rev):\n'
+        '    """Replace solution/ by the one of git revision `rev` (whole folder, no leftovers)."""\n'
+        '    shutil.rmtree(REPO / "solution")\n'
+        '    return stage(f"git_solution_{rev[:7]}", ["git", "checkout", rev, "--", "solution"])\n\n'
+        'def ab():\n'
+        '    """Same T4 session: start (A) / this commit (B) / start (A) so session drift shows."""\n'
+        '    mine = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()\n'
+        '    stage("fetch_start", ["git", "fetch", "-q", "origin", "start"])\n'
+        '    start = subprocess.run(["git", "rev-parse", "FETCH_HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()\n'
+        '    (OUT / "ab_commits.txt").write_text(f"start {start}\\nthis {mine}\\n")\n'
+        '    for tag, rev in (("start1", start), ("this", mine), ("start2", start)):\n'
+        '        swap_solution(rev)\n'
+        '        stage(f"run_{tag}", ["python", "harness/run_task.py", "--only", "solution", "--out", f"runs_ab_{tag}"])\n'
+        '    swap_solution(mine)\n\n'
         'def quick_metrics():\n'
         '    mp = REPO / "runs_try/solution_1/metrics.json"\n'
         '    if mp.exists():\n'
@@ -135,6 +149,11 @@ def build(repo_url, branch, commit, mode, username, module_test):
         'if MODE == "unit":\n'
         '    assert MODULE_TEST, "unit mode needs MODULE_TEST"\n'
         '    stage("pytest_unit", ["python", "-m", "pytest", *MODULE_TEST.split(), "-q", "-s"])\n'
+        'elif MODE == "quick_ab":\n'
+        '    pytests()\n'
+        '    ab()\n'
+        'elif MODE == "pack_check":\n'
+        '    stage("pack_check", ["python", "tools/pack_check.py", "--out", str(OUT / "pack_check.json")])\n'
         'elif MODE in ("quick", "check_and_ops"):\n'
         '    pytests()\n'
         '    stage("run_task_solution", ["python", "harness/run_task.py", "--only", "solution",\n'
@@ -151,11 +170,12 @@ def build(repo_url, branch, commit, mode, username, module_test):
         '    if MODE == "full_profile":\n'
         '        base_profile()\n'
         'else:\n'
-        '    raise SystemExit("MODE must be unit, quick, full, full_profile or check_and_ops")\n'))
+        '    raise SystemExit("MODE must be unit, quick, full, full_profile, check_and_ops, pack_check or quick_ab")\n'))
     out.append(code(
         'for pattern in ("runs*/**/train.log", "runs*/eval_*.log", "runs*/result.json",\n'
         '                "runs*/checks.json", "runs*/**/metrics.json", "runs*/solution_profile/profile.json",\n'
-        '                "runs/base_profile/train.log", "runs_try/op_profile/train.log"):\n'
+        '                "runs/base_profile/train.log", "runs_try/op_profile/train.log", "packed_stats_*.json",\n'
+        '                "runs*/**/packed_stats_*.json"):\n'
         '    for p in glob.glob(str(REPO / pattern), recursive=True):\n'
         '        rel = Path(p).relative_to(REPO)\n'
         '        dst = OUT / "files" / rel\n'
@@ -174,7 +194,7 @@ def main():
     p.add_argument("--branch", default="main")
     p.add_argument("--commit", default="")
     p.add_argument("--mode", default="quick",
-                   choices=("quick", "unit", "full", "full_profile", "check_and_ops"))
+                   choices=("quick", "unit", "full", "full_profile", "check_and_ops", "pack_check", "quick_ab"))
     p.add_argument("--module-test", default="", help="unit mode: path of one test file")
     p.add_argument("--slug", default="soup-kernel-debug")
     a = p.parse_args()
