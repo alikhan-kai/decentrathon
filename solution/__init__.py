@@ -18,15 +18,41 @@ not work is worse than a crash.
 """
 
 import importlib
+import sys
+import time
 
 MODULES = ["swiglu", "head_loss", "packed", "rmsnorm", "nf4", "lora"]
 
 
 def apply():
+    t_start = time.perf_counter()
+    timings = {}
     for name in MODULES:
+        t0 = time.perf_counter()
         module = importlib.import_module(f"{__name__}.{name}")
-        if not getattr(module, "ENABLED", False):
-            continue
-        patch = getattr(module, "patch", None)
-        if patch is not None:
-            patch()
+        t_import = time.perf_counter() - t0
+
+        is_enabled = getattr(module, "ENABLED", False)
+        t_patch = 0.0
+        if is_enabled:
+            patch = getattr(module, "patch", None)
+            if patch is not None:
+                tp0 = time.perf_counter()
+                patch()
+                t_patch = time.perf_counter() - tp0
+        timings[name] = {
+            "import_s": round(t_import, 4),
+            "patch_s": round(t_patch, 4),
+            "enabled": is_enabled,
+        }
+
+    total_apply = time.perf_counter() - t_start
+    print(
+        f"[overhead] solution.apply() total: {total_apply:.3f}s",
+        file=sys.stderr,
+    )
+    for mod, data in timings.items():
+        print(
+            f"  - {mod:10s} (enabled={data['enabled']}): import={data['import_s']:.4f}s, patch={data['patch_s']:.4f}s",
+            file=sys.stderr,
+        )
