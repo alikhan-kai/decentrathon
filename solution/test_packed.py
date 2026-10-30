@@ -151,7 +151,10 @@ def test_lora_accepts_packed(patched):
     for p in model.parameters():
         p.requires_grad_(False)
     cfg = peft.LoraConfig(r=4, lora_alpha=8, lora_dropout=0.0, target_modules=["q_proj", "v_proj"])
-    model = peft.get_peft_model(model, cfg)
+    try:
+        model = peft.get_peft_model(model, cfg)
+    except ImportError as error:        # e.g. Kaggle image: preinstalled torchao older than peft wants
+        pytest.skip(f"peft cannot be imported here: {error}")
     for name, p in model.named_parameters():
         if "lora_B" in name:
             torch.nn.init.normal_(p, std=0.1)                  # B = 0 would hide errors in the A branch

@@ -1,0 +1,170 @@
+{
+ "packed_enabled": true,
+ "fp16": [
+  {
+   "lens": [
+    205,
+    79,
+    221,
+    379
+   ],
+   "T": 379,
+   "R_over_P": 0.58311345646438,
+   "packed_path_taken": true,
+   "padded_path_taken": true,
+   "padded_vs_packed": {
+    "hidden_rel_l2": 0.0027214407455176115,
+    "grad_all_rel_l2": 0.027637507766485214,
+    "loss_a": 2.8147783279418945,
+    "loss_b": 2.814760208129883,
+    "loss_abs_diff": 1.811981201171875e-05,
+    "hidden_max_abs_diff": 0.6953125,
+    "hidden_max_abs": 118.125,
+    "hidden_rel_diff": 0.0058862433862433864,
+    "grad_params": 112,
+    "grad_max_rel_diff": 0.43832599118942733,
+    "grad_worst_param": "model.layers.0.self_attn.q_proj.lora_A.default.weight",
+    "grad_min_cosine": 0.9629256725311279
+   },
+   "padded_vs_padded_noise": {
+    "hidden_rel_l2": 0.0,
+    "grad_all_rel_l2": 0.0067960829474031925,
+    "loss_a": 2.8147783279418945,
+    "loss_b": 2.8147783279418945,
+    "loss_abs_diff": 0.0,
+    "hidden_max_abs_diff": 0.0,
+    "hidden_max_abs": 118.125,
+    "hidden_rel_diff": 0.0,
+    "grad_params": 112,
+    "grad_max_rel_diff": 0.18869309838472834,
+    "grad_worst_param": "model.layers.0.self_attn.q_proj.lora_A.default.weight",
+    "grad_min_cosine": 0.9945405125617981
+   }
+  },
+  {
+   "lens": [
+    509,
+    55,
+    166,
+    512
+   ],
+   "T": 512,
+   "R_over_P": 0.6064453125,
+   "packed_path_taken": true,
+   "padded_path_taken": true,
+   "padded_vs_packed": {
+    "hidden_rel_l2": 0.0024036967661231756,
+    "grad_all_rel_l2": 0.04355713352560997,
+    "loss_a": 2.694598913192749,
+    "loss_b": 2.694340705871582,
+    "loss_abs_diff": 0.0002582073211669922,
+    "hidden_max_abs_diff": 0.4375,
+    "hidden_max_abs": 111.25,
+    "hidden_rel_diff": 0.003932584269662922,
+    "grad_params": 112,
+    "grad_max_rel_diff": 0.8754829545454546,
+    "grad_worst_param": "model.layers.0.self_attn.q_proj.lora_A.default.weight",
+    "grad_min_cosine": 0.8832547664642334
+   },
+   "padded_vs_padded_noise": {
+    "hidden_rel_l2": 0.0,
+    "grad_all_rel_l2": 0.01265076082199812,
+    "loss_a": 2.694598913192749,
+    "loss_b": 2.694598913192749,
+    "loss_abs_diff": 0.0,
+    "hidden_max_abs_diff": 0.0,
+    "hidden_max_abs": 111.25,
+    "hidden_rel_diff": 0.0,
+    "grad_params": 112,
+    "grad_max_rel_diff": 0.4490909090909091,
+    "grad_worst_param": "model.layers.0.self_attn.q_proj.lora_A.default.weight",
+    "grad_min_cosine": 0.9885880351066589
+   }
+  }
+ ],
+ "fp16_max_allocated_mib": 6924.4,
+ "fp32": [
+  {
+   "lens": [
+    205,
+    79,
+    221,
+    379
+   ],
+   "T": 379,
+   "R_over_P": 0.58311345646438,
+   "packed_path_taken": true,
+   "padded_path_taken": true,
+   "padded_vs_packed": {
+    "hidden_rel_l2": 9.161949492408894e-06,
+    "grad_all_rel_l2": 7.569588342448696e-05,
+    "loss_a": 2.758842945098877,
+    "loss_b": 2.7588467597961426,
+    "loss_abs_diff": 3.814697265625e-06,
+    "hidden_max_abs_diff": 0.00286102294921875,
+    "hidden_max_abs": 115.80561065673828,
+    "hidden_rel_diff": 2.4705391500409814e-05,
+    "grad_params": 112,
+    "grad_max_rel_diff": 0.0007616156138631991,
+    "grad_worst_param": "model.layers.0.self_attn.q_proj.lora_B.default.weight",
+    "grad_min_cosine": 0.9999997615814209
+   },
+   "padded_vs_padded_noise": {
+    "hidden_rel_l2": 0.0,
+    "grad_all_rel_l2": 0.0,
+    "loss_a": 2.758842945098877,
+    "loss_b": 2.758842945098877,
+    "loss_abs_diff": 0.0,
+    "hidden_max_abs_diff": 0.0,
+    "hidden_max_abs": 115.80561065673828,
+    "hidden_rel_diff": 0.0,
+    "grad_params": 112,
+    "grad_max_rel_diff": 0.0,
+    "grad_worst_param": null,
+    "grad_min_cosine": 0.9999998807907104
+   }
+  },
+  {
+   "lens": [
+    509,
+    55,
+    166,
+    512
+   ],
+   "T": 512,
+   "R_over_P": 0.6064453125,
+   "packed_path_taken": true,
+   "padded_path_taken": true,
+   "padded_vs_packed": {
+    "hidden_rel_l2": 8.719187462702394e-06,
+    "grad_all_rel_l2": 7.229410402942449e-05,
+    "loss_a": 2.6441597938537598,
+    "loss_b": 2.644162893295288,
+    "loss_abs_diff": 3.0994415283203125e-06,
+    "hidden_max_abs_diff": 0.002941131591796875,
+    "hidden_max_abs": 111.67642974853516,
+    "hidden_rel_diff": 2.6336189278431453e-05,
+    "grad_params": 112,
+    "grad_max_rel_diff": 0.0007212665750378772,
+    "grad_worst_param": "model.layers.0.self_attn.q_proj.lora_B.default.weight",
+    "grad_min_cosine": 0.9999998211860657
+   },
+   "padded_vs_padded_noise": {
+    "hidden_rel_l2": 0.0,
+    "grad_all_rel_l2": 0.0,
+    "loss_a": 2.6441597938537598,
+    "loss_b": 2.6441597938537598,
+    "loss_abs_diff": 0.0,
+    "hidden_max_abs_diff": 0.0,
+    "hidden_max_abs": 111.67642974853516,
+    "hidden_rel_diff": 0.0,
+    "grad_params": 112,
+    "grad_max_rel_diff": 0.0,
+    "grad_worst_param": null,
+    "grad_min_cosine": 0.9999997615814209
+   }
+  }
+ ],
+ "fp32_max_allocated_mib": 10936.3,
+ "verdict": "PASS"
+}
