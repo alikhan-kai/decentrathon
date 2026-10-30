@@ -21,7 +21,7 @@ import importlib
 import sys
 import time
 
-MODULES = ["swiglu", "head_loss", "packed", "rmsnorm", "nf4", "lora"]
+MODULES = ["swiglu", "head_loss", "packed", "rmsnorm", "nf4", "lora", "overhead"]
 
 
 def apply():
