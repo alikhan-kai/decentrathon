@@ -254,7 +254,7 @@ def apply_rotary_pos_emb(q, k, cos, sin, unsqueeze_dim=1):
     return _eager_rope(q, k, cos, sin, unsqueeze_dim)
 
 
-ENABLED = False
+ENABLED = True
 
 
 def patch():
