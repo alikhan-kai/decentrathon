@@ -9,3 +9,6 @@ kaggle/out/
 .venv-kaggle/
 kaggle.json
 runs_try/
+.venv/
+docs/STATE.md
+docs/WORKSPACE_ORIGINAL.md
