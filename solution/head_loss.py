@@ -156,14 +156,56 @@ class _Step:
 def _eligible(trainer, inputs):
     if not (trainer.model.training and "labels" in inputs and inputs.get("attention_mask") is not None):
         return False
-    if getattr(trainer.args, "use_liger_kernel", False) or "shift_labels" in inputs:
+    # Trainer removes labels before forward for both of these loss paths.
+    if getattr(trainer, "label_smoother", None) is not None or getattr(trainer, "compute_loss_func", None) is not None:
+        return False
+    if (getattr(trainer.args, "use_liger_kernel", False)
+            or getattr(trainer.args, "loss_type", "nll") != "nll"
+            or getattr(trainer, "num_virtual_tokens", 0)
+            or getattr(trainer, "aux_loss_enabled", False)
+            or "shift_labels" in inputs or "ignore_index" in inputs):
+        return False
+    keep = inputs.get("logits_to_keep", 0)
+    if type(keep) is not int or keep != 0:
+        return False
+    labels, mask = inputs["labels"], inputs["attention_mask"]
+    if (not isinstance(labels, torch.Tensor) or labels.ndim != 2
+            or not isinstance(mask, torch.Tensor) or mask.shape != labels.shape):
         return False
     base = trainer.model
     get_base = getattr(base, "get_base_model", None)
     base = get_base() if callable(get_base) else base
     head = getattr(base, "lm_head", None)
-    return (head is not None and head.weight.is_cuda and not head.weight.requires_grad
-            and type(base).__name__ == "Qwen2ForCausalLM")
+    # Fusion reads only weight, bypassing the head's __call__, bias and adapters.
+    if (type(head) is not torch.nn.Linear or head.bias is not None
+            or "forward" in head.__dict__ or head._forward_pre_hooks or head._forward_hooks
+            or head._backward_pre_hooks or head._backward_hooks):
+        return False
+    from torch.nn.modules import module as module_hooks
+    if (module_hooks._global_forward_pre_hooks or module_hooks._global_forward_hooks
+            or module_hooks._global_backward_pre_hooks or module_hooks._global_backward_hooks):
+        return False
+    weight = head.weight
+    if not weight.is_cuda or weight.requires_grad or weight.dtype not in (torch.float16, torch.float32):
+        return False
+    from transformers.loss.loss_utils import ForCausalLMLoss
+    from transformers.models.qwen2.modeling_qwen2 import Qwen2ForCausalLM
+    if type(base) is not Qwen2ForCausalLM or base.loss_function is not ForCausalLMLoss:
+        return False
+    # Accelerate's prepared forward enters autocast *after* this predicate.
+    # Storage dtype or the currently active context alone cannot identify bf16.
+    accelerator = trainer.accelerator
+    precision = getattr(accelerator, "mixed_precision", "no")
+    if getattr(trainer.args, "bf16", False) or precision not in ("no", "fp16"):
+        return False
+    autocast = torch.is_autocast_enabled(weight.device.type)
+    if autocast and torch.get_autocast_dtype(weight.device.type) != torch.float16:
+        return False
+    if getattr(accelerator, "native_amp", False):
+        # A disabled prepared wrapper also disables an outer autocast context.
+        return (precision == "fp16"
+                and getattr(getattr(accelerator, "autocast_handler", None), "enabled", True))
+    return weight.dtype == torch.float16 or autocast
 
 
 def _install():
