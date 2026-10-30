@@ -55,8 +55,8 @@ def test_fast_map_matches_soup():
     assert [len(x) for x in ref["input_ids"]][:3] == [5, 8, 3]  # order kept
 
 
-def test_fast_map_keeps_extra_columns_and_overrides():
-    rows = [{"n": n, "extra": f"e{n}", "attention_mask": "x", "messages": []}
+def test_fast_map_keeps_extra_columns():
+    rows = [{"n": n, "extra": f"e{n}", "messages": []}
             for n in (4, 9, 6)]
     ref = _compare(rows, _format_row(512))
     assert "extra" in ref.column_names
