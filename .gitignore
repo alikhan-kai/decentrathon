@@ -5,3 +5,7 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .ipynb_checkpoints/
+kaggle/out/
+.venv-kaggle/
+kaggle.json
+runs_try/
