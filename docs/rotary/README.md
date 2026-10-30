@@ -5,8 +5,20 @@ Person 3 / `feat/rotary`, based on the team's passing `feat/check4` commit
 and this evidence directory. The team's head, NF4, RMSNorm, LoRA, registry,
 task and harness files are unchanged.
 
+The [follow-up research](RESEARCH.md) records the Reddit leads, primary technical
+references and rejected T4 experiments. Real-mode FX tracing now takes the eager
+RoPE path in both forward and backward. A separate
+[head-gradient correction](head_correction/README.md) fixes a demonstrated
+scale-before-cast defect in the team implementation; it is supplied for the
+integrator and is not installed by the default registry or staging command.
+That correction now passes repeated full-training validation: **78.07 s median,
+8367 MiB, 7.0106% minimum eligible share**, all ten checks passed, evaluation
+loss **2.04966**, equal to the measured baseline. Integrate the head correction
+before relying on the default head's numerical contract; it is a separate
+owner-reviewable patch, not an implicit registry change.
+
 **Rotary is ready for integrator selection.** Its conservative observed
-combined kernel share is **7.10%**, versus about **6.08–6.10%** in the later
+combined kernel share is **7.05%**, versus about **6.08–6.10%** in the later
 team reference repeats. The requested 8–9% margin is not yet established.
 The combined candidate passed all ten official checks across two repeats at
 **7.60% minimum share**, but residual fusion has not demonstrated an
@@ -22,7 +34,7 @@ experiment; both measured configurations are supplied.
   inputs and missing gradients, and saves only frozen cosine/sine tensors.
   Runtime token counts and flattened strides avoid recompilation for each
   padded length. Unsupported types, layouts and AD modes use eager fallback;
-  JIT tracing fallback is tested.
+  JIT and real-mode FX tracing fallbacks are tested.
 - **Attention residual plus RMSNorm:** one forward produces both the residual
   sum and normalized tensor; backward combines the two gradient branches in
   fp32 before casting the attention gradient to fp16. Only the first residual
@@ -65,7 +77,29 @@ unchanged official harness. Compilation counts; each harness run clears its
 own compilation caches. Final shared integration still needs its own repeated
 baseline/solution verification.
 
-## Rotary training evidence
+`--head-correction` explicitly substitutes the separately reviewed loss-gradient
+candidate in the staged copy, after checking the original team file's hash.
+It records the candidate in the manifest and leaves the source checkout alone.
+
+## Current-source validation
+
+The FX fallback fix passed **270 T4 tests, 126 skipped**, and all **79 official
+regressions**. Its unchanged training arithmetic passed [all ten official
+checks](evidence/r5-final-checks.json) in two repeats. The latest
+[raw result](evidence/r5-final-result.json) records:
+
+| Configuration | Command times, s | Peak MiB | Minimum eligible share | Eval loss |
+| --- | ---: | ---: | ---: | ---: |
+| Original baseline | 87.29 / 87.09 | 14345 | — | 2.04966 |
+| Team + rotary + FX fallback fix | 74.82 / 77.92 | 8367 | 7.0456% | 2.04969 |
+
+Median command time is 76.37 s versus 87.19 s. This is the entire team
+configuration's result, not an isolated speed gain from the tracing fix.
+[Source manifest](evidence/r5-final-manifest.json), logs and telemetry accompany
+the result. The separate head-gradient defect remains outside this default
+configuration; automatic admission is not proof that every gradient matches.
+
+## Earlier rotary training evidence
 
 The [initial full pair](evidence/r1-candidate-result.json) recorded original
 baseline **84.55 s / 14,345 MiB** versus candidate **75.63 s / 8,367 MiB**,
