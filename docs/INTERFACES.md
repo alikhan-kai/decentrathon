@@ -20,7 +20,7 @@
 | `swiglu` (пример) | `modeling_qwen2.Qwen2MLP.forward` | |
 | `head_loss` | `modeling_qwen2.Qwen2ForCausalLM.forward` (только размеченный, обучение) и `trl.SFTTrainer.compute_loss` | их не трогает никто другой |
 | `rmsnorm` | `modeling_qwen2.Qwen2RMSNorm.forward`; шаг 2: `Qwen2DecoderLayer.forward` (остаточные сложения), `Qwen2Model.forward` (финальная норма) | |
-| `nf4` | `bitsandbytes.functional.dequantize_4bit` и/или cuda-реализация `torch.ops.bitsandbytes.dequantize_4bit` (`backends/cuda/ops.py`); `MatMul4Bit.backward` вызывает `F.dequantize_4bit` | |
+| `nf4` | `bitsandbytes.backends.cuda.ops._dequantize_4bit_impl` (общая точка: forward через `gemm_4bit` -> `_dequant_linear_fallback`, backward через `F.dequantize_4bit` -> cuda-операция) | |
 | `lora` | `peft.tuners.lora.bnb.Linear4bit.forward` | не трогать `lora_dropout` |
 | (кандидат) rotary | `modeling_qwen2.apply_rotary_pos_emb` (функция модуля, `Qwen2Attention.forward` берёт её по имени при вызове) | |
 
