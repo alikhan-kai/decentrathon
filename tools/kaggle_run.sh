@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Run the notebook on YOUR Kaggle account (T4) and bring the results back.
 #   KAGGLE_USERNAME=<your kaggle login> tools/kaggle_run.sh <MODE> [BRANCH] [MODULE_TEST]
-#   MODE: unit (pytest of MODULE_TEST only, 1-2 min) | quick | full | full_profile | check_and_ops
-#   BRANCH: default = the current branch. MODULE_TEST: for unit, e.g. solution/test_nf4.py
+#   MODE: unit (pytest -q -rs of MODULE_TEST, 1-2 min) | quick | full | full_profile | check_and_ops | pack_check | quick_ab
+#   BRANCH: default = the current branch. MODULE_TEST: for unit, a file or a directory (default solution/)
 # Pushes the current branch to origin (never --force; main only with ALLOW_MAIN=1), builds the
 # notebook for the COMMIT OF THIS BRANCH, pushes it to Kaggle, waits (50 min max), downloads the
 # output to kaggle/out_<MODE>_<time>/ and runs tools/summarize.py on it.
@@ -15,6 +15,7 @@ MODE="${1:?usage: KAGGLE_USERNAME=<login> tools/kaggle_run.sh <unit|quick|full|f
 case "$MODE" in unit|quick|full|full_profile|check_and_ops|pack_check|quick_ab) ;; *) echo "bad MODE: $MODE"; exit 2;; esac
 BRANCH="${2:-$(git rev-parse --abbrev-ref HEAD)}"
 MODULE_TEST="${3:-}"
+[ "$MODE" != unit ] || MODULE_TEST="${MODULE_TEST:-solution/}"   # a file or a directory
 USERNAME="${KAGGLE_USERNAME:-${4:-}}"
 SLUG="${KAGGLE_SLUG:-soup-kernel-debug}"
 REPO_URL="https://github.com/alikhan-kai/decentrathon.git"

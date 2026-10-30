@@ -38,13 +38,13 @@ def build(repo_url, branch, commit, mode, username, module_test):
 
     out = [md("# Soup Kernel Challenge: debug runner (generated from templates/kaggle_notebook.ipynb "
               "by tools/build_notebook.py)\n\n"
-              "`MODE`: `unit` (pytest of MODULE_TEST only), `quick` (pytest + one solution run), "
+              "`MODE`: `unit` (pytest of MODULE_TEST, a file or a directory; skip reasons printed), `quick` (pytest + one solution run), "
               "`full` (base + solution x2 + checks), `full_profile` (full + profilers of solution and "
               "base), `check_and_ops` (quick + per-op/per-module profile of the solution).\n"
               "Statuses: `/kaggle/working/out/status.txt`; logs and json: `/kaggle/working/out/`.\n")]
     out.append(code(f'REPO_URL = "{repo_url}"\nBRANCH = "{branch}"\n'
                     f'COMMIT = "{commit}"  # empty = tip of BRANCH\nMODE = "{mode}"\n'
-                    f'MODULE_TEST = "{module_test}"  # unit mode: one test file, e.g. solution/test_nf4.py\n'
+                    f'MODULE_TEST = "{module_test}"  # unit mode: a test file or a directory (default solution/)\n'
                     f'USERNAME = "{username}"  # Kaggle account that runs this notebook\n'))
     out.append(code(
         'import subprocess\n'
@@ -148,7 +148,7 @@ def build(repo_url, branch, commit, mode, username, module_test):
         '            print(k, "=", m.get(k))\n\n'
         'if MODE == "unit":\n'
         '    assert MODULE_TEST, "unit mode needs MODULE_TEST"\n'
-        '    stage("pytest_unit", ["python", "-m", "pytest", *MODULE_TEST.split(), "-q", "-s"])\n'
+        '    stage("pytest_unit", ["python", "-m", "pytest", *MODULE_TEST.split(), "-q", "-rs"])\n'
         'elif MODE == "quick_ab":\n'
         '    pytests()\n'
         '    ab()\n'
