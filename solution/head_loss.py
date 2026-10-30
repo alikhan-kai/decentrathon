@@ -13,6 +13,8 @@ compute_loss) is the same as Soup's own `stream_loss_chunk` (soup_cli/utils/stre
 Apache-2.0); the Triton kernel and this code are new.
 """
 
+from contextvars import ContextVar
+
 import torch
 import triton
 import triton.language as tl
@@ -143,7 +145,34 @@ def fused_head_loss(hidden, weight, target, denom, chunk=CHUNK):
 # ----------------------------------------------------------------------------------------------
 # Hooking into Soup: patch Qwen2ForCausalLM.forward (labelled, training) and SFTTrainer.compute_loss
 # ----------------------------------------------------------------------------------------------
-_STATE = {"armed": False, "step": None}
+_REQUEST = ContextVar("fused_head_request", default=None)
+
+
+class _Request:
+    def __init__(self, model):
+        self.model, self.consumed, self.step = model, False, None
+
+
+def _base(model):
+    get_base = getattr(model, "get_base_model", None)
+    return get_base() if callable(get_base) else model
+
+
+def _bridge_eligible(model, inputs):
+    base = _base(model)
+    if inputs.get("_prediction_loss_only") is False:
+        return False
+    if inputs.get("past_key_values") is not None or inputs.get("use_cache") is True:
+        return False
+    allowed = {"input_ids", "attention_mask", "labels", "inputs_embeds", "position_ids",
+               "past_key_values", "use_cache", "logits_to_keep", "output_attentions",
+               "output_hidden_states", "return_dict", "_prediction_loss_only"}
+    if set(inputs) - allowed:
+        return False
+    value = inputs.get("return_dict")
+    if not (getattr(getattr(base, "config", None), "return_dict", True) if value is None else value):
+        return False
+    return True
 STEP_ATTR = "_soup_chunked_step"   # what Soup's rewind recorder reads (rewind_hf.py)
 
 
@@ -210,6 +239,7 @@ def _eligible(trainer, inputs):
 
 def _install():
     import torch.nn.functional as F
+    from . import packed
     import trl
     from transformers import Trainer
     from transformers.modeling_outputs import CausalLMOutputWithPast
@@ -220,24 +250,27 @@ def _install():
 
     def forward(self, input_ids=None, attention_mask=None, position_ids=None, past_key_values=None,
                 inputs_embeds=None, labels=None, use_cache=None, logits_to_keep=0, **kwargs):
-        if not (_STATE["armed"] and labels is not None and attention_mask is not None
-                and logits_to_keep == 0):
+        request = _REQUEST.get()
+        if not (request is not None and request.model is self and not request.consumed
+                and labels is not None and attention_mask is not None and logits_to_keep == 0):
             return original_forward(self, input_ids=input_ids, attention_mask=attention_mask,
                                     position_ids=position_ids, past_key_values=past_key_values,
                                     inputs_embeds=inputs_embeds, labels=labels, use_cache=use_cache,
                                     logits_to_keep=logits_to_keep, **kwargs)
-        _STATE["armed"] = False
+        request.consumed = True
         num_items = kwargs.pop("num_items_in_batch", None)
-        outputs = self.model(input_ids=input_ids, attention_mask=attention_mask,
-                             position_ids=position_ids, past_key_values=past_key_values,
-                             inputs_embeds=inputs_embeds, use_cache=use_cache, **kwargs)
-        hidden = outputs.last_hidden_state
-        b, t, _ = hidden.shape
+        # Shift on the ORIGINAL [B,T] layout, before any packed gather.
+        b, t = labels.shape
         target_full = F.pad(labels, (0, 1), value=IGNORE)[:, 1:]
-        # A left-pad row can predict the first supervised token after shifting.
         attended = attention_mask.bool()
-        keep = attended | (target_full != IGNORE)
-        h, tgt = hidden[keep], target_full[keep]
+        required = attended | (target_full != IGNORE)
+        with packed.head_request(self.model, required):
+            outputs = self.model(input_ids=input_ids, attention_mask=attention_mask,
+                                 position_ids=position_ids, past_key_values=past_key_values,
+                                 inputs_embeds=inputs_embeds, use_cache=use_cache, **kwargs)
+        hidden = outputs.last_hidden_state
+        h, keep = packed.head_rows(outputs, attended, required, self.lm_head.weight.shape[1])
+        tgt = target_full[keep]
         labelled = (tgt != IGNORE).sum()
         denom = labelled if num_items is None else num_items
         loss, loss_row, ent, hit = fused_head_loss(h, self.lm_head.weight, tgt, denom)
@@ -246,23 +279,34 @@ def _install():
         tok_ent = torch.zeros_like(tok_loss)
         tok_loss[flat], tok_ent[flat] = loss_row, ent
         tok_ent.masked_fill_(~attended.reshape(-1), 0.0)  # original attention population
-        _STATE["step"] = _Step(tok_ent.view(b, t), tok_loss.view(b, t), hit.sum(), labelled)
+        request.step = _Step(tok_ent.view(b, t), tok_loss.view(b, t), hit.sum(), labelled)
         return CausalLMOutputWithPast(loss=loss, logits=None,
                                       past_key_values=outputs.past_key_values,
                                       hidden_states=outputs.hidden_states,
                                       attentions=outputs.attentions)
 
     def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
-        if not _eligible(self, inputs):
-            return original_compute_loss(self, model, inputs, return_outputs=return_outputs,
-                                         num_items_in_batch=num_items_in_batch)
+        # Clear stale Rewind data before either route; eligibility remains the reviewed guard.
+        setattr(self, STEP_ATTR, None)
+        if not (_base(model) is _base(self.model)
+                and _bridge_eligible(model, inputs) and _eligible(self, inputs)):
+            token = _REQUEST.set(None)
+            try:
+                return original_compute_loss(self, model, inputs, return_outputs=return_outputs,
+                                             num_items_in_batch=num_items_in_batch)
+            finally:
+                _REQUEST.reset(token)
+        inputs = dict(inputs)
         inputs.pop("_prediction_loss_only", None)
         inputs["use_cache"] = False
-        _STATE["armed"], _STATE["step"] = True, None
-        loss, outputs = Trainer.compute_loss(self, model, inputs, return_outputs=True,
-                                             num_items_in_batch=num_items_in_batch)
-        _STATE["armed"] = False
-        step, _STATE["step"] = _STATE["step"], None
+        request = _Request(_base(model))
+        token = _REQUEST.set(request)
+        try:
+            loss, outputs = Trainer.compute_loss(self, model, inputs, return_outputs=True,
+                                                 num_items_in_batch=num_items_in_batch)
+            step = request.step
+        finally:
+            _REQUEST.reset(token)
         if step is None:
             raise RuntimeError("head_loss: fast path was armed but the forward did not take it")
         setattr(self, STEP_ATTR, step)                     # read by Soup's rewind recorder

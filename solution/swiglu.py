@@ -12,7 +12,7 @@ import triton.language as tl
 BLOCK = 1024
 
 
-@triton.jit
+@triton.jit(do_not_specialize=["n_elements"])
 def example_swiglu_fwd_kernel(gate_ptr, up_ptr, out_ptr, n_elements, BLOCK: tl.constexpr):
     offsets = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
     mask = offsets < n_elements
@@ -22,7 +22,7 @@ def example_swiglu_fwd_kernel(gate_ptr, up_ptr, out_ptr, n_elements, BLOCK: tl.c
     tl.store(out_ptr + offsets, out.to(out_ptr.dtype.element_ty), mask=mask)
 
 
-@triton.jit
+@triton.jit(do_not_specialize=["n_elements"])
 def example_swiglu_bwd_kernel(grad_ptr, gate_ptr, up_ptr, dgate_ptr, dup_ptr, n_elements,
                               BLOCK: tl.constexpr):
     offsets = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
