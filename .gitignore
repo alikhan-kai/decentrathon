@@ -1,8 +1,15 @@
+*.egg-info/
 *.pyc
+.DS_Store
+.env
+.idea/
 .ipynb_checkpoints/
 .pytest_cache/
 .venv-kaggle/
+.venv/
+.vscode/
 __pycache__/
+access_token
 data/
 kaggle.json
 kaggle/_push/
@@ -12,3 +19,4 @@ kaggle/out/
 runs/
 runs_*/
 runs_try/
+venv/
