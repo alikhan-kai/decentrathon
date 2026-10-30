@@ -6,6 +6,7 @@ __pycache__/
 data/
 kaggle.json
 kaggle/_push/
+kaggle/build/
 kaggle/out*/
 kaggle/out/
 runs/

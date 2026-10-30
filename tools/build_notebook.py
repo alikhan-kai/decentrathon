@@ -1,7 +1,10 @@
 """Build kaggle/soup_kernel_debug.ipynb from templates/kaggle_notebook.ipynb.
 
-    python3 tools/build_notebook.py [--out PATH] [--repo-url URL] [--branch main]
-                                    [--commit SHA] [--mode quick|full|full_profile]
+    python3 tools/build_notebook.py --username NAME [--branch main] [--commit SHA] [--repo URL]
+        [--mode quick|unit|full|full_profile|check_and_ops] [--module-test solution/test_x.py]
+        [--slug soup-kernel-debug]
+Writes kaggle/build/<username>/soup_kernel_debug.ipynb and kernel-metadata.json (the folder is in
+.gitignore, so nobody's build conflicts with anybody else's). No tokens are touched.
 
 The install and clone cells are copied from the template; everything after them runs stages that
 write a status line each to /kaggle/working/out/status.txt, so a failed stage hides nothing.
@@ -24,7 +27,7 @@ def code(text):
             "source": text.splitlines(True)}
 
 
-def build(repo_url, branch, commit, mode):
+def build(repo_url, branch, commit, mode, username, module_test):
     tpl = json.loads((ROOT / "templates" / "kaggle_notebook.ipynb").read_text(encoding="utf-8"))
     cells = ["".join(c["source"]) for c in tpl["cells"]]
     install = next(line for line in cells[2].splitlines() if line.startswith("!python -m pip install"))
@@ -35,11 +38,14 @@ def build(repo_url, branch, commit, mode):
 
     out = [md("# Soup Kernel Challenge: debug runner (generated from templates/kaggle_notebook.ipynb "
               "by tools/build_notebook.py)\n\n"
-              "`MODE`: `quick` (pytest + one solution run), `full` (base + solution x2 + checks), "
-              "`full_profile` (full + profilers of solution and base).\n"
+              "`MODE`: `unit` (pytest of MODULE_TEST only), `quick` (pytest + one solution run), "
+              "`full` (base + solution x2 + checks), `full_profile` (full + profilers of solution and "
+              "base), `check_and_ops` (quick + per-op/per-module profile of the solution).\n"
               "Statuses: `/kaggle/working/out/status.txt`; logs and json: `/kaggle/working/out/`.\n")]
     out.append(code(f'REPO_URL = "{repo_url}"\nBRANCH = "{branch}"\n'
-                    f'COMMIT = "{commit}"  # empty = tip of BRANCH\nMODE = "{mode}"\n'))
+                    f'COMMIT = "{commit}"  # empty = tip of BRANCH\nMODE = "{mode}"\n'
+                    f'MODULE_TEST = "{module_test}"  # unit mode: one test file, e.g. solution/test_nf4.py\n'
+                    f'USERNAME = "{username}"  # Kaggle account that runs this notebook\n'))
     out.append(code(
         'import subprocess\n'
         'print(subprocess.run(["nvidia-smi"], capture_output=True, text=True).stdout)\n'
@@ -71,7 +77,7 @@ def build(repo_url, branch, commit, mode):
         '    if code:\n'
         '        print("".join(open(OUT / f"{name}.log").readlines()[-60:]))\n'
         '    return code\n'))
-    out.append(code('stage("prepare_data", ["python", "task/prepare_data.py"])\n'))
+    out.append(code('if MODE != "unit":\n    stage("prepare_data", ["python", "task/prepare_data.py"])\n'))
     out.append(code(
         'def pytests():\n'
         '    stage("pytest_solution", ["python", "-m", "pytest", "solution", "-q"])\n'
@@ -99,15 +105,43 @@ def build(repo_url, branch, commit, mode):
         '    stage("base_profile", ["python", "harness/_train.py", "--config", str(run_dir / "task.yaml"),\n'
         '                           "--metrics", str(OUT / "base_profile_metrics.json"),\n'
         '                           "--profile", str(OUT / "base_profile.json")], env=env)\n\n'
-        'if MODE == "quick":\n'
-        '    pytests()\n'
-        '    stage("run_task_solution", ["python", "harness/run_task.py", "--only", "solution",\n'
-        '                                "--out", "runs_try"])\n'
+        'def op_profile():\n'
+        '    """Per-op / per-module profile of the solution (tools/op_profile.py)."""\n'
+        '    import yaml\n'
+        '    src = REPO / "runs_try/solution_1/task.yaml"\n'
+        '    if not src.exists():\n'
+        '        found = sorted(glob.glob(str(REPO / "runs*/**/task.yaml"), recursive=True))\n'
+        '        print("runs_try/solution_1/task.yaml missing; found:", found)\n'
+        '        (OUT / "status.txt").open("a").write("op_profile: FAIL (no task.yaml)\\n")\n'
+        '        return\n'
+        '    run_dir = REPO / "runs_try/op_profile"\n'
+        '    run_dir.mkdir(parents=True, exist_ok=True)\n'
+        '    cfg = yaml.safe_load(src.read_text())\n'
+        '    cfg["output"] = str(run_dir / "adapter")\n'
+        '    (run_dir / "task.yaml").write_text(yaml.safe_dump(cfg, sort_keys=False, allow_unicode=True))\n'
+        '    sys.path.insert(0, str(REPO / "harness"))\n'
+        '    from common import OFFLINE_ENV\n'
+        '    env = dict(OFFLINE_ENV, SOUP_DB_PATH=str(run_dir / "experiments.db"),\n'
+        '               TRITON_CACHE_DIR=str(run_dir / "triton_cache"),\n'
+        '               TORCHINDUCTOR_CACHE_DIR=str(run_dir / "inductor_cache"))\n'
+        '    stage("op_profile", ["python", "tools/op_profile.py", "--config", str(run_dir / "task.yaml"),\n'
+        '                         "--out", str(OUT / "op_profile.json")], env=env)\n\n'
+        'def quick_metrics():\n'
         '    mp = REPO / "runs_try/solution_1/metrics.json"\n'
         '    if mp.exists():\n'
         '        m = json.load(open(mp))\n'
         '        for k in ("triton_launches", "own_kernel_ms", "timed_loop_s", "torch_max_reserved_mib"):\n'
-        '            print(k, "=", m.get(k))\n'
+        '            print(k, "=", m.get(k))\n\n'
+        'if MODE == "unit":\n'
+        '    assert MODULE_TEST, "unit mode needs MODULE_TEST"\n'
+        '    stage("pytest_unit", ["python", "-m", "pytest", MODULE_TEST, "-q"])\n'
+        'elif MODE in ("quick", "check_and_ops"):\n'
+        '    pytests()\n'
+        '    stage("run_task_solution", ["python", "harness/run_task.py", "--only", "solution",\n'
+        '                                "--out", "runs_try"])\n'
+        '    quick_metrics()\n'
+        '    if MODE == "check_and_ops":\n'
+        '        op_profile()\n'
         'elif MODE in ("full", "full_profile"):\n'
         '    if MODE == "full_profile":\n'
         '        pytests()\n'
@@ -117,11 +151,11 @@ def build(repo_url, branch, commit, mode):
         '    if MODE == "full_profile":\n'
         '        base_profile()\n'
         'else:\n'
-        '    raise SystemExit("MODE must be quick, full or full_profile")\n'))
+        '    raise SystemExit("MODE must be unit, quick, full, full_profile or check_and_ops")\n'))
     out.append(code(
         'for pattern in ("runs*/**/train.log", "runs*/eval_*.log", "runs*/result.json",\n'
         '                "runs*/checks.json", "runs*/**/metrics.json", "runs*/solution_profile/profile.json",\n'
-        '                "runs/base_profile/train.log"):\n'
+        '                "runs/base_profile/train.log", "runs_try/op_profile/train.log"):\n'
         '    for p in glob.glob(str(REPO / pattern), recursive=True):\n'
         '        rel = Path(p).relative_to(REPO)\n'
         '        dst = OUT / "files" / rel\n'
@@ -135,16 +169,26 @@ def build(repo_url, branch, commit, mode):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    p.add_argument("--out", default=str(ROOT / "kaggle" / "soup_kernel_debug.ipynb"))
-    p.add_argument("--repo-url", default="https://github.com/alikhan-kai/decentrathon.git")
+    p.add_argument("--username", required=True, help="Kaggle account that will run the notebook")
+    p.add_argument("--repo", "--repo-url", dest="repo", default="https://github.com/alikhan-kai/decentrathon.git")
     p.add_argument("--branch", default="main")
     p.add_argument("--commit", default="")
-    p.add_argument("--mode", default="quick", choices=("quick", "full", "full_profile"))
+    p.add_argument("--mode", default="quick",
+                   choices=("quick", "unit", "full", "full_profile", "check_and_ops"))
+    p.add_argument("--module-test", default="", help="unit mode: path of one test file")
+    p.add_argument("--slug", default="soup-kernel-debug")
     a = p.parse_args()
-    nb = build(a.repo_url, a.branch, a.commit, a.mode)
-    Path(a.out).parent.mkdir(parents=True, exist_ok=True)
-    Path(a.out).write_text(json.dumps(nb, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
-    print("written", a.out)
+    out_dir = ROOT / "kaggle" / "build" / a.username
+    out_dir.mkdir(parents=True, exist_ok=True)
+    nb = build(a.repo, a.branch, a.commit, a.mode, a.username, a.module_test)
+    (out_dir / "soup_kernel_debug.ipynb").write_text(json.dumps(nb, indent=1, ensure_ascii=False) + "\n",
+                                                      encoding="utf-8")
+    meta = {"id": f"{a.username}/{a.slug}", "title": a.slug, "code_file": "soup_kernel_debug.ipynb",
+            "language": "python", "kernel_type": "notebook", "is_private": True, "enable_gpu": True,
+            "enable_internet": True, "dataset_sources": [], "competition_sources": [],
+            "kernel_sources": []}
+    (out_dir / "kernel-metadata.json").write_text(json.dumps(meta, indent=2) + "\n", encoding="utf-8")
+    print(out_dir)
 
 
 if __name__ == "__main__":

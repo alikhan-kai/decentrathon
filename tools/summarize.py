@@ -89,7 +89,7 @@ def section_b(checks):
 
 
 def section_c(result):
-    print("\n## c) Накладные расходы и наши кернелы  (источник: result.json, metrics)")
+    print("\n## c) Накладные расходы  (источник: result.json, metrics)")
     if not result:
         print("result.json не найден"); return
     for side, runs in result.get("runs", {}).items():
@@ -99,20 +99,41 @@ def section_c(result):
             over = round(r["wall_s"] - loop, 2) if loop else None
             print(f"{r['run']}: wall {r['wall_s']} s - train_loop {fmt(loop)} s = вне цикла {fmt(over)} s; "
                   f"apply_s {fmt(m.get('apply_s'))}")
-    sol = result.get("runs", {}).get("solution", [])
+
+
+def section_kernels(result):
+    print("\n## наши кернелы  (источник: metrics.json запусков решения; шаги с 3-го, как в harness/_train.py)")
+    sol = (result or {}).get("runs", {}).get("solution", [])
+    if not sol:
+        print("не знаю (нет запусков решения)"); return
     for r in sol:
         m = r.get("metrics", {})
-        loop, ms, n = m.get("timed_loop_s"), m.get("own_kernel_ms", {}), m.get("triton_launches", {})
-        print(f"\n{r['run']}: timed_loop_s {fmt(loop)}")
-        tot_own = 0.0
-        for name in sorted(ms, key=lambda k: -ms[k]):
-            share = 100 * ms[name] / 1000 / loop if loop else None
-            tag = "пример (не считается)" if is_example(name) else "наш"
+        loop, steps = m.get("timed_loop_s"), m.get("timed_steps")
+        ms, n, files = m.get("own_kernel_ms", {}), m.get("triton_launches", {}), m.get("triton_files", {})
+        if not loop or not steps:
+            print(f"{r['run']}: не знаю (нет timed_loop_s)"); continue
+        print(f"\n{r['run']}: timed_loop_s {loop}, timed_steps {steps}")
+        print(f"  {'кернел':32}{'файл':24}{'запусков':>9}{'мс':>10}{'мс/шаг':>9}{'доля %':>8}")
+        own_total = 0.0
+        for name in sorted(files, key=lambda k: -ms.get(k, 0)):
+            if not str(files[name]).startswith("solution/"):
+                continue
+            tag = " (пример, не считается)" if is_example(name) else ""
             if not is_example(name):
-                tot_own += ms[name]
-            print(f"  {name:34} запусков {n.get(name, 'не знаю'):>6}  {ms[name]:>9.1f} мс  {fmt(share, '.2f')}%  [{tag}]")
-        if loop:
-            print(f"  наши кернелы (без example_) вместе: {tot_own:.1f} мс = {100 * tot_own / 1000 / loop:.2f}% (нужно >= 5%)")
+                own_total += ms.get(name, 0.0)
+            print(f"  {name:32}{files[name]:24}{n.get(name, 0):>9}{ms.get(name, 0.0):>10.1f}"
+                  f"{ms.get(name, 0.0) / steps:>9.2f}{100 * ms.get(name, 0.0) / 1000 / loop:>8.2f}{tag}")
+        step_ms = 1000 * loop / steps
+        need = MIN_SHARE * step_ms
+        have = own_total / steps
+        print(f"  итого наши: {have:.2f} мс/шаг = {100 * own_total / 1000 / loop:.2f}%; нужно 5% = {need:.2f} мс/шаг; "
+              + (f"не хватает {need - have:.2f} мс/шаг" if have < need else "достаточно"))
+
+
+def section_ops(root):
+    print("\n## профиль по операциям и модулям  (источник: op_profile.txt)")
+    path = find(root, "op_profile.txt")
+    print(path.read_text() if path else "op_profile не найден: не знаю")
 
 
 def profile_table(title, prof, active_default=None):
@@ -182,9 +203,11 @@ def main():
     section_a(result)
     section_b(load(find(root, "checks.json")))
     section_c(result)
+    section_kernels(result)
     section_d(load(find(root, "base_profile.json")),
               load(find(root / "out" if (root / "out").exists() else root, "profile.json")))
     section_e(result)
+    section_ops(root)
 
 
 if __name__ == "__main__":

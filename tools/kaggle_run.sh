@@ -1,20 +1,29 @@
 #!/usr/bin/env bash
-# Run the debug notebook on YOUR Kaggle account and bring the results back.
-#   tools/kaggle_run.sh <quick|full|full_profile> [BRANCH]
-# Pushes the current commit to origin/BRANCH (default: the current branch; no --force), builds the
-# notebook for that exact commit, pushes it to Kaggle on T4, waits (50 min max), downloads the
+# Run the notebook on YOUR Kaggle account (T4) and bring the results back.
+#   KAGGLE_USERNAME=<your kaggle login> tools/kaggle_run.sh <MODE> [BRANCH] [MODULE_TEST]
+#   MODE: unit (pytest of MODULE_TEST only, 1-2 min) | quick | full | full_profile | check_and_ops
+#   BRANCH: default = the current branch. MODULE_TEST: for unit, e.g. solution/test_nf4.py
+# Pushes the current branch to origin (never --force; main only with ALLOW_MAIN=1), builds the
+# notebook for the COMMIT OF THIS BRANCH, pushes it to Kaggle, waits (50 min max), downloads the
 # output to kaggle/out_<MODE>_<time>/ and runs tools/summarize.py on it.
-# The Kaggle token is read by the kaggle CLI from your own environment or ~/.kaggle; this script
-# only checks that it exists and never prints it.
+# The username comes from KAGGLE_USERNAME (or the 4th argument). The token is read by the kaggle CLI
+# from your own environment / ~/.kaggle; this script only checks that it exists, never prints it.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-MODE="${1:?usage: tools/kaggle_run.sh <quick|full|full_profile> [BRANCH]}"
-case "$MODE" in quick|full|full_profile) ;; *) echo "MODE must be quick, full or full_profile"; exit 2;; esac
+MODE="${1:?usage: KAGGLE_USERNAME=<login> tools/kaggle_run.sh <unit|quick|full|full_profile|check_and_ops> [BRANCH] [MODULE_TEST]}"
+case "$MODE" in unit|quick|full|full_profile|check_and_ops) ;; *) echo "bad MODE: $MODE"; exit 2;; esac
 BRANCH="${2:-$(git rev-parse --abbrev-ref HEAD)}"
-SLUG="soup-kernel-debug"
+MODULE_TEST="${3:-}"
+USERNAME="${KAGGLE_USERNAME:-${4:-}}"
+SLUG="${KAGGLE_SLUG:-soup-kernel-debug}"
 REPO_URL="https://github.com/alikhan-kai/decentrathon.git"
 
+[ -n "$USERNAME" ] || { echo "Set KAGGLE_USERNAME=<your kaggle login> (or pass it as the 4th argument)."; exit 1; }
+[ "$MODE" != unit ] || [ -n "$MODULE_TEST" ] || { echo "unit needs MODULE_TEST, e.g. solution/test_nf4.py"; exit 2; }
+if [ "$BRANCH" = main ] && [ "${ALLOW_MAIN:-0}" != 1 ]; then
+  echo "Refusing to push main directly: work on feat/<branch> and open a PR (integrator: ALLOW_MAIN=1)."; exit 1
+fi
 if [ -n "$(git status --porcelain)" ]; then
   echo "Working tree is not clean: commit or stash first (Kaggle clones the pushed commit)."; exit 1
 fi
@@ -24,26 +33,15 @@ if ! command -v kaggle >/dev/null 2>&1; then
   source .venv-kaggle/bin/activate
 fi
 if [ -z "${KAGGLE_API_TOKEN:-}" ] && [ ! -f "$HOME/.kaggle/access_token" ] && [ ! -f "$HOME/.kaggle/kaggle.json" ]; then
-  echo "No Kaggle token: create one on kaggle.com (Settings, API) and save it as ~/.kaggle/access_token (chmod 600) or export KAGGLE_API_TOKEN."; exit 1
+  echo "No Kaggle token: kaggle.com, Settings, API, Create New Token; save as ~/.kaggle/access_token (chmod 600) or export KAGGLE_API_TOKEN."; exit 1
 fi
-USERNAME="$(kaggle config view 2>/dev/null | sed -n 's/^- username: //p')"
-[ -n "$USERNAME" ] || { echo "Cannot get the Kaggle username: log in first."; exit 1; }
 
 git push origin "HEAD:refs/heads/$BRANCH"
 COMMIT="$(git rev-parse HEAD)"
 echo "branch $BRANCH, commit $COMMIT, mode $MODE, kaggle user $USERNAME"
 
-PUSH_DIR=kaggle/_push
-rm -rf "$PUSH_DIR" && mkdir -p "$PUSH_DIR"
-python3 tools/build_notebook.py --out "$PUSH_DIR/soup_kernel_debug.ipynb" --repo-url "$REPO_URL" \
-  --branch "$BRANCH" --commit "$COMMIT" --mode "$MODE" >/dev/null
-python3 - "$USERNAME/$SLUG" <<'PY'
-import json, sys
-meta = json.load(open("kaggle/kernel-metadata.json"))
-meta["id"] = sys.argv[1]
-json.dump(meta, open("kaggle/_push/kernel-metadata.json", "w"), indent=2)
-PY
-
+PUSH_DIR="$(python3 tools/build_notebook.py --username "$USERNAME" --repo "$REPO_URL" --branch "$BRANCH" \
+  --commit "$COMMIT" --mode "$MODE" --module-test "$MODULE_TEST" --slug "$SLUG")"
 kaggle kernels push -p "$PUSH_DIR" --accelerator NvidiaTeslaT4
 
 OUT="kaggle/out_${MODE}_$(date +%Y%m%d_%H%M%S)"
