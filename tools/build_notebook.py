@@ -134,7 +134,7 @@ def build(repo_url, branch, commit, mode, username, module_test):
         '            print(k, "=", m.get(k))\n\n'
         'if MODE == "unit":\n'
         '    assert MODULE_TEST, "unit mode needs MODULE_TEST"\n'
-        '    stage("pytest_unit", ["python", "-m", "pytest", MODULE_TEST, "-q"])\n'
+        '    stage("pytest_unit", ["python", "-m", "pytest", *MODULE_TEST.split(), "-q", "-s"])\n'
         'elif MODE in ("quick", "check_and_ops"):\n'
         '    pytests()\n'
         '    stage("run_task_solution", ["python", "harness/run_task.py", "--only", "solution",\n'
