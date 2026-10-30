@@ -36,11 +36,11 @@ def build_batches(tokenizer, rows, batch, max_length=512):
     return batches
 
 
-def run(inner, ids, mask):
+def run(inner, ids, mask, fp16=True):
     """One forward + backward; the loss is a plain fp32 cross entropy over the real next-token targets."""
     inner.zero_grad(set_to_none=True)
     keep = mask.bool()
-    with torch.autocast("cuda", dtype=torch.float16):
+    with torch.autocast("cuda", dtype=torch.float16, enabled=fp16):
         out = inner.model(input_ids=ids, attention_mask=mask)
         hidden = out.last_hidden_state
         packed = getattr(out, "packed_keep", None) is not None
@@ -65,7 +65,11 @@ def compare(a, b):
         if rel > worst_rel:
             worst_rel, worst_name = rel, name
         worst_cos = min(worst_cos, cos)
-    return {"loss_a": a["loss"], "loss_b": b["loss"], "loss_abs_diff": abs(a["loss"] - b["loss"]),
+    hid_l2 = ((a["h"] - b["h"]).norm() / a["h"].norm()).item()
+    g_a = torch.cat([g.flatten() for g in a["grads"].values()])
+    g_b = torch.cat([b["grads"][n].flatten() for n in a["grads"]])
+    return {"hidden_rel_l2": hid_l2, "grad_all_rel_l2": ((g_a - g_b).norm() / g_a.norm()).item(),
+            "loss_a": a["loss"], "loss_b": b["loss"], "loss_abs_diff": abs(a["loss"] - b["loss"]),
             "hidden_max_abs_diff": hd, "hidden_max_abs": scale, "hidden_rel_diff": hd / scale,
             "grad_params": len(a["grads"]), "grad_max_rel_diff": worst_rel, "grad_worst_param": worst_name,
             "grad_min_cosine": worst_cos}
@@ -86,38 +90,44 @@ def main():
 
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
     tokenizer.padding_side = "right"
-    quant = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=torch.float16,
-                               bnb_4bit_use_double_quant=True)
     solution.apply()                    # all patches, before the model is built, as in the harness
-    model = AutoModelForCausalLM.from_pretrained(MODEL, quantization_config=quant, dtype=torch.float16,
-                                                 device_map={"": 0})
-    model = peft.get_peft_model(model, peft.LoraConfig(r=16, lora_alpha=32, lora_dropout=0.0,
-                                                       target_modules=["q_proj", "v_proj"], task_type="CAUSAL_LM"))
-    torch.manual_seed(0)
-    for name, p in model.named_parameters():
-        if "lora_B" in name:
-            torch.nn.init.normal_(p, std=0.02)
-    model.train()
-    inner = model.get_base_model()
-
-    report = {"batches": [], "packed_enabled": packed.ENABLED}
-    for ids, mask in build_batches(tokenizer, args.rows, args.batch):
-        lens = mask.sum(1).tolist()
-        packed.unpatch()
-        padded1 = run(inner, ids, mask)
-        padded2 = run(inner, ids, mask)
-        packed.patch()
-        pk = run(inner, ids, mask)
-        entry = {"lens": lens, "T": ids.shape[1], "R_over_P": sum(lens) / (len(lens) * ids.shape[1]),
-                 "packed_path_taken": pk["packed"], "padded_path_taken": not padded1["packed"],
-                 "padded_vs_packed": compare(padded1, pk), "padded_vs_padded_noise": compare(padded1, padded2)}
-        report["batches"].append(entry)
-        print(json.dumps(entry, indent=1))
-    report["torch_max_allocated_mib"] = round(torch.cuda.max_memory_allocated() / 2**20, 1)
-    ok = all(b["packed_path_taken"] and b["padded_vs_packed"]["loss_abs_diff"] < 2e-3 * max(1.0, b["padded_vs_packed"]["loss_a"])
-             and b["padded_vs_packed"]["grad_min_cosine"] > 0.999 and b["padded_vs_packed"]["hidden_rel_diff"] < 5e-2
-             for b in report["batches"])
-    report["verdict"] = "PASS" if ok else "CHECK"     # loose fp16 criteria; compare with the noise floor above
+    report = {"packed_enabled": packed.ENABLED}
+    ok = True
+    for name, dtype in (("fp16", torch.float16), ("fp32", torch.float32)):
+        # fp16 is the training setup; fp32 compute removes rounding noise, so a logic error cannot hide in it
+        quant = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4", bnb_4bit_compute_dtype=dtype,
+                                   bnb_4bit_use_double_quant=True)
+        model = AutoModelForCausalLM.from_pretrained(MODEL, quantization_config=quant, dtype=dtype, device_map={"": 0})
+        model = peft.get_peft_model(model, peft.LoraConfig(r=16, lora_alpha=32, lora_dropout=0.0,
+                                                           target_modules=["q_proj", "v_proj"], task_type="CAUSAL_LM"))
+        torch.manual_seed(0)
+        for pname, p in model.named_parameters():
+            if "lora_B" in pname:
+                torch.nn.init.normal_(p, std=0.02)
+        model.train()
+        inner = model.get_base_model()
+        entries = []
+        for ids, mask in build_batches(tokenizer, args.rows, args.batch):
+            lens = mask.sum(1).tolist()
+            packed.unpatch()
+            padded1 = run(inner, ids, mask, dtype == torch.float16)
+            padded2 = run(inner, ids, mask, dtype == torch.float16)
+            packed.patch()
+            pk = run(inner, ids, mask, dtype == torch.float16)
+            entry = {"lens": lens, "T": ids.shape[1], "R_over_P": sum(lens) / (len(lens) * ids.shape[1]),
+                     "packed_path_taken": pk["packed"], "padded_path_taken": not padded1["packed"],
+                     "padded_vs_packed": compare(padded1, pk), "padded_vs_padded_noise": compare(padded1, padded2)}
+            entries.append(entry)
+            print(name, json.dumps(entry, indent=1))
+            c = entry["padded_vs_packed"]
+            if dtype == torch.float32:
+                ok = ok and entry["packed_path_taken"] and c["hidden_rel_l2"] < 1e-4 and c["grad_all_rel_l2"] < 1e-3 \
+                    and c["loss_abs_diff"] < 1e-4
+        report[name] = entries
+        report[name + "_max_allocated_mib"] = round(torch.cuda.max_memory_allocated() / 2**20, 1)
+        del model, inner
+        torch.cuda.empty_cache()
+    report["verdict"] = "PASS" if ok else "CHECK"     # decided on the fp32 pass; fp16 numbers are for the noise comparison
     Path(args.out).write_text(json.dumps(report, indent=1))
     print("pack_check:", report["verdict"], "->", args.out)
 
