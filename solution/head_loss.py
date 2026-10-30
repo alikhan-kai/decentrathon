@@ -143,7 +143,7 @@ def _eligible(trainer, inputs):
             and type(base).__name__ == "Qwen2ForCausalLM")
 
 
-def patch():
+def _install():
     import torch.nn.functional as F
     import trl
     from transformers import Trainer
@@ -212,3 +212,15 @@ def patch():
 
     mq.Qwen2ForCausalLM.forward = forward
     trl.SFTTrainer.compute_loss = compute_loss
+
+
+ENABLED = True
+_patched = False
+
+
+def patch():
+    """Idempotent entry point used by solution.apply()."""
+    global _patched
+    if not _patched:
+        _install()
+        _patched = True

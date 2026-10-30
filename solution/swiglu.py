@@ -79,3 +79,15 @@ def patch_qwen2_mlp():
         return self.down_proj(swiglu(self.gate_proj(x), self.up_proj(x)))
 
     modeling_qwen2.Qwen2MLP.forward = forward
+
+
+ENABLED = True
+_patched = False
+
+
+def patch():
+    """Idempotent entry point used by solution.apply()."""
+    global _patched
+    if not _patched:
+        patch_qwen2_mlp()
+        _patched = True

@@ -11,12 +11,22 @@ The rules in short (the README and the task statement have the full ones):
 - no ready-made kernel libraries (unsloth, liger-kernel, xformers, flash-attn, torchao, ...);
 - the task stays the same: model, data, batches and their order, steps, LoRA, optimizer, Soup's
   settings and outputs; no other GPU, no background processes, no tricks with the measurement.
+
+Layout: every module in MODULES has `ENABLED` (bool) and `patch()` (idempotent). apply() calls the
+patch of each enabled module. An exception in patch() is NOT swallowed: a patch that silently does
+not work is worse than a crash.
 """
 
-from . import head_loss
-from .swiglu import patch_qwen2_mlp
+import importlib
+
+MODULES = ["swiglu", "head_loss", "rmsnorm", "nf4", "lora"]
 
 
 def apply():
-    patch_qwen2_mlp()  # the example: works out of the box, does not count as your own kernel
-    head_loss.patch()  # fused LM-head + cross-entropy + entropy + accuracy (our own kernel)
+    for name in MODULES:
+        module = importlib.import_module(f"{__name__}.{name}")
+        if not getattr(module, "ENABLED", False):
+            continue
+        patch = getattr(module, "patch", None)
+        if patch is not None:
+            patch()
