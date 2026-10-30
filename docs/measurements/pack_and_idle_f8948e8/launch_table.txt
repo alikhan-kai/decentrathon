@@ -1,0 +1,32 @@
+
+== start aa46608 (padded, SDPA with mask): 5250 kernels/step, GPU busy 0.805, GPU 601.8 ms/step, CPU in launch calls 65.7 ms/step (12.51 us per launch)
+source                                                   fwd     bwd  launches  share  GPU ms  CPU ms* GPU us/launch
+SDPA/attention (Qwen2Attention excl. projections)        294     277       571  10.9%    67.7      7.1         118.5
+peft LoRA (A, B, dropout, scale, add)                    504     656      1160  22.1%    37.3     14.5          32.2
+bnb (dequant + gemm)                                    1183    1270      2454  46.7%   361.2     30.7         147.2
+rmsnorm                                                   57     111       168   3.2%    16.3      2.1          96.7
+swiglu (MLP)                                              28      28        56   1.1%    47.2      0.7         842.8
+rotary                                                   280     495       775  14.8%    30.9      9.7          39.8
+residual adds (DecoderLayer)                              56      28        84   1.6%     7.3      1.1          86.6
+head_loss                                                 13       6        19   0.4%    32.4      0.2        1683.7
+optimizer                                                 18       0        18   0.3%     0.8      0.2          44.9
+other (embedding, unattributed)                          137      18       155   3.0%     0.9      1.9           5.7
+
+== start-ansar f8948e8 (packed, per-row SDPA): 10445 kernels/step, GPU busy 0.448, GPU 395.4 ms/step, CPU in launch calls 93.4 ms/step (8.94 us per launch)
+source                                                   fwd     bwd  launches  share  GPU ms  CPU ms* GPU us/launch
+SDPA/attention (Qwen2Attention excl. projections)       2940    2880      5820  55.7%    84.9     52.0          14.6
+peft LoRA (A, B, dropout, scale, add)                    508     632      1139  10.9%    20.1     10.2          17.7
+bnb (dequant + gemm)                                    1206    1246      2452  23.5%   201.5     21.9          82.2
+rmsnorm                                                   57     111       168   1.6%     8.7      1.5          51.9
+swiglu (MLP)                                              28      28        56   0.5%    29.9      0.5         533.9
+rotary                                                   280     495       775   7.4%    16.7      6.9          21.6
+residual adds (DecoderLayer)                              56      28        84   0.8%     3.9      0.8          45.8
+head_loss                                                 13       6        19   0.2%    28.3      0.2        1469.0
+optimizer                                                 18       0        18   0.2%     0.8      0.2          44.6
+other (embedding, unattributed)                          117       5       122   1.2%     0.6      1.1           5.0
+
+* CPU ms = launches x average cudaLaunchKernel time; one average for all sources, so only the order of magnitude per source.
+
+SDPA kernels by ATen op (idle_this.json ops_by_name, calls per step; only ops in the saved top-40 list):
+  start {'aten::_efficient_attention_backward': (33.8, 28), 'aten::_efficient_attention_forward': (12.9, 28), 'aten::cat': (2.9, 58), 'aten::where': (0.5, 56)}
+  this {'aten::bmm': (37.4, 669), 'aten::_softmax_backward_data': (3.4, 112), 'aten::where': (2.6, 336), 'aten::_softmax': (2.5, 112), 'aten::cat': (1.9, 88), 'aten::isneginf': (1.4, 112), 'aten::all': (1.1, 112)}
