@@ -1,9 +1,10 @@
-"""Frozen output projection with bounded logits and backward-time scaling.
+"""Chunked frozen output projection with backward-time scaling.
 
 The chunking idea is established by CCE/Liger and Soup's own chunked loss.
 This implementation uses our original vocabulary kernels and independently
-recomputes chunks in backward, when the actual AMP loss scale is available.
-No full-batch vocabulary tensor or pre-scaled fp16 gradient is saved.
+recomputes chunks in backward by default, when the actual AMP loss scale is
+available. An opt-in experiment retains raw projection logits instead; neither
+path precomputes fp16 gradients before the upstream scale is known.
 """
 
 from dataclasses import dataclass
@@ -33,7 +34,7 @@ def projection_dtype(hidden, weight):
 
 class _FrozenHead(torch.autograd.Function):
     @staticmethod
-    def forward(ctx, hidden, weight, targets, denominator, chunk_size, compute_dtype):
+    def forward(ctx, hidden, weight, targets, denominator, chunk_size, compute_dtype, cache_logits):
         flat = hidden.reshape(-1, hidden.shape[-1])
         target = targets.reshape(-1)
         rows = flat.shape[0]
@@ -41,6 +42,8 @@ class _FrozenHead(torch.autograd.Function):
         entropy = torch.empty_like(losses)
         lse = torch.empty_like(losses)
         predictions = torch.empty(rows, device=hidden.device, dtype=torch.int64)
+        logits_cache = (torch.empty((rows, weight.shape[0]), device=hidden.device, dtype=compute_dtype)
+                        if cache_logits else None)
         # Frozen weights are not reliably retained by autocast's weight cache.
         # Cast once per invocation, release after forward, and recreate in backward.
         with torch.autocast(hidden.device.type, enabled=False):
@@ -48,6 +51,9 @@ class _FrozenHead(torch.autograd.Function):
             for start in range(0, rows, chunk_size):
                 end = min(start + chunk_size, rows)
                 logits = F.linear(flat[start:end].to(compute_dtype), projected_weight)
+                if logits_cache is not None:
+                    # Preserve F.linear's exact rounding without changing its GEMM.
+                    logits_cache[start:end].copy_(logits)
                 loss_i, entropy_i, prediction_i, lse_i = vocab_stats(logits, target[start:end])
                 losses[start:end] = loss_i
                 entropy[start:end] = entropy_i
@@ -55,7 +61,8 @@ class _FrozenHead(torch.autograd.Function):
                 lse[start:end] = lse_i
                 del logits
             loss = losses.sum() / denominator
-        ctx.save_for_backward(hidden, weight, targets, lse, denominator)
+        # Autograd owns the optional cache, including retain_graph/release semantics.
+        ctx.save_for_backward(hidden, weight, targets, lse, denominator, logits_cache)
         ctx.chunk_size = chunk_size
         ctx.compute_dtype = compute_dtype
         losses = losses.reshape(targets.shape)
@@ -67,7 +74,7 @@ class _FrozenHead(torch.autograd.Function):
     @staticmethod
     @once_differentiable
     def backward(ctx, grad_loss, _grad_tokens, _grad_entropy, _grad_predictions):
-        hidden, weight, targets, lse, denominator = ctx.saved_tensors
+        hidden, weight, targets, lse, denominator, logits_cache = ctx.saved_tensors
         flat = hidden.reshape(-1, hidden.shape[-1])
         target = targets.reshape(-1)
         result = torch.empty_like(flat)
@@ -77,21 +84,31 @@ class _FrozenHead(torch.autograd.Function):
             scale = grad_loss.float() / denominator
             for start in range(0, flat.shape[0], ctx.chunk_size):
                 end = min(start + ctx.chunk_size, flat.shape[0])
-                logits = F.linear(flat[start:end].to(ctx.compute_dtype), projected_weight)
+                if logits_cache is None:
+                    logits = F.linear(flat[start:end].to(ctx.compute_dtype), projected_weight)
+                else:
+                    logits = logits_cache[start:end]
                 dz = vocab_backward(logits, target[start:end], lse[start:end], scale)
                 # Half GEMM returns half, then the original input cast promotes dH.
                 result[start:end] = torch.mm(dz, projected_weight).to(hidden.dtype)
                 del logits, dz
-        return result.reshape(hidden.shape), None, None, None, None, None
+        return result.reshape(hidden.shape), None, None, None, None, None, None
 
 
-def frozen_head_loss(hidden, weight, labels, num_items_in_batch=None, chunk_size=128):
+def frozen_head_loss(hidden, weight, labels, num_items_in_batch=None, chunk_size=128,
+                     *, cache_logits=False):
     """Compute shifted causal CE and *all-position* detached diagnostics.
 
     ``weight`` must be a frozen bias-free [vocabulary, hidden] matrix. ``labels``
     are unshifted [batch, time], with -100 ignored. A supplied item count is the
     normalization used by HF across accumulation batches. Otherwise use the
     number of valid shifted targets (including HF's NaN for an empty mean).
+
+    ``cache_logits=True`` is an experimental opt-in: save one [B*T, V] tensor
+    in the projection dtype to avoid recomputing logits in backward. Forward
+    still projects bounded chunks. The default saves no full vocabulary tensor.
+    Both modes apply the actual upstream scale before narrowing logit gradients
+    and support first-order gradients only. No converted weight is cached.
     """
     if hidden.ndim != 3 or weight.ndim != 2 or labels.shape != hidden.shape[:2]:
         raise ValueError("expected hidden [B,T,H], weight [V,H], labels [B,T]")
@@ -115,5 +132,6 @@ def frozen_head_loss(hidden, weight, labels, num_items_in_batch=None, chunk_size
     denominator = torch.as_tensor(denominator, dtype=torch.float32, device=hidden.device)
     if denominator.numel() != 1:
         raise ValueError("num_items_in_batch must be a scalar")
-    outputs = _FrozenHead.apply(hidden, weight, targets, denominator.reshape(()), chunk_size, dtype)
+    outputs = _FrozenHead.apply(hidden, weight, targets, denominator.reshape(()), chunk_size, dtype,
+                                cache_logits)
     return HeadResult(*outputs)
