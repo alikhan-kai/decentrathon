@@ -1,7 +1,7 @@
 """Build kaggle/soup_kernel_debug.ipynb from templates/kaggle_notebook.ipynb.
 
     python3 tools/build_notebook.py --username NAME [--branch main] [--commit SHA] [--repo URL]
-        [--mode quick|unit|full|full_profile|check_and_ops|pack_check|quick_ab|pack_and_idle|robust] [--module-test solution/test_x.py]
+        [--mode quick|unit|full|full_profile|check_and_ops|pack_check|quick_ab|ab_overhead|pack_and_idle|robust] [--module-test solution/test_x.py]
         [--slug soup-kernel-debug]
 Writes kaggle/build/<username>/soup_kernel_debug.ipynb and kernel-metadata.json (the folder is in
 .gitignore, so nobody's build conflicts with anybody else's). No tokens are touched.
@@ -242,7 +242,7 @@ def main():
     p.add_argument("--branch", default="main")
     p.add_argument("--commit", default="")
     p.add_argument("--mode", default="quick",
-                   choices=("quick", "unit", "full", "full_profile", "check_and_ops", "pack_check", "quick_ab", "pack_and_idle", "robust"))
+                   choices=("quick", "unit", "full", "full_profile", "check_and_ops", "pack_check", "quick_ab", "ab_overhead", "pack_and_idle", "robust"))
     p.add_argument("--module-test", default="", help="unit mode: path of one test file")
     p.add_argument("--slug", default="soup-kernel-debug")
     a = p.parse_args()
