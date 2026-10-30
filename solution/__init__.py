@@ -21,6 +21,9 @@ import importlib
 import sys
 import time
 
+# Per-module import/patch timings to stderr; off by default, switch on by editing this line.
+PRINT_TIMINGS = False
+
 MODULES = ["swiglu", "head_loss", "packed", "rmsnorm", "nf4", "lora", "overhead"]
 
 
@@ -46,6 +49,8 @@ def apply():
             "enabled": is_enabled,
         }
 
+    if not PRINT_TIMINGS:
+        return
     total_apply = time.perf_counter() - t_start
     print(
         f"[overhead] solution.apply() total: {total_apply:.3f}s",

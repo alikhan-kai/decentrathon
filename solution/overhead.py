@@ -35,7 +35,9 @@ def _patch_fast_map(sft):
     _orig_map_rows = sft._map_text_sft_rows
 
     def fast_map_text_sft_rows(rows, *, format_row, split, max_length):
-        results = []
+        # Dataset.from_list(rows).map(..., remove_columns=["messages"]) keeps the other input
+        # columns and lets format_row's outputs override them; mirror that.
+        formatted_rows = []
         for i, row in enumerate(rows):
             try:
                 formatted = format_row(row)
@@ -44,11 +46,14 @@ def _patch_fast_map(sft):
                     ensure_causal_loss_target(labels, max_length=max_length)
             except NoCausalLossTargetError as exc:
                 raise ValueError(f"{split} row {i + 1}: {exc}") from exc
-            results.append(formatted)
-        if not results:
-            return Dataset.from_dict({})
-        keys = [k for k in results[0] if k != "messages"]
-        return Dataset.from_dict({k: [d[k] for d in results] for k in keys})
+            formatted_rows.append(formatted)
+        if not rows:
+            return _orig_map_rows(rows, format_row=format_row, split=split, max_length=max_length)
+        keep = [k for k in rows[0] if k != "messages"]
+        out_keys = list(dict.fromkeys(keep + list(formatted_rows[0])))
+        cols = {k: [f[k] if k in f else r[k] for f, r in zip(formatted_rows, rows)]
+                for k in out_keys}
+        return Dataset.from_dict(cols)
 
     sft._map_text_sft_rows = fast_map_text_sft_rows
 
