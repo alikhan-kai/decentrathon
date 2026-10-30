@@ -1,0 +1,22 @@
+--- a/solution/__init__.py
++++ b/solution/__init__.py
+@@ -19,7 +19,7 @@
+ 
+ import importlib
+ 
+-MODULES = ["swiglu", "head_loss", "rmsnorm", "nf4", "lora"]
++MODULES = ["swiglu", "head_loss", "rmsnorm", "nf4", "lora", "rotary", "residual_norm"]
+ 
+ 
+ def apply():
+--- a/solution/residual_norm.py
++++ b/solution/residual_norm.py
+@@ -28,7 +28,7 @@
+ import triton
+ import triton.language as tl
+ 
+-ENABLED = False
++ENABLED = True
+ MAX_HIDDEN = 8192
+ NUM_WARPS = 4
+ _patched = False

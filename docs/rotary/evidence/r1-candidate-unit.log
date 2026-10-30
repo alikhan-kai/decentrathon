@@ -1,0 +1,32 @@
+.......ss.....................s..s..s..s..s..s..s..s..s..s..s..s........ [ 24%]
+...s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s.. [ 49%]
+s..s............................................s..s..s..s..s..s..s...s. [ 74%]
+.s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s.....s..s.......... [ 99%]
+..                                                                       [100%]
+=============================== warnings summary ===============================
+solution/test_nf4.py: 14 warnings
+  /usr/local/lib/python3.13/dist-packages/torch/jit/_script.py:365: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+solution/test_rotary.py: 18 warnings
+  /usr/local/lib/python3.13/dist-packages/torch/jit/_script.py:1488: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+solution/test_rotary.py::test_jit_trace_uses_serializable_eager_graph
+  /usr/local/lib/python3.13/dist-packages/torch/jit/_trace.py:1006: DeprecationWarning: `torch.jit.trace` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+solution/test_rotary.py::test_jit_trace_uses_serializable_eager_graph
+  /usr/local/lib/python3.13/dist-packages/torch/jit/_serialization.py:89: DeprecationWarning: `torch.jit.save` is deprecated. Please switch to `torch.export`.
+    warnings.warn(
+
+solution/test_rotary.py::test_jit_trace_uses_serializable_eager_graph
+  /usr/local/lib/python3.13/dist-packages/torch/jit/_serialization.py:176: DeprecationWarning: `torch.jit.load` is deprecated. Please switch to `torch.export`.
+    warnings.warn(
+
+solution/test_rotary.py::test_named_inputs_keep_names_on_eager_fallback[cpu]
+  /usr/local/lib/python3.13/dist-packages/torch/_tensor.py:1393: UserWarning: Named tensors and all their associated APIs are an experimental feature and subject to change. Please do not use them for anything important until they are released as stable. (Triggered internally at /pytorch/c10/core/TensorImpl.h:1973.)
+    return super().refine_names(names)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+223 passed, 67 skipped, 36 warnings in 24.99s

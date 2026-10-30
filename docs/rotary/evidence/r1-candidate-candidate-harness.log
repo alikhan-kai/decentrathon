@@ -1,0 +1,13 @@
+[run_task] warm-up done in 13.33 s
+[run_task] base_1: training ...
+[run_task] base_1: ok, 84.55 s, peak 14345 MiB
+[run_task] solution_1: training ...
+[run_task] solution_1: ok, 75.63 s, peak 8367 MiB
+[run_task] eval base ...
+[run_task] eval solution ...
+
+=== result ===
+base      time     84.5 s   peak  14345 MiB   eval loss 2.04964
+solution  time     75.6 s   peak   8367 MiB   eval loss 2.04966
+speedup 1.118x   memory base/solution 1.714x   eval loss vs base 0.001 %
+written: /kaggle/working/team-rotary-r1-ifsh2gia/runs/result.json

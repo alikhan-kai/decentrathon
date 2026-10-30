@@ -1,0 +1,16 @@
+{
+  "CUDA_RUNNER.md": "a0cd7d92fa3ee4802768df7d53ea3c8c35cefa98373eeec7e4db846917627f85",
+  "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+  "NOTICE": "a6508c6a00ae7606c639b03af66d4c4af34d360f7a90d2af9af027439030e6b8",
+  "README.md": "2fbe3ecd82a78d2b5879846c54a18595ac74c91d4b41d72976e3da7ca0f62b21",
+  "adversarial_cpu_results.json": "f2e6c5a06bd49576f55028b6dd04e60168f3ee49b9d6c9464b9a927c71a27726",
+  "head_loss.correct-r6.py": "124a4b5a201118b6f910591de56d48b6520b75d0387ca89f2ddc3fa97b6ddde8",
+  "head_loss.original.py": "9692acc5d32318872f7b50b67e4e4c8d61d86a33dea2458f06443eddfd1c3934",
+  "head_loss.patch": "a82ca953dabb44a35463e426ac6306644ee37e01ba91b0bc8e7b3f38f813fca8",
+  "head_loss.py": "3699eb819b6d3bd415980e2ab5e73030b10babb26a4fa5ca2c908264474b92e1",
+  "rewind_reference.py": "c9e897938a0623db354d79b068b8db27565235ece8407a5e16bce40ea3f12f64",
+  "run_cuda.py": "d1a024cdda9e33e9eb6dd71cd3b22ca58a792bd891d2b3ee8de3bb7645dfcbe1",
+  "run_cuda_tails.py": "c52433cdb435219e539efb5e6206b43dabddc71cb11a73ef40afe1f922aa64be",
+  "run_smoke.py": "10647d55c7f800e759900d386ea30c4170b8574462286abfb225bfae3d5cc1d4",
+  "test_head_loss_regression.py": "964d725c0707fda17cb6e27758058db7144889143776635a57211c333a29f385"
+}
