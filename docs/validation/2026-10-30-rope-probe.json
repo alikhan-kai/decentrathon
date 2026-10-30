@@ -1,0 +1,259 @@
+{
+  "status": "component_validation_only",
+  "source_sha256": {
+    "rope.py": "29562418ff6e55f13a921dd55f6f0283c2b7b74e176283b01018b140a8479e5f",
+    "test_rope.py": "41d89c2216f164abb4b68e827f89ce0c9a49b7fdf1c0b7c8c59473f6f1004e71"
+  },
+  "tests": "134 passed, 38 skipped, 22 warnings in 18.58s",
+  "tests_log": "..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s [ 41%]\n..s..s..s..s............................................s..s..s..s..s..s [ 83%]\n..s...s.....s..s............                                             [100%]\n=============================== warnings summary ===============================\nsolution/test_rope.py: 18 warnings\n  /usr/local/lib/python3.13/dist-packages/torch/jit/_script.py:1488: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.\n    warnings.warn(\n\nsolution/test_rope.py::test_jit_trace_uses_serializable_eager_graph\n  /usr/local/lib/python3.13/dist-packages/torch/jit/_trace.py:1006: DeprecationWarning: `torch.jit.trace` is deprecated. Please switch to `torch.compile` or `torch.export`.\n    warnings.warn(\n\nsolution/test_rope.py::test_jit_trace_uses_serializable_eager_graph\n  /usr/local/lib/python3.13/dist-packages/torch/jit/_serialization.py:89: DeprecationWarning: `torch.jit.save` is deprecated. Please switch to `torch.export`.\n    warnings.warn(\n\nsolution/test_rope.py::test_jit_trace_uses_serializable_eager_graph\n  /usr/local/lib/python3.13/dist-packages/torch/jit/_serialization.py:176: DeprecationWarning: `torch.jit.load` is deprecated. Please switch to `torch.export`.\n    warnings.warn(\n\nsolution/test_rope.py::test_named_inputs_keep_names_on_eager_fallback[cpu]\n  /usr/local/lib/python3.13/dist-packages/torch/_tensor.py:1393: UserWarning: Named tensors and all their associated APIs are an experimental feature and subject to change. Please do not use them for anything important until they are released as stable. (Triggered internally at /pytorch/c10/core/TensorImpl.h:1973.)\n    return super().refine_names(names)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n134 passed, 38 skipped, 22 warnings in 18.58s",
+  "benchmark": {
+    "device": "Tesla T4",
+    "torch": "2.11.0+cu128",
+    "official_harness_evidence": false,
+    "conditions": "Complete eager forward+autograd backward, fresh outputs/gradients, fixed strided inputs and singleton-batch trig; 3 warmups, 7 alternating repeats of 5 calls, CUDA events; no training.",
+    "cases": [
+      {
+        "batch": 4,
+        "tokens": 64,
+        "q_heads": 12,
+        "kv_heads": 2,
+        "head_dim": 128,
+        "dtype": "torch.float32",
+        "exact_parity": true,
+        "samples_ms": {
+          "reference": [
+            0.7663551807403565,
+            0.7577600002288818,
+            0.7577343940734863,
+            0.739737606048584,
+            0.7429759979248047,
+            0.7734720230102539,
+            0.8179712295532227
+          ],
+          "candidate": [
+            0.6263743877410889,
+            0.5663296222686768,
+            0.5712384223937989,
+            0.5529600143432617,
+            0.5718207836151123,
+            0.5474112033843994,
+            0.582041597366333
+          ]
+        },
+        "candidate_over_reference": 0.7538513806762774
+      },
+      {
+        "batch": 4,
+        "tokens": 128,
+        "q_heads": 12,
+        "kv_heads": 2,
+        "head_dim": 128,
+        "dtype": "torch.float32",
+        "exact_parity": true,
+        "samples_ms": {
+          "reference": [
+            0.7688767910003662,
+            0.7684095859527588,
+            0.7286975860595704,
+            0.7560256004333497,
+            0.7424320220947266,
+            0.7601215839385986,
+            0.7256256103515625
+          ],
+          "candidate": [
+            0.5849343776702881,
+            0.5795839786529541,
+            0.6099967956542969,
+            0.5638591766357421,
+            0.5731776237487793,
+            0.5525504112243652,
+            0.5655039787292481
+          ]
+        },
+        "candidate_over_reference": 0.7581457868890116
+      },
+      {
+        "batch": 4,
+        "tokens": 256,
+        "q_heads": 12,
+        "kv_heads": 2,
+        "head_dim": 128,
+        "dtype": "torch.float32",
+        "exact_parity": true,
+        "samples_ms": {
+          "reference": [
+            0.9722175598144531,
+            0.9617471694946289,
+            0.9441280364990234,
+            0.9584063529968262,
+            0.9659711837768554,
+            0.9472831726074219,
+            0.942080020904541
+          ],
+          "candidate": [
+            0.6191423892974853,
+            0.5612351894378662,
+            0.5741439819335937,
+            0.5450623989105224,
+            0.5848256111145019,
+            0.551584005355835,
+            0.5652480125427246
+          ]
+        },
+        "candidate_over_reference": 0.5897790752067317
+      },
+      {
+        "batch": 4,
+        "tokens": 512,
+        "q_heads": 12,
+        "kv_heads": 2,
+        "head_dim": 128,
+        "dtype": "torch.float32",
+        "exact_parity": true,
+        "samples_ms": {
+          "reference": [
+            1.7551424026489257,
+            1.7564800262451172,
+            1.7524160385131835,
+            1.7547584533691407,
+            1.7517696380615235,
+            1.7523775100708008,
+            1.7522687911987305
+          ],
+          "candidate": [
+            0.6570623874664306,
+            0.5618624210357666,
+            0.5942848205566407,
+            0.5513408184051514,
+            0.5779263973236084,
+            0.5468160152435303,
+            0.5853439807891846
+          ]
+        },
+        "candidate_over_reference": 0.32978835197944384
+      },
+      {
+        "batch": 4,
+        "tokens": 64,
+        "q_heads": 12,
+        "kv_heads": 2,
+        "head_dim": 128,
+        "dtype": "torch.float16",
+        "exact_parity": true,
+        "samples_ms": {
+          "reference": [
+            0.8180416107177735,
+            0.7586495876312256,
+            0.794265604019165,
+            0.7471039772033692,
+            0.7397312164306641,
+            0.7544256210327148,
+            0.7504640102386475
+          ],
+          "candidate": [
+            0.595417594909668,
+            0.5636032104492188,
+            0.5636096000671387,
+            0.5739391803741455,
+            0.5702079772949219,
+            0.5554815769195557,
+            0.5683519840240479
+          ]
+        },
+        "candidate_over_reference": 0.7533572139902204
+      },
+      {
+        "batch": 4,
+        "tokens": 128,
+        "q_heads": 12,
+        "kv_heads": 2,
+        "head_dim": 128,
+        "dtype": "torch.float16",
+        "exact_parity": true,
+        "samples_ms": {
+          "reference": [
+            0.7580480098724365,
+            0.7540607929229737,
+            0.7688960075378418,
+            0.7569407939910888,
+            0.7302207946777344,
+            0.7679743766784668,
+            0.7998976230621337
+          ],
+          "candidate": [
+            0.5865536212921143,
+            0.5521471977233887,
+            0.5643648147583008,
+            0.5481344223022461,
+            0.5664832115173339,
+            0.5418943881988525,
+            0.5833407878875733
+          ]
+        },
+        "candidate_over_reference": 0.7444974558448765
+      },
+      {
+        "batch": 4,
+        "tokens": 256,
+        "q_heads": 12,
+        "kv_heads": 2,
+        "head_dim": 128,
+        "dtype": "torch.float16",
+        "exact_parity": true,
+        "samples_ms": {
+          "reference": [
+            0.8264255523681641,
+            0.8067263603210449,
+            0.7917632102966309,
+            0.7988351821899414,
+            0.8298368453979492,
+            0.8000191688537598,
+            0.7901823997497559
+          ],
+          "candidate": [
+            0.6041535854339599,
+            0.6106112003326416,
+            0.5864255905151368,
+            0.585862398147583,
+            0.6082560062408447,
+            0.5559167861938477,
+            0.5746623992919921
+          ]
+        },
+        "candidate_over_reference": 0.733014424336041
+      },
+      {
+        "batch": 4,
+        "tokens": 512,
+        "q_heads": 12,
+        "kv_heads": 2,
+        "head_dim": 128,
+        "dtype": "torch.float16",
+        "exact_parity": true,
+        "samples_ms": {
+          "reference": [
+            1.4495295524597167,
+            1.4414591789245605,
+            1.4414143562316895,
+            1.437446403503418,
+            1.4379648208618163,
+            1.4385151863098145,
+            1.4380607604980469
+          ],
+          "candidate": [
+            0.6230016231536866,
+            0.6050879955291748,
+            0.8454976081848145,
+            0.5930943965911866,
+            0.5878911972045898,
+            0.5612031936645507,
+            0.6098944187164307
+          ]
+        },
+        "candidate_over_reference": 0.42063372099768465
+      }
+    ]
+  },
+  "kaggle_root": "/kaggle/working/ember-rope-7fxqqr9e",
+  "pending": "Batched-gradient fallback guard fix and official end-to-end harness. This is not admission evidence."
+}

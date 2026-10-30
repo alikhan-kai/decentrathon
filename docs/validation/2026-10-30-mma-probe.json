@@ -1,0 +1,571 @@
+{
+  "python": "3.13.15",
+  "torch": "2.11.0+cu128",
+  "cuda_build": "12.8",
+  "target_sm": 75,
+  "official_harness_evidence": false,
+  "source_sha256": {
+    "turing_mma.py": "f21082ae4226ea644935cc56a544eaa7917f1444c21e3037119dd4a65878ca37",
+    "test_turing_mma.py": "cccf7db31e96f27b320ac556b33cf8d3ce4a68d09effeb51830f7102b56eb837"
+  },
+  "device": "Tesla T4",
+  "device_memory_bytes": 15636037632,
+  "multiprocessors": 40,
+  "compiler": [
+    {
+      "sm": 75,
+      "num_warps": 1,
+      "shared_bytes": 0,
+      "mma_count": 1,
+      "scalar_fma_count": 0,
+      "one_element_per_lane": true,
+      "unpredicated_mma": true,
+      "one_warp_launch": true,
+      "shape": [
+        16,
+        8,
+        8
+      ],
+      "triton": "3.6.0",
+      "input_dtype": "fp16",
+      "output_dtype": "fp32",
+      "transposed_b": false,
+      "check_lanes": false
+    },
+    {
+      "sm": 75,
+      "num_warps": 1,
+      "shared_bytes": 0,
+      "mma_count": 1,
+      "scalar_fma_count": 0,
+      "one_element_per_lane": true,
+      "unpredicated_mma": true,
+      "one_warp_launch": true,
+      "shape": [
+        16,
+        8,
+        8
+      ],
+      "triton": "3.6.0",
+      "input_dtype": "fp16",
+      "output_dtype": "fp32",
+      "transposed_b": false,
+      "check_lanes": true
+    },
+    {
+      "sm": 75,
+      "num_warps": 1,
+      "shared_bytes": 0,
+      "mma_count": 1,
+      "scalar_fma_count": 0,
+      "one_element_per_lane": true,
+      "unpredicated_mma": true,
+      "one_warp_launch": true,
+      "shape": [
+        1,
+        1,
+        1
+      ],
+      "triton": "3.6.0",
+      "input_dtype": "fp16",
+      "output_dtype": "fp16",
+      "transposed_b": false,
+      "check_lanes": true
+    },
+    {
+      "sm": 75,
+      "num_warps": 1,
+      "shared_bytes": 0,
+      "mma_count": 2,
+      "scalar_fma_count": 0,
+      "one_element_per_lane": true,
+      "unpredicated_mma": true,
+      "one_warp_launch": true,
+      "shape": [
+        17,
+        9,
+        9
+      ],
+      "triton": "3.6.0",
+      "input_dtype": "fp32",
+      "output_dtype": "fp16",
+      "transposed_b": true,
+      "check_lanes": true
+    },
+    {
+      "sm": 75,
+      "num_warps": 1,
+      "shared_bytes": 0,
+      "mma_count": 3,
+      "scalar_fma_count": 0,
+      "one_element_per_lane": true,
+      "unpredicated_mma": true,
+      "one_warp_launch": true,
+      "shape": [
+        31,
+        17,
+        19
+      ],
+      "triton": "3.6.0",
+      "input_dtype": "fp16",
+      "output_dtype": "fp32",
+      "transposed_b": false,
+      "check_lanes": false
+    },
+    {
+      "sm": 75,
+      "num_warps": 1,
+      "shared_bytes": 0,
+      "mma_count": 1,
+      "scalar_fma_count": 0,
+      "one_element_per_lane": true,
+      "unpredicated_mma": true,
+      "one_warp_launch": true,
+      "shape": [
+        128,
+        256,
+        1536
+      ],
+      "triton": "3.6.0",
+      "input_dtype": "fp16",
+      "output_dtype": "fp16",
+      "transposed_b": true,
+      "check_lanes": false
+    }
+  ],
+  "basis": {
+    "a_basis_cases": 128,
+    "a_instrumentation_variants": 2,
+    "b_basis_cases": 64,
+    "exact": true
+  },
+  "exact_tails": {
+    "reduction_sizes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      24,
+      31,
+      32,
+      33,
+      63,
+      64,
+      65
+    ],
+    "cases": 50,
+    "exact": true,
+    "fp32_accumulator_cases": [
+      "1 + 2^-12",
+      "2048 + 1 - 2048"
+    ]
+  },
+  "strided_canaries": {
+    "strides_a": [
+      43,
+      2
+    ],
+    "strides_b": [
+      2,
+      43
+    ],
+    "output_canaries": "intact",
+    "inputs": "unchanged"
+  },
+  "numerical": [
+    {
+      "shape": [
+        16,
+        8,
+        8
+      ],
+      "transposed_b": false,
+      "max_abs_error": 3.5762786865234375e-07,
+      "max_error_over_bound": 0.015554369583509907,
+      "relative_l2_error": 3.489705631175071e-08,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        16,
+        8,
+        8
+      ],
+      "transposed_b": true,
+      "max_abs_error": 4.023313522338867e-07,
+      "max_error_over_bound": 0.024458204653955637,
+      "relative_l2_error": 4.277268704984403e-08,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        1,
+        1,
+        1
+      ],
+      "transposed_b": false,
+      "max_abs_error": 0.0,
+      "max_error_over_bound": 0.0,
+      "relative_l2_error": 0.0,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        1,
+        1,
+        1
+      ],
+      "transposed_b": true,
+      "max_abs_error": 0.0,
+      "max_error_over_bound": 0.0,
+      "relative_l2_error": 0.0,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        15,
+        7,
+        7
+      ],
+      "transposed_b": false,
+      "max_abs_error": 4.172325134277344e-07,
+      "max_error_over_bound": 0.01650417735376562,
+      "relative_l2_error": 4.123551029372063e-08,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        15,
+        7,
+        7
+      ],
+      "transposed_b": true,
+      "max_abs_error": 3.5762786865234375e-07,
+      "max_error_over_bound": 0.016104335294642946,
+      "relative_l2_error": 3.7749763780798264e-08,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        17,
+        9,
+        9
+      ],
+      "transposed_b": false,
+      "max_abs_error": 5.019828677177429e-07,
+      "max_error_over_bound": 0.011412360125441336,
+      "relative_l2_error": 4.6097910331689994e-08,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        17,
+        9,
+        9
+      ],
+      "transposed_b": true,
+      "max_abs_error": 7.897615432739258e-07,
+      "max_error_over_bound": 0.017013870010218805,
+      "relative_l2_error": 6.043656327911533e-08,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        31,
+        17,
+        19
+      ],
+      "transposed_b": false,
+      "max_abs_error": 1.7434358596801758e-06,
+      "max_error_over_bound": 0.007276442374923495,
+      "relative_l2_error": 8.367727918829517e-08,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        31,
+        17,
+        19
+      ],
+      "transposed_b": true,
+      "max_abs_error": 1.9073486328125e-06,
+      "max_error_over_bound": 0.010524384074958173,
+      "relative_l2_error": 7.789643567600865e-08,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        32,
+        24,
+        64
+      ],
+      "transposed_b": false,
+      "max_abs_error": 6.847083568572998e-06,
+      "max_error_over_bound": 0.004455917549846856,
+      "relative_l2_error": 1.575513712670714e-07,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        32,
+        24,
+        64
+      ],
+      "transposed_b": true,
+      "max_abs_error": 6.014946848154068e-06,
+      "max_error_over_bound": 0.004780737969036081,
+      "relative_l2_error": 1.553804283531688e-07,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        31,
+        17,
+        257
+      ],
+      "input_dtype": "torch.float16",
+      "output_dtype": "torch.float16",
+      "scale": 0.125,
+      "max_abs_error": 0.00024249922716990113,
+      "max_error_over_bound": 0.3649679127228963,
+      "relative_l2_error": 0.0002048838558443029,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        31,
+        17,
+        257
+      ],
+      "input_dtype": "torch.float16",
+      "output_dtype": "torch.float16",
+      "scale": 1.0,
+      "max_abs_error": 0.015520200598984957,
+      "max_error_over_bound": 0.3649899097068307,
+      "relative_l2_error": 0.00020488425278230305,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        31,
+        17,
+        257
+      ],
+      "input_dtype": "torch.float16",
+      "output_dtype": "torch.float16",
+      "scale": 4.0,
+      "max_abs_error": 0.2483232095837593,
+      "max_error_over_bound": 0.3649901495271941,
+      "relative_l2_error": 0.00020488425278230305,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        31,
+        17,
+        257
+      ],
+      "input_dtype": "torch.float16",
+      "output_dtype": "torch.float32",
+      "scale": 0.125,
+      "max_abs_error": 6.924419722054154e-07,
+      "max_error_over_bound": 0.0018094449141322565,
+      "relative_l2_error": 5.138832859846554e-07,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        31,
+        17,
+        257
+      ],
+      "input_dtype": "torch.float16",
+      "output_dtype": "torch.float32",
+      "scale": 1.0,
+      "max_abs_error": 4.4316286221146584e-05,
+      "max_error_over_bound": 0.0018094449141322565,
+      "relative_l2_error": 5.132469811465576e-07,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        31,
+        17,
+        257
+      ],
+      "input_dtype": "torch.float16",
+      "output_dtype": "torch.float32",
+      "scale": 4.0,
+      "max_abs_error": 0.0007090605795383453,
+      "max_error_over_bound": 0.0018094449141322565,
+      "relative_l2_error": 5.132469811465576e-07,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        31,
+        17,
+        257
+      ],
+      "input_dtype": "torch.float32",
+      "output_dtype": "torch.float16",
+      "scale": 0.125,
+      "max_abs_error": 0.00024249922716990113,
+      "max_error_over_bound": 0.3649679127228963,
+      "relative_l2_error": 0.0002048838558443029,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        31,
+        17,
+        257
+      ],
+      "input_dtype": "torch.float32",
+      "output_dtype": "torch.float16",
+      "scale": 1.0,
+      "max_abs_error": 0.015520200598984957,
+      "max_error_over_bound": 0.3649899097068307,
+      "relative_l2_error": 0.00020488425278230305,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        31,
+        17,
+        257
+      ],
+      "input_dtype": "torch.float32",
+      "output_dtype": "torch.float16",
+      "scale": 4.0,
+      "max_abs_error": 0.2483232095837593,
+      "max_error_over_bound": 0.3649901495271941,
+      "relative_l2_error": 0.00020488425278230305,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        31,
+        17,
+        257
+      ],
+      "input_dtype": "torch.float32",
+      "output_dtype": "torch.float32",
+      "scale": 0.125,
+      "max_abs_error": 6.924419722054154e-07,
+      "max_error_over_bound": 0.0018094449141322565,
+      "relative_l2_error": 5.138832859846554e-07,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        31,
+        17,
+        257
+      ],
+      "input_dtype": "torch.float32",
+      "output_dtype": "torch.float32",
+      "scale": 1.0,
+      "max_abs_error": 4.4316286221146584e-05,
+      "max_error_over_bound": 0.0018094449141322565,
+      "relative_l2_error": 5.132469811465576e-07,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    },
+    {
+      "shape": [
+        31,
+        17,
+        257
+      ],
+      "input_dtype": "torch.float32",
+      "output_dtype": "torch.float32",
+      "scale": 4.0,
+      "max_abs_error": 0.0007090605795383453,
+      "max_error_over_bound": 0.0018094449141322565,
+      "relative_l2_error": 5.132469811465576e-07,
+      "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+    }
+  ],
+  "benchmark": {
+    "conditions": "preallocated outputs, hot inputs, CUDA events, no allocation/validation or training",
+    "torch_allow_fp16_reduced_precision_reduction": true,
+    "torch_allow_fp16_accumulation": false,
+    "torch_allow_tf32": false,
+    "max_probe_ms": 100.0,
+    "timing_budget_seconds": 30.0,
+    "exploration_bound_passed": false,
+    "cases": [
+      {
+        "shape_mnk": [
+          128,
+          256,
+          1536
+        ],
+        "strides_a": [
+          1536,
+          1
+        ],
+        "strides_b": [
+          1,
+          1536
+        ],
+        "dtype": "fp16 inputs/output; candidate fp32 accumulation; torch.mm ambient settings",
+        "seed": 719,
+        "warmup_calls": 5,
+        "repeats": 7,
+        "calls_per_repeat": 10,
+        "probe_ms": 0.30982398986816406,
+        "error": {
+          "max_abs_error": 0.06208324743784033,
+          "max_error_over_bound": 0.06822506932909277,
+          "relative_l2_error": 0.0002078358365269008,
+          "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+        },
+        "baseline_error": {
+          "max_abs_error": 0.06852927745785564,
+          "max_error_over_bound": 0.07587002879033303,
+          "relative_l2_error": 0.00029535380199891773,
+          "bound": "4*gamma(9*ceil(K/8))*sum(abs(A16*B16)), u=2^-23; optional fp16 rounding"
+        },
+        "candidate_n_regs": 23,
+        "candidate_n_spills": 0,
+        "max_candidate_over_torch_for_further_work": 1.25,
+        "torch_ms": [
+          0.033228799700737,
+          0.03706879913806915,
+          0.03133440017700195,
+          0.03363839983940124,
+          0.0312032014131546,
+          0.03297280073165894,
+          0.03131519854068756
+        ],
+        "candidate_ms": [
+          0.2284640073776245,
+          0.22744638919830323,
+          0.22732479572296144,
+          0.22919039726257323,
+          0.22878079414367675,
+          0.22612481117248534,
+          0.2267103910446167
+        ],
+        "candidate_over_torch": 6.898000295738295,
+        "status": "STOP: exceeds exploration bound",
+        "repeats_completed": 7
+      }
+    ]
+  },
+  "status": "targeted GPU checks passed; performance exploration bound failed"
+}
