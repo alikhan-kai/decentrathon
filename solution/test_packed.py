@@ -57,7 +57,7 @@ def patched():
 
 @pytest.fixture(autouse=True)
 def clean_stats():
-    """The tests' counters must not end up in packed_stats_<pid>.json at exit."""
+    """The tests' counters must not end up in the PACKED_STATS line printed at exit."""
     yield
     packed.reset_stats()
 

@@ -174,8 +174,7 @@ def build(repo_url, branch, commit, mode, username, module_test):
     out.append(code(
         'for pattern in ("runs*/**/train.log", "runs*/eval_*.log", "runs*/result.json",\n'
         '                "runs*/checks.json", "runs*/**/metrics.json", "runs*/solution_profile/profile.json",\n'
-        '                "runs/base_profile/train.log", "runs_try/op_profile/train.log", "packed_stats_*.json",\n'
-        '                "runs*/**/packed_stats_*.json"):\n'
+        '                "runs/base_profile/train.log", "runs_try/op_profile/train.log"):\n'
         '    for p in glob.glob(str(REPO / pattern), recursive=True):\n'
         '        rel = Path(p).relative_to(REPO)\n'
         '        dst = OUT / "files" / rel\n'

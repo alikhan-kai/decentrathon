@@ -29,7 +29,6 @@ No triton import here: the test runs on CPU.
 
 import atexit
 import json
-import os
 from collections import Counter
 
 import torch
@@ -38,7 +37,8 @@ ENABLED = True
 
 _STATE = {"lens": None}      # row lengths of the batch currently inside the packed Qwen2Model.forward
 # Passive counters (no GPU sync: the lengths are already on the CPU): one [real tokens, B * longest row] pair per
-# packed step and the number of fallbacks by reason. Written to packed_stats_<pid>.json (cwd) at exit.
+# packed step and the number of fallbacks by reason. One line "PACKED_STATS {json}" goes to stdout at exit
+# (tools/packed_stats_report.py reads it from train.log); nothing is written to the file system.
 _STATS = {"packed_steps": [], "fallbacks": Counter()}
 _ORIGINAL = {}
 _patched = False
@@ -96,10 +96,9 @@ def reset_stats():
     _STATS["fallbacks"].clear()
 
 
-def _dump_stats():
+def _report_stats():
     if _STATS["packed_steps"] or _STATS["fallbacks"]:
-        with open(f"packed_stats_{os.getpid()}.json", "w") as handle:
-            json.dump(stats(), handle)
+        print("PACKED_STATS " + json.dumps(stats(), separators=(",", ":")), flush=True)
 
 
 def _install():
@@ -169,7 +168,7 @@ def patch():
     global _patched
     if not _patched:
         _install()
-        atexit.register(_dump_stats)
+        atexit.register(_report_stats)
         _patched = True
 
 
