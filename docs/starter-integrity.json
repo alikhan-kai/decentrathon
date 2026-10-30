@@ -1,0 +1,20 @@
+{
+  "commit": "c7c2fcd15972ce8b898d8d3ff732ee192c817ceb",
+  "sha256": {
+    "harness/check_rules.py": "879ab1861674f6e714eadd00aaf044235d98526dd75fab1035deec3401121ef5",
+    "harness/eval_adapter.py": "47cddbb8e4579c69f9535b099ff2371b1c3af08bfbd93d14bf79aadd74d38482",
+    "harness/run_task.py": "d935a8959f348977313f2eef36870ff2699b9ba013a7978918ff35e148968a79",
+    "harness/example_reference.py": "6a11055f4a1822e53971c228c6e3e3aa6b88edd9eb6db81a388e26a70a030ceb",
+    "harness/common.py": "c83066f24f266dab62ebcc9c2d44f5a65902760b53da912e65ebfe511579c2db",
+    "harness/_train.py": "45a62642dceab32cf3efcda504de87a9c25ea28b119b1806f56d14ff1146a89d",
+    "harness/score.py": "731c9b644dcc4069b0b069616f438064d1f7f376a202feb15201fd910ec688c5",
+    "tests/test_loader.py": "3dad1bea2d33aab97e52b7cd44888d768bc9519af44fbe6cf3e96c260026632f",
+    "tests/test_formats.py": "5d656ed50c59f794e934473d459ea85635f892ba028e192414474e9b5d65919e",
+    "tests/test_trainer_init.py": "b7608d62a40983bf7c9e5b270e0e527b641a837e462d6df2909fec88f607e821",
+    "tests/test_callback.py": "1919303a3670c0a33abbfce9b33eab0913bb64a3a21c3312d86531c32b5bf490",
+    "tests/conftest.py": "a82eabab468ea0ef1e003cccd7c3827ce2f4d00d09c32948a34fb48221f7337a",
+    "tests/test_config.py": "db808c44470d144b7cf18b7329492f41f76e37cfc24306e7cba0488bca9d787c",
+    "task/prepare_data.py": "a8543f11a55aff80dbdc714a0e62391244a5296616eea2e34dc2eb3ff3ec18f7",
+    "task/task.yaml": "dd70c739fcd143e06aef3bb1efcc9386f682bf1de26f30e08409d86a97ff47ce"
+  }
+}
