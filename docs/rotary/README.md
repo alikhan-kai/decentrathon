@@ -2,20 +2,20 @@
 
 Person 3 / `feat/rotary`, based on the team's passing `feat/check4` commit
 `462a9f7`. Owns `solution/rotary.py`, `solution/residual_norm.py`, their tests,
-and this evidence directory. The team's head, NF4, RMSNorm, LoRA, registry,
-task and harness files are unchanged.
+and this evidence directory. The separately reviewed head correction from
+[PR #3](https://github.com/alikhan-kai/decentrathon/pull/3) is now merged into
+`solution/head_loss.py`. NF4, RMSNorm, LoRA, registry, task and harness are unchanged.
 
 The [follow-up research](RESEARCH.md) records the Reddit leads, primary technical
 references and rejected T4 experiments. Real-mode FX tracing now takes the eager
-RoPE path in both forward and backward. A separate
+RoPE path in both forward and backward. The merged
 [head-gradient correction](head_correction/README.md) fixes a demonstrated
-scale-before-cast defect in the team implementation; it is supplied for the
-integrator and is not installed by the default registry or staging command.
+scale-before-cast defect in the team implementation and is used by the existing
+head registry entry.
 That correction now passes repeated full-training validation: **78.07 s median,
 8367 MiB, 7.0106% minimum eligible share**, all ten checks passed, evaluation
-loss **2.04966**, equal to the measured baseline. Integrate the head correction
-before relying on the default head's numerical contract; it is a separate
-owner-reviewable patch, not an implicit registry change.
+loss **2.04966**, equal to the measured baseline. The archived standalone patch
+remains available for older checkouts; do not apply it again to this branch.
 
 **Rotary is ready for integrator selection.** Its conservative observed
 combined kernel share is **7.05%**, versus about **6.08–6.10%** in the later
@@ -70,18 +70,19 @@ python docs/rotary/stage.py --variant rotary --out /kaggle/working/rotary-valida
 
 The script creates a new directory with an explicit registry selection and a
 SHA-256 manifest, then prints the test/data/harness commands. It never edits
-the source checkout. `--variant team` stages the original team selection;
+the source checkout. `--variant team` stages the team registry selection with
+the current corrected head;
 `--variant combined` explicitly enables the residual experiment too. Always
 use one visible T4 (`CUDA_VISIBLE_DEVICES=0`), sequential runs, and the
 unchanged official harness. Compilation counts; each harness run clears its
 own compilation caches. Final shared integration still needs its own repeated
 baseline/solution verification.
 
-`--head-correction` explicitly substitutes the separately reviewed loss-gradient
-candidate in the staged copy, after checking the original team file's hash.
-It records the candidate in the manifest and leaves the source checkout alone.
+Omit `--head-correction` on this branch: the correction is already installed.
+That flag is retained only for older checkouts containing the original head; its
+hash guard deliberately rejects applying the correction twice.
 
-## Current-source validation
+## Validation before the head correction was merged
 
 The FX fallback fix passed **270 T4 tests, 126 skipped**, and all **79 official
 regressions**. Its unchanged training arithmetic passed [all ten official
@@ -96,8 +97,9 @@ checks](evidence/r5-final-checks.json) in two repeats. The latest
 Median command time is 76.37 s versus 87.19 s. This is the entire team
 configuration's result, not an isolated speed gain from the tracing fix.
 [Source manifest](evidence/r5-final-manifest.json), logs and telemetry accompany
-the result. The separate head-gradient defect remains outside this default
-configuration; automatic admission is not proof that every gradient matches.
+the result. This historical configuration still used the defective head; automatic admission
+is not proof that every gradient matches. Current-source validation is the
+corrected R8 configuration linked above.
 
 ## Earlier rotary training evidence
 
