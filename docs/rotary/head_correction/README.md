@@ -1,8 +1,9 @@
 # Correct loss gradients with supervised-row-only backward
 
-The actual `solution/head_loss.py` and registry remain unchanged on this branch.
-This directory supplies a narrow correction for the integrator. Passing the
-standard admission checks did not detect the demonstrated gradient defect.
+The correction is now installed in `solution/head_loss.py` through
+[PR #3](https://github.com/alikhan-kai/decentrathon/pull/3). The registry is unchanged.
+This directory preserves the independently tested source, patch and evidence.
+Passing standard admission checks did not detect the original gradient defect.
 
 The original source (`9692acc5d32318872f7b50b67e4e4c8d61d86a33dea2458f06443eddfd1c3934`)
 rounds unscaled logit and hidden gradients to fp16, then applies the upstream
@@ -87,12 +88,12 @@ adjustment and does not establish CUDA execution.
 For an isolated training snapshot:
 
 ```bash
-python docs/rotary/stage.py --variant rotary --head-correction --out /kaggle/working/corrected-rotary
+python docs/rotary/stage.py --variant rotary --out /kaggle/working/corrected-rotary
 ```
 
-The script verifies the original file hash, substitutes only the candidate in
-the new directory, and writes its source manifest. Permanent integration stays
-with the module owner:
+The script uses the already-corrected head and writes its source manifest.
+Do not pass `--head-correction` or apply the patch again on this branch. Only for
+an older checkout that still contains the original head, the archived patch is:
 
 ```bash
 git apply --check docs/rotary/head_correction/head_loss.patch
