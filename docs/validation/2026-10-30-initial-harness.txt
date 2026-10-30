@@ -1,0 +1,28 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Generating train split: 52201 examples [00:01, 28400.92 examples/s]
+wrote 256 training rows and 256 eval rows to /kaggle/working/ember-probe-vcfyfnz7/data
+[run_task] warm-up done in 27.44 s
+[run_task] base_1: training ...
+[run_task] base_1: ok, 88.27 s, peak 14345 MiB
+[run_task] solution_1: training ...
+[run_task] solution_1: ok, 86.91 s, peak 10223 MiB
+[run_task] eval base ...
+[run_task] eval solution ...
+
+=== result ===
+base      time     88.3 s   peak  14345 MiB   eval loss 2.04962
+solution  time     86.9 s   peak  10223 MiB   eval loss 2.04963
+speedup 1.016x   memory base/solution 1.403x   eval loss vs base 0.0 %
+written: /kaggle/working/ember-probe-vcfyfnz7/runs/result.json
+PASS  1. every base and solution run finished                                            1 base and 1 solution runs of 1 each
+PASS  2. no ready-made kernel libraries                                                  loaded: none; imported in solution/: none; packages changed during the run: none
+PASS  3. own @triton.jit kernels in solution/ run in training                            _rmsnorm_backward (solution/rmsnorm.py), _rmsnorm_forward (solution/rmsnorm.py), ember_vocab_backward_mass (solution/vocab.py), ember_vocab_backward_write (solution/vocab.py), ember_vocab_merge (solution/vocab.py), ember_vocab_partials (solution/vocab.py); not launched in every solution run: _decode_nested_scales, _nf4_input_grad_kernel
+FAIL  4. own kernels together take >= 5% of the training time                            2.1% of the training time (lowest of 1 runs, steps 3+)
+PASS  5. same task and Soup outputs (steps, adapter, settings, tokens, metrics, rewind)  identical within tolerance
+PASS  6. loss curve follows the base                                                     solution_1: first step 0.00%, mean of all steps 0.01% (max 1% and 3%)
+PASS  7. quality: eval loss at most 0.5% above the base                                  +0.000%
+PASS  8. not worse than the base on time or memory (10% margin)                          time x0.985, memory x0.713 of the base
+PASS  9. clean measurement (a T4, idle GPUs, one GPU, harness allocator, peaks agree)    clean
+PASS  10. Soup regression tests with your patches                                        79 passed, 14 warnings in 0.21s
+
+SOME CHECKS FAILED

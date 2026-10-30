@@ -1,0 +1,46 @@
+{
+  "status": "numerical_and_integration_checks_passed; initial_training_passes_quality_but_fails_kernel_share",
+  "observed_at_utc": "2026-10-30T13:50:30Z",
+  "notebook": "https://www.kaggle.com/code/tukhtakhunovamir/ember-t4-development-probe",
+  "notebook_visibility": "private development draft, not a pinned final version",
+  "source_bundle_sha256": "abdc0fc4256a968cfebb7bce915b9666708e2c469b3dba6a0ebe7f435ee2abf9",
+  "hardware": {
+    "physical_gpus": [
+      "Tesla T4",
+      "Tesla T4"
+    ],
+    "driver": "580.178.04",
+    "cuda_visible_devices_for_tests": "0"
+  },
+  "packages": {
+    "torch": "2.11.0+cu128",
+    "triton": "3.6.0",
+    "soup-cli": "0.77.0",
+    "transformers": "5.16.1",
+    "peft": "0.20.0",
+    "trl": "0.29.1",
+    "bitsandbytes": "0.50.2",
+    "accelerate": "1.14.0"
+  },
+  "environment_setup": "Removed preinstalled torchao 0.10.0, rejected by PEFT 0.20, before tests or either benchmark variant.",
+  "checks": [
+    {
+      "command": "python -m pytest solution -q --tb=short",
+      "passed": 254,
+      "skipped": 17,
+      "warnings": 15,
+      "seconds": 22.27
+    },
+    {
+      "command": "SOUP_APPLY_SOLUTION=1 python -m pytest tests -q",
+      "passed": 79,
+      "warnings": 14,
+      "seconds": 0.36
+    }
+  ],
+  "limitations": [
+    "Numerical tests alone do not establish eligibility; separate initial harness evidence records a 2.1% kernel-share failure.",
+    "Optional NF4 full-shape tests and Triton interpreter tests were not enabled.",
+    "Final submission must rerun from the platform repository's final commit in a saved Kaggle notebook version."
+  ]
+}

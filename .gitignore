@@ -11,3 +11,6 @@ kaggle/out/
 runs/
 runs_*/
 runs_try/
+.venv/
+docs/STATE.md
+docs/WORKSPACE_ORIGINAL.md
