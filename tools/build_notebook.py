@@ -222,7 +222,7 @@ def build(repo_url, branch, commit, mode, username, module_test):
         '    raise SystemExit("MODE must be unit, quick, full, full_profile, check_and_ops, pack_check, quick_ab, ab_overhead, pack_and_idle or robust")\n'))
     out.append(code(
         'for pattern in ("runs*/**/train.log", "runs*/eval_*.log", "runs*/result.json",\n'
-        '                "runs*/checks.json", "runs*/**/metrics.json", "runs*/solution_profile/profile.json",\n'
+        '                "runs*/checks.json", "runs*/**/rewind.jsonl", "runs*/**/metrics.json", "runs*/solution_profile/profile.json",\n'
         '                "runs/base_profile/train.log", "runs_try/op_profile/train.log"):\n'
         '    for p in glob.glob(str(REPO / pattern), recursive=True):\n'
         '        rel = Path(p).relative_to(REPO)\n'
