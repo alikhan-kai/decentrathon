@@ -1,7 +1,7 @@
 """Build kaggle/soup_kernel_debug.ipynb from templates/kaggle_notebook.ipynb.
 
     python3 tools/build_notebook.py --username NAME [--branch main] [--commit SHA] [--repo URL]
-        [--mode quick|unit|full|full_profile|check_and_ops|pack_check|quick_ab|pack_and_idle|robust] [--module-test solution/test_x.py]
+        [--mode quick|unit|full|full_profile|check_and_ops|pack_check|quick_ab|pack_and_idle|robust|ab_attn] [--module-test solution/test_x.py]
         [--slug soup-kernel-debug]
 Writes kaggle/build/<username>/soup_kernel_debug.ipynb and kernel-metadata.json (the folder is in
 .gitignore, so nobody's build conflicts with anybody else's). No tokens are touched.
@@ -157,6 +157,40 @@ def build(repo_url, branch, commit, mode, username, module_test):
         '        stage(f"idle_{tag}", ["python", "tools/op_profile.py", "--config", str(run_dir / "task.yaml"),\n'
         '                              "--out", str(OUT / f"idle_{tag}.json")], env=env)\n'
         '    swap_solution(mine)\n\n'
+        'def set_variant(v):\n'
+        '    """Attention variant of solution/packed_attn.py, switched by rewriting its VARIANT line (no environment)."""\n'
+        '    import re\n'
+        '    path = REPO / "solution/packed_attn.py"\n'
+        '    text = path.read_text()\n'
+        '    new = re.sub(r\'(?m)^VARIANT = "[A-Z0-9]+"\', f\'VARIANT = "{v}"\', text)\n'
+        '    assert f\'VARIANT = "{v}"\' in new, "VARIANT line not found"\n'
+        '    path.write_text(new)\n\n'
+        'def ab_attn():\n'
+        '    """One T4 session: variants A, A2, B, A, A2, B, each a quick solution run; the first run of every variant is also\n'
+        '    profiled once (GPU busy, kernels per step, ATTN_STATS line)."""\n'
+        '    import yaml\n'
+        '    sys.path.insert(0, str(REPO / "harness"))\n'
+        '    from common import OFFLINE_ENV\n'
+        '    seen = set()\n'
+        '    for i, v in enumerate(["A", "A2", "B", "A", "A2", "B"]):\n'
+        '        set_variant(v)\n'
+        '        stage(f"run_{i}_{v}", ["python", "harness/run_task.py", "--only", "solution", "--out", f"runs_attn_{i}_{v}"])\n'
+        '        if v in seen:\n'
+        '            continue\n'
+        '        seen.add(v)\n'
+        '        run_dir = REPO / "runs_attn_profile" / v\n'
+        '        run_dir.mkdir(parents=True, exist_ok=True)\n'
+        '        cfg = yaml.safe_load((REPO / "task/task.yaml").read_text())\n'
+        '        cfg["data"]["train"], cfg["output"] = str(REPO / "data/train.jsonl"), str(run_dir / "adapter")\n'
+        '        cfg["training"]["seed"] = 1\n'
+        '        (run_dir / "task.yaml").write_text(yaml.safe_dump(cfg, sort_keys=False, allow_unicode=True))\n'
+        '        env = dict(OFFLINE_ENV, SOUP_DB_PATH=str(run_dir / "experiments.db"),\n'
+        '                   TRITON_CACHE_DIR=str(run_dir / "triton_cache"),\n'
+        '                   TORCHINDUCTOR_CACHE_DIR=str(run_dir / "inductor_cache"))\n'
+        '        stage(f"profile_{v}", ["python", "tools/op_profile.py", "--config", str(run_dir / "task.yaml"),\n'
+        '                               "--out", str(OUT / f"attn_profile_{v}.json")], env=env)\n'
+        '        print("variant", v, [l for l in open(OUT / f"profile_{v}.log") if l.startswith("ATTN_STATS")][-1:])\n'
+        '    set_variant("A")\n\n'
         'def ab():\n'
         '    """Same T4 session: start (A) / this commit (B) / start (A) so session drift shows."""\n'
         '    mine = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()\n'
@@ -176,6 +210,9 @@ def build(repo_url, branch, commit, mode, username, module_test):
         'if MODE == "unit":\n'
         '    assert MODULE_TEST, "unit mode needs MODULE_TEST"\n'
         '    stage("pytest_unit", ["python", "-m", "pytest", *MODULE_TEST.split(), "-q", "-rs"])\n'
+        'elif MODE == "ab_attn":\n'
+        '    pytests()\n'
+        '    ab_attn()\n'
         'elif MODE == "robust":\n'
         '    stage("make_robust_data", ["python", "tools/make_robust_data.py", "--out", "data_robust"])\n'
         '    stage("run_task_robust", ["python", "harness/run_task.py", "--repeats", "2", "--seed", "7",\n'
@@ -205,7 +242,7 @@ def build(repo_url, branch, commit, mode, username, module_test):
         '    if MODE == "full_profile":\n'
         '        base_profile()\n'
         'else:\n'
-        '    raise SystemExit("MODE must be unit, quick, full, full_profile, check_and_ops, pack_check, quick_ab, pack_and_idle or robust")\n'))
+        '    raise SystemExit("MODE must be unit, quick, full, full_profile, check_and_ops, pack_check, quick_ab, pack_and_idle, robust or ab_attn")\n'))
     out.append(code(
         'for pattern in ("runs*/**/train.log", "runs*/eval_*.log", "runs*/result.json",\n'
         '                "runs*/checks.json", "runs*/**/metrics.json", "runs*/solution_profile/profile.json",\n'
@@ -228,7 +265,7 @@ def main():
     p.add_argument("--branch", default="main")
     p.add_argument("--commit", default="")
     p.add_argument("--mode", default="quick",
-                   choices=("quick", "unit", "full", "full_profile", "check_and_ops", "pack_check", "quick_ab", "pack_and_idle", "robust"))
+                   choices=("quick", "unit", "full", "full_profile", "check_and_ops", "pack_check", "quick_ab", "pack_and_idle", "robust", "ab_attn"))
     p.add_argument("--module-test", default="", help="unit mode: path of one test file")
     p.add_argument("--slug", default="soup-kernel-debug")
     a = p.parse_args()

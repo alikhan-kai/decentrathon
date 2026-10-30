@@ -230,6 +230,8 @@ def attribute(prof, steps, cpu_fallback=False):
 
 
 IDLE_BUSY_LIMIT = 0.85
+ATTN_OPS = ("aten::_efficient_attention_forward", "aten::_efficient_attention_backward", "aten::bmm", "aten::_softmax",
+            "aten::_scaled_dot_product_efficient_attention", "aten::_scaled_dot_product_flash_attention")
 LAUNCH_NAMES = ("cudaLaunchKernel", "cuLaunchKernel", "cudaLaunchKernelExC", "cuLaunchKernelEx")
 
 
@@ -297,6 +299,11 @@ def idle_stats(prof, steps):
     result["launch_sources_per_step"] = [{"phase": p, "module": m, "kernels_per_step": n / steps}
                                          for (p, m), n in sorted(sources.items(), key=lambda kv: -kv[1])]
     result["busy_limit"] = IDLE_BUSY_LIMIT
+    counted = defaultdict(int)
+    for ev in events:
+        if ev.device_type == DeviceType.CPU and ev.name in ATTN_OPS:
+            counted[ev.name] += 1
+    result["attn_stats"] = {name: counted[name] / steps for name in ATTN_OPS}
     return result
 
 
@@ -357,6 +364,8 @@ def report(result):
         if idle["gpu_busy_fraction"] is not None and idle["gpu_busy_fraction"] < idle["busy_limit"]:
             lines.append(f"busy < {idle['busy_limit']:.0%}: kernel launches per step by source")
             lines += [f"{r['kernels_per_step']:9.1f}  {r['phase']}  {r['module']}" for r in idle["launch_sources_per_step"][:15]]
+        lines.append("ATTN_STATS " + json.dumps({"calls_per_step": idle["attn_stats"], "kernels_per_step": idle["kernel_launches_per_step"],
+                                                 "gpu_busy_fraction": idle["gpu_busy_fraction"]}))
     lines += ["", f"dtypes of module outputs: {result.get('dtypes')}", f"weights: {result.get('weights')}",
               f"calls per step: {result.get('calls_per_step')}", f"errors: {result.get('errors')}"]
     return "\n".join(lines)

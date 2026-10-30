@@ -33,6 +33,8 @@ from collections import Counter
 
 import torch
 
+from . import packed_attn
+
 ENABLED = True
 
 _STATE = {"lens": None}      # row lengths of the batch currently inside the packed Qwen2Model.forward
@@ -102,7 +104,6 @@ def _report_stats():
 
 
 def _install():
-    from transformers.integrations.sdpa_attention import sdpa_attention_forward
     from transformers.modeling_outputs import BaseModelOutputWithPast
     from transformers.models.qwen2 import modeling_qwen2 as mq
 
@@ -121,17 +122,25 @@ def _install():
                                           position_ids=position_ids, past_key_values=past_key_values,
                                           inputs_embeds=inputs_embeds, use_cache=use_cache, **kwargs)
         lens, flat_index, positions = found
-        _STATS["packed_steps"].append((sum(lens), len(lens) * attention_mask.shape[1]))
+        n_real = sum(lens)
+        _STATS["packed_steps"].append((n_real, len(lens) * attention_mask.shape[1]))
+        extra = packed_attn.extra_tokens(n_real)           # variant B: N % 8 == 0, filler tokens at the end
+        if extra:
+            flat_index = torch.cat([flat_index, flat_index[:1].expand(extra)])
+            positions = torch.cat([positions, torch.arange(extra, device=positions.device).unsqueeze(0)], dim=1)
+            lens = lens + [extra]
         hidden_states = self.embed_tokens(input_ids.reshape(-1)[flat_index]).unsqueeze(0)        # [1, N, H]
         position_embeddings = self.rotary_emb(hidden_states, positions)
         _STATE["lens"] = lens
+        packed_attn.begin(lens, hidden_states.device)
         try:
             for decoder_layer in self.layers[: self.config.num_hidden_layers]:
                 hidden_states = decoder_layer(hidden_states, attention_mask=None, position_embeddings=position_embeddings,
                                               position_ids=positions, past_key_values=None, use_cache=False, **kwargs)
         finally:
             _STATE["lens"] = None
-        output = BaseModelOutputWithPast(last_hidden_state=self.norm(hidden_states), past_key_values=None)
+            packed_attn.end()
+        output = BaseModelOutputWithPast(last_hidden_state=self.norm(hidden_states[:, :n_real]), past_key_values=None)
         output.packed_keep = attention_mask.bool()       # read by head_loss: hidden is [1, N, H] in this row-major order
         return output
 
@@ -148,15 +157,8 @@ def _install():
         cos, sin = position_embeddings
         query_states, key_states = mq.apply_rotary_pos_emb(query_states, key_states, cos, sin)
         dropout = 0.0 if not self.training else self.attention_dropout
-        pieces, start = [], 0
-        for n in lens:
-            end = start + n
-            piece, _ = sdpa_attention_forward(self, query_states[:, :, start:end], key_states[:, :, start:end],
-                                              value_states[:, :, start:end], None, dropout=dropout,
-                                              scaling=self.scaling, sliding_window=self.sliding_window)
-            pieces.append(piece)
-            start = end
-        attn_output = torch.cat(pieces, dim=1).reshape(*input_shape, -1).contiguous()
+        attn_output = packed_attn.attend(self, query_states, key_states, value_states, lens, dropout)
+        attn_output = attn_output.reshape(*input_shape, -1).contiguous()
         return self.o_proj(attn_output), None
 
     mq.Qwen2Model.forward = model_forward
