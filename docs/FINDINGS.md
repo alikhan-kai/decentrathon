@@ -86,7 +86,7 @@ speedup 1.1543, memory_ratio 1.7108. Проверки (FP/checks.json): 1, 2, 3,
 - Поведение на скрытых строках жюри и разброс между сессиями Kaggle: не знаю.
 
 ## 7. Ветка feat/check4: NF4 и RMSNorm на Triton (коммит 522bada; источники: Q1, Q2, F2)
-Q1 = `kaggle/out_quick_20261030_160128` (после NF4), Q2 = `kaggle/out_quick_20261030_161028` (после NF4 + RMSNorm),
+Q1 = `docs/measurements/quick_nf4/` (после NF4), Q2 = `docs/measurements/quick_nf4_rmsnorm/` (после NF4 + RMSNorm),
 F2 = `docs/measurements/full_profile_522bada/` (full_profile). Q1 и Q2 это один запуск решения (`quick`), F2 это base x2 и solution x2.
 
 | | до (9995a69, OP) | + NF4 (Q1) | + NF4 + RMSNorm (Q2) | full_profile (F2, медиана 2) |
@@ -103,7 +103,7 @@ F2 = `docs/measurements/full_profile_522bada/` (full_profile). Q1 и Q2 это �
 
 **full_profile (F2):** base 90.14 с, 14345 MiB, eval 2.04963; solution 79.91 с, 8383 MiB, eval 2.04967.
 speedup **1.128**, memory_ratio **1.7112**, quality_delta +0.002%. Проверки 1-10: **все PASS**, включая 4 ("own kernels >= 5%": 6.06% и 6.07%).
-Запуск F2 шёл на более медленной сессии T4: medianный шаг базы 1.030 с против 0.918 с в запуске fe282f8, matmul-группа решения 366 против 311 мс/шаг.
+Запуск F2 шёл на более медленной сессии T4: медианный шаг базы 1.030 с против 0.918 с в запуске fe282f8, matmul-группа решения 366 против 311 мс/шаг.
 Наше кернел-время в мс/шаг почти не изменилось (49.2 против 47.1), поэтому доля в F2 ниже, чем в Q2 (6.06% против 7.47%): знаменатель вырос.
 Запас над порогом 5% в F2 около 1 процентного пункта; как поведёт себя доля на сессии и скрытых строках жюри: не знаю.
 
