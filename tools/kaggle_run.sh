@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Run the notebook on YOUR Kaggle account (T4) and bring the results back.
 #   KAGGLE_USERNAME=<your kaggle login> tools/kaggle_run.sh <MODE> [BRANCH] [MODULE_TEST]
-#   MODE: unit (pytest -q -rs of MODULE_TEST, 1-2 min) | quick | full | full_profile | check_and_ops | pack_check | quick_ab | pack_and_idle
+#   MODE: unit (pytest -q -rs of MODULE_TEST, 1-2 min) | quick | full | full_profile | check_and_ops | pack_check | quick_ab | pack_and_idle | robust
 #   BRANCH: default = the current branch. MODULE_TEST: for unit, a file or a directory (default solution/)
 # Pushes the current branch to origin (never --force; main only with ALLOW_MAIN=1), builds the
 # notebook for the COMMIT OF THIS BRANCH, pushes it to Kaggle, waits (50 min max), downloads the
@@ -11,8 +11,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-MODE="${1:?usage: KAGGLE_USERNAME=<login> tools/kaggle_run.sh <unit|quick|full|full_profile|check_and_ops|pack_check|quick_ab|pack_and_idle> [BRANCH] [MODULE_TEST]}"
-case "$MODE" in unit|quick|full|full_profile|check_and_ops|pack_check|quick_ab|pack_and_idle) ;; *) echo "bad MODE: $MODE"; exit 2;; esac
+MODE="${1:?usage: KAGGLE_USERNAME=<login> tools/kaggle_run.sh <unit|quick|full|full_profile|check_and_ops|pack_check|quick_ab|pack_and_idle|robust> [BRANCH] [MODULE_TEST]}"
+case "$MODE" in unit|quick|full|full_profile|check_and_ops|pack_check|quick_ab|pack_and_idle|robust) ;; *) echo "bad MODE: $MODE"; exit 2;; esac
 BRANCH="${2:-$(git rev-parse --abbrev-ref HEAD)}"
 MODULE_TEST="${3:-}"
 [ "$MODE" != unit ] || MODULE_TEST="${MODULE_TEST:-solution/}"   # a file or a directory

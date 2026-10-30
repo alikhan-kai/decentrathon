@@ -1,7 +1,7 @@
 """Build kaggle/soup_kernel_debug.ipynb from templates/kaggle_notebook.ipynb.
 
     python3 tools/build_notebook.py --username NAME [--branch main] [--commit SHA] [--repo URL]
-        [--mode quick|unit|full|full_profile|check_and_ops|pack_check|quick_ab|pack_and_idle] [--module-test solution/test_x.py]
+        [--mode quick|unit|full|full_profile|check_and_ops|pack_check|quick_ab|pack_and_idle|robust] [--module-test solution/test_x.py]
         [--slug soup-kernel-debug]
 Writes kaggle/build/<username>/soup_kernel_debug.ipynb and kernel-metadata.json (the folder is in
 .gitignore, so nobody's build conflicts with anybody else's). No tokens are touched.
@@ -176,6 +176,12 @@ def build(repo_url, branch, commit, mode, username, module_test):
         'if MODE == "unit":\n'
         '    assert MODULE_TEST, "unit mode needs MODULE_TEST"\n'
         '    stage("pytest_unit", ["python", "-m", "pytest", *MODULE_TEST.split(), "-q", "-rs"])\n'
+        'elif MODE == "robust":\n'
+        '    stage("make_robust_data", ["python", "tools/make_robust_data.py", "--out", "data_robust"])\n'
+        '    stage("run_task_robust", ["python", "harness/run_task.py", "--repeats", "2", "--seed", "7",\n'
+        '                              "--train-file", "data_robust/train.jsonl", "--eval-file", "data_robust/eval.jsonl",\n'
+        '                              "--out", "runs_robust"])\n'
+        '    stage("check_rules_robust", ["python", "harness/check_rules.py", "--result", "runs_robust/result.json"])\n'
         'elif MODE == "pack_and_idle":\n'
         '    pack_and_idle()\n'
         'elif MODE == "quick_ab":\n'
@@ -199,7 +205,7 @@ def build(repo_url, branch, commit, mode, username, module_test):
         '    if MODE == "full_profile":\n'
         '        base_profile()\n'
         'else:\n'
-        '    raise SystemExit("MODE must be unit, quick, full, full_profile, check_and_ops, pack_check, quick_ab or pack_and_idle")\n'))
+        '    raise SystemExit("MODE must be unit, quick, full, full_profile, check_and_ops, pack_check, quick_ab, pack_and_idle or robust")\n'))
     out.append(code(
         'for pattern in ("runs*/**/train.log", "runs*/eval_*.log", "runs*/result.json",\n'
         '                "runs*/checks.json", "runs*/**/metrics.json", "runs*/solution_profile/profile.json",\n'
@@ -222,7 +228,7 @@ def main():
     p.add_argument("--branch", default="main")
     p.add_argument("--commit", default="")
     p.add_argument("--mode", default="quick",
-                   choices=("quick", "unit", "full", "full_profile", "check_and_ops", "pack_check", "quick_ab", "pack_and_idle"))
+                   choices=("quick", "unit", "full", "full_profile", "check_and_ops", "pack_check", "quick_ab", "pack_and_idle", "robust"))
     p.add_argument("--module-test", default="", help="unit mode: path of one test file")
     p.add_argument("--slug", default="soup-kernel-debug")
     a = p.parse_args()
