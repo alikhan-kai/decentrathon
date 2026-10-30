@@ -167,10 +167,12 @@ def _install():
                              position_ids=position_ids, past_key_values=past_key_values,
                              inputs_embeds=inputs_embeds, use_cache=use_cache, **kwargs)
         hidden = outputs.last_hidden_state
-        b, t, _ = hidden.shape
+        b, t = attention_mask.shape
         keep = attention_mask.bool()
         target_full = F.pad(labels, (0, 1), value=IGNORE)[:, 1:]
-        h, tgt = hidden[keep], target_full[keep]            # real tokens only, no pad rows
+        # packed.py already dropped pad from the decoder: hidden is [1, N, H] in the row-major order of `keep`
+        h = hidden[0] if getattr(outputs, "packed_keep", None) is not None else hidden[keep]
+        tgt = target_full[keep]                             # real tokens only, no pad rows
         labelled = (tgt != IGNORE).sum()
         denom = labelled if num_items is None else num_items
         loss, loss_row, ent, hit = fused_head_loss(h, self.lm_head.weight, tgt, denom)

@@ -19,7 +19,7 @@ not work is worse than a crash.
 
 import importlib
 
-MODULES = ["swiglu", "head_loss", "rmsnorm", "nf4", "lora"]
+MODULES = ["swiglu", "head_loss", "packed", "rmsnorm", "nf4", "lora"]
 
 
 def apply():

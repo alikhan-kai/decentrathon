@@ -1,7 +1,7 @@
 # Контракты модулей
 
 Общая схема: `harness/_train.py` импортирует `solution` и вызывает `solution.apply()` до `soup train`. `apply()` идёт по
-`MODULES = ["swiglu", "head_loss", "rmsnorm", "nf4", "lora"]`: для каждого модуля, у которого `ENABLED = True`, вызывает
+`MODULES = ["swiglu", "head_loss", "packed", "rmsnorm", "nf4", "lora"]`: для каждого модуля, у которого `ENABLED = True`, вызывает
 `patch()`. Ошибка в `patch()` не глотается (иначе не заметим, что кернел не работает). Список `MODULES` меняет только integrator.
 
 ## Правила для любого модуля
@@ -20,6 +20,7 @@
 | `swiglu` (пример) | `modeling_qwen2.Qwen2MLP.forward` | |
 | `head_loss` | `modeling_qwen2.Qwen2ForCausalLM.forward` (только размеченный, обучение) и `trl.SFTTrainer.compute_loss` | их не трогает никто другой |
 | `rmsnorm` | `modeling_qwen2.Qwen2RMSNorm.forward`; шаг 2: `Qwen2DecoderLayer.forward` (остаточные сложения), `Qwen2Model.forward` (финальная норма) | |
+| `packed` | `modeling_qwen2.Qwen2Model.forward` (в обучении упаковывает реальные токены в `[1, N, H]`, возвращает `packed_keep`), `Qwen2Attention.forward` (SDPA по строкам) | `head_loss` читает `packed_keep` из выхода `self.model(...)`; с `rmsnorm` шаг 2 (`Qwen2Model.forward`) договариваться через integrator |
 | `nf4` | `bitsandbytes.backends.cuda.ops._dequantize_4bit_impl` (общая точка: forward через `gemm_4bit` -> `_dequant_linear_fallback`, backward через `F.dequantize_4bit` -> cuda-операция) | |
 | `lora` | `peft.tuners.lora.bnb.Linear4bit.forward` | не трогать `lora_dropout` |
 | (кандидат) rotary | `modeling_qwen2.apply_rotary_pos_emb` (функция модуля, `Qwen2Attention.forward` берёт её по имени при вызове) | |
