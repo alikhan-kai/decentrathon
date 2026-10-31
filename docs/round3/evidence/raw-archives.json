@@ -1,0 +1,30 @@
+[
+  {
+    "name": "latest-forward-ab",
+    "sha256": "344609528e2fa5dd2b8d8780405aedf5ae9188506e3ed4c372443b79037541e9",
+    "bytes": 73497468
+  },
+  {
+    "name": "latest-forward-prepared",
+    "sha256": "5b46f241da4d7e0ec4e74d62325e23b5d52392af3401dae81a95f16acd2554f1",
+    "bytes": 7842328
+  },
+  {
+    "name": "half-forward-primitive",
+    "sha256": "8968c4f69a61f71019f56c63dec2755f73befa8f4f00992e977b375bc29fb3fc",
+    "bytes": 297074
+  },
+  {
+    "name": "latest-forward-ba",
+    "sha256": "3ed1ed8b30e2c3d641bab6b70550ffbe6f3fc4036ba6bbc629a939dcb3dcd1b3",
+    "bytes": 73498285,
+    "source_files_verified": 101
+  },
+  {
+    "name": "final-forward",
+    "sha256": "7733edaf33a0e68939b4260247ae528df2e8cb73b9e91c30095426ad19dcdbe3",
+    "bytes": 146375137,
+    "source_files_verified": 58,
+    "receipt_flags_all_true": 24
+  }
+]

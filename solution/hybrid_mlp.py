@@ -12,7 +12,7 @@ cast is introduced. The fixed row threshold is a working-set policy, never a
 step/seed/dataset lookup or a value chosen from measurements at runtime.
 """
 import torch
-from torch.utils.checkpoint import checkpoint
+from .frozen_remat import frozen_branch_remat
 
 
 class _PackSaves:
@@ -58,7 +58,8 @@ def hybrid_mlp_forward(module, x, starter, threshold=1024):
     """Validated-entry helper; call ONLY after the canonical R2 guards pass.
 
     N = x.numel() / H. N <= threshold uses the exact R2 direct packed saves;
-    larger inputs checkpoint frozen gate/up + starter SwiGLU, with down outside.
+    larger inputs rematerialize frozen gate/up for starter SwiGLU backward,
+    with down outside. Only the original hidden input is saved for that branch.
     Keep threshold fixed across the run. Higher-order/compile/adapters/hooks and
     noncanonical projection provenance remain excluded by the caller's guards.
     """
@@ -66,10 +67,9 @@ def hybrid_mlp_forward(module, x, starter, threshold=1024):
         raise ValueError("threshold must be a fixed positive integer")
     n = x.numel() // x.shape[-1]
     if n > threshold:
-        def branch(hidden):
-            return starter.swiglu(module.gate_proj(hidden), module.up_proj(hidden))
-
-        out = checkpoint(branch, x, use_reentrant=False, preserve_rng_state=True)
+        out = frozen_branch_remat(module, x, starter)
+        # Preserve the canonical FP32 down/residual boundary explicitly.
+        return module.down_proj(out).to(torch.float32)
     else:
         gate, up = module.gate_proj(x), module.up_proj(x)
         # Same post-projection metadata fallback as R2, without replaying either

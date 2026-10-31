@@ -1,0 +1,13 @@
+{
+  "minimum_percent": 10.295485644114379,
+  "minimum_exact_fraction": "1760631/171010",
+  "excluded": [
+    "example_swiglu_fwd_kernel",
+    "example_swiglu_bwd_kernel"
+  ],
+  "formula": "eligible_ms / (10 * timed_loop_s), percent",
+  "runs_percent": [
+    10.295485644114379,
+    10.425350920710889
+  ]
+}
