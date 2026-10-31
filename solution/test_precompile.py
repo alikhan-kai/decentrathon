@@ -27,8 +27,17 @@ def _run_training_launches():
 
     dev = "cuda"
     n = HIDDEN * HIDDEN
-    nf4.dequantize_nf4(torch.randint(0, 256, (n // 2, 1), dtype=torch.uint8, device=dev),
-                       torch.rand(n // 64, device=dev), torch.empty(HIDDEN, HIDDEN, dtype=torch.float16, device=dev))
+    packed_w = torch.randint(0, 256, (n // 2, 1), dtype=torch.uint8, device=dev)
+    out_w = torch.empty(HIDDEN, HIDDEN, dtype=torch.float16, device=dev)
+    nf4.dequantize_nf4(packed_w, torch.rand(n // 64, device=dev), out_w)
+    nf4.dequantize_nf4_nested(
+        packed_w,
+        torch.randint(0, 256, (n // 64,), dtype=torch.uint8, device=dev),
+        torch.rand(256, device=dev),
+        torch.rand((n // 64 + 255) // 256, device=dev),
+        torch.tensor(0.5, dtype=torch.float32, device=dev),
+        out_w,
+    )
 
     x = torch.randn(1, N, HIDDEN, device=dev, requires_grad=True)
     rmsnorm.rmsnorm(x, torch.rand(HIDDEN, device=dev), 1e-6).sum().backward()

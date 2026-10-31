@@ -15,6 +15,8 @@ _patched = False
 
 def lora_epilogue(result, lora_out, scaling):
     """Fused epilogue: result + lora_out * scaling."""
+    if lora_out.dtype != result.dtype:
+        lora_out = lora_out.to(result.dtype)
     return torch.add(result, lora_out, alpha=scaling)
 
 
@@ -33,10 +35,22 @@ def patch():
     _original_forward = bnb_lora.Linear4bit.forward
 
     def fast_forward(self, x: torch.Tensor, *args, **kwargs) -> torch.Tensor:
+        adapter_names = kwargs.get("adapter_names", None)
+        if adapter_names is not None:
+            return _original_forward(self, x, *args, **kwargs)
         if self.disable_adapters or self.merged:
             return self.base_layer(x, *args, **kwargs)
 
+        lora_variant = getattr(self, "lora_variant", {})
+        use_dora = getattr(self, "use_dora", {})
+        for active_adapter in self.active_adapters:
+            if active_adapter not in self.lora_A.keys():
+                continue
+            if active_adapter in lora_variant or use_dora.get(active_adapter, False):
+                return _original_forward(self, x, *args, **kwargs)
+
         result = self.base_layer(x, *args, **kwargs)
+        result_dtype = result.dtype
         for active_adapter in self.active_adapters:
             if active_adapter not in self.lora_A.keys():
                 continue
@@ -45,17 +59,11 @@ def patch():
             dropout = self.lora_dropout[active_adapter]
             scaling = self.scaling[active_adapter]
 
-            # In our task: autocast/fp16, x is already fp16 matching lora_A.weight.dtype
-            x_ = x
-            if not getattr(self, "use_dora", {}).get(active_adapter, False):
-                if x_.dtype != lora_A.weight.dtype:
-                    x_ = x_.to(lora_A.weight.dtype)
-                lora_out = lora_B(lora_A(dropout(x_)))
-                if lora_out.dtype != result.dtype:
-                    lora_out = lora_out.to(result.dtype)
-                result = torch.add(result, lora_out, alpha=scaling)
-            else:
-                return _original_forward(self, x, *args, **kwargs)
+            x_ = self._cast_input_dtype(x, lora_A.weight.dtype)
+            lora_out = lora_B(lora_A(dropout(x_)))
+            if lora_out.dtype != result_dtype:
+                lora_out = lora_out.to(result_dtype)
+            result = torch.add(result, lora_out, alpha=scaling)
         return result
 
     bnb_lora.Linear4bit.forward = fast_forward

@@ -24,25 +24,31 @@ import time
 # Per-module import/patch timings to stderr; off by default, switch on by editing this line.
 PRINT_TIMINGS = False
 
-MODULES = ["swiglu", "head_loss", "rmsnorm", "nf4", "lora", "rotary", "precompile", "overhead"]
+MODULES = ["precompile", "swiglu", "head_loss", "rmsnorm", "nf4", "lora", "rotary", "overhead"]
 
 
 def apply():
     t_start = time.perf_counter()
+    from . import lazy_bnb_compile, overhead
+
+    if overhead.ENABLED and overhead.PACKAGES_CACHE:
+        overhead._patch_packages_distributions()
+
     timings = {}
-    for name in MODULES:
-        t0 = time.perf_counter()
-        module = importlib.import_module(f"{__name__}.{name}")
-        t_import = time.perf_counter() - t0
-        is_enabled = getattr(module, "ENABLED", False)
-        t_patch = 0.0
-        if is_enabled:
-            patch = getattr(module, "patch", None)
-            if patch is not None:
-                tp0 = time.perf_counter()
-                patch()
-                t_patch = time.perf_counter() - tp0
-        timings[name] = (is_enabled, t_import, t_patch)
+    with lazy_bnb_compile.install(enabled=True):
+        for name in MODULES:
+            t0 = time.perf_counter()
+            module = importlib.import_module(f"{__name__}.{name}")
+            t_import = time.perf_counter() - t0
+            is_enabled = getattr(module, "ENABLED", False)
+            t_patch = 0.0
+            if is_enabled:
+                patch = getattr(module, "patch", None)
+                if patch is not None:
+                    tp0 = time.perf_counter()
+                    patch()
+                    t_patch = time.perf_counter() - tp0
+            timings[name] = (is_enabled, t_import, t_patch)
 
     if not PRINT_TIMINGS:
         return

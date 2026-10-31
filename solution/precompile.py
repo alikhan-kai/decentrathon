@@ -40,7 +40,7 @@ _thread = None
 
 def _specs():
     """(kernel, args, kwargs) for every training launch, in order of first use in step 1 (forward,
-    then backward, then the fp32 SwiGLU of steps above 1024 rows and eval); dtypes stand for tensors."""
+    then backward, then eval / fallback variants); dtypes stand for tensors."""
     import torch
     import triton
 
@@ -53,28 +53,33 @@ def _specs():
     # rotary._launch: fp32 Q/K and trig; counts, T and strides are do_not_specialize
     rope_args = (f32,) * 6 + (1000, 1000, 4, 1000, HEADS, KV_HEADS, HEAD_DIM) + (1000,) * 14
     rope_kwargs = dict(num_warps=4, enable_fp_fusion=False)
-    # Starter SwiGLU (not our kernel, but its compile is in the wall time too): native_half saves
-    # fp16 gate/up with an fp32 output; the recompute branch and eval run it in fp32.
+    # Starter SwiGLU (not our kernel, but its compile is in the wall time too): native_half and
+    # frozen_remat run in fp16; eval runs in fp32.
     n = 2048 * 8960
     fwd, bwd = swiglu.example_swiglu_fwd_kernel, swiglu.example_swiglu_bwd_kernel
     specs = [
         # FusedRMSNorm: fp32 residual stream, fp32 frozen weight
         (rmsnorm.rmsnorm_fwd_kernel, (f32, f32, f32, f32, HIDDEN, 1e-6), norm),
-        # nf4.dequantize_nf4: packed weight, absmax, code table, fp16 out, n = weights (all % 16 == 0)
-        (nf4.nf4_dequant_kernel, (u8, f32, f32, f16, HIDDEN * HIDDEN),
-         dict(BYTES=nf4.BYTES_PER_PROGRAM, BLOCKSIZE=nf4.BLOCKSIZE, num_warps=nf4.NUM_WARPS)),
+        # nf4.dequantize_nf4_nested: packed u8, qabsmax u8, code, code2, absmax2, offset, fp16 out, n
+        (nf4.nf4_dequant_kernel, (u8, u8, f32, f32, f32, f32, f16, HIDDEN * HIDDEN),
+         dict(BYTES=nf4.BYTES_PER_PROGRAM, BLOCKSIZE=nf4.BLOCKSIZE, BLOCKSIZE2=nf4.BLOCKSIZE2,
+              NESTED=True, num_warps=nf4.NUM_WARPS)),
         (rope, rope_args + (False, 256), rope_kwargs),
-        (fwd, (f16, f16, f32, n), dict(BLOCK=swiglu.BLOCK)),
+        (fwd, (f16, f16, f16, n), dict(BLOCK=swiglu.BLOCK)),
         # _FusedHeadLoss: fp16 logits chunk [c, V], int64 targets; forward stores rows, backward grads
         (head_loss.head_loss_kernel, (f16, i64, VOCAB, VOCAB, f32, f32, i32, None),
          dict(WITH_GRAD=False, **head)),
         (head_loss.head_loss_kernel, (f16, i64, VOCAB, VOCAB, None, None, None, f32),
          dict(WITH_GRAD=True, **head)),
-        (bwd, (f32, f16, f16, f32, f32, n), dict(BLOCK=swiglu.BLOCK)),
+        (bwd, (f16, f16, f16, f16, f16, n), dict(BLOCK=swiglu.BLOCK)),
         (rope, rope_args + (True, 256), rope_kwargs),
         (rmsnorm.rmsnorm_bwd_kernel, (f32, f32, f32, f32, f32, HIDDEN), norm),
+        # Eval / non-nested fallback specializations (compiled last after all step-1 training kernels)
         (fwd, (f32, f32, f32, n), dict(BLOCK=swiglu.BLOCK)),
         (bwd, (f32, f32, f32, f32, f32, n), dict(BLOCK=swiglu.BLOCK)),
+        (nf4.nf4_dequant_kernel, (u8, f32, f32, None, None, None, f16, HIDDEN * HIDDEN),
+         dict(BYTES=nf4.BYTES_PER_PROGRAM, BLOCKSIZE=nf4.BLOCKSIZE, BLOCKSIZE2=nf4.BLOCKSIZE2,
+              NESTED=False, num_warps=nf4.NUM_WARPS)),
     ]
     return [spec for spec in specs if spec[0] is not None]
 
@@ -124,11 +129,11 @@ def _wait_for_thread(*args, **kwargs):
 def _report_stats():
     if _thread is not None:
         _thread.join()
-        print("PRECOMPILE_STATS " + json.dumps(stats(), separators=(",", ":")), flush=True)
+    print("PRECOMPILE_STATS " + json.dumps(stats(), separators=(",", ":")), flush=True)
 
 
 def patch():
-    """Idempotent: start the compile thread once, on a CUDA machine only."""
+    """Start one worker thread; idempotent. Does nothing if CUDA is unavailable."""
     global _thread
     if _thread is not None:
         return

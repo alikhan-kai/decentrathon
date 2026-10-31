@@ -145,15 +145,16 @@ def head_rows(outputs, attended, required, width):
             or positions.device != hidden.device or positions.shape != (1, indices.numel())
             or hidden.shape != (1, indices.numel(), width) or indices.numel() == 0):
         raise RuntimeError("packed: invalid row-major layout metadata")
-    # Sorted unique in-range indices, N matching population and all selected rows
-    # attended establish the exact row-major bijection without another nonzero sync.
-    valid = ((keep == attended).all() & ~(required & ~keep).any()
-             & (keep.sum() == indices.numel()) & (indices >= 0).all()
-             & (indices < b * t).all() & (indices[1:] > indices[:-1]).all()
-             & keep.reshape(-1)[indices.clamp(0, b * t - 1)].all()
-             & (positions == (indices % t).unsqueeze(0)).all())
-    if not bool(valid):
-        raise RuntimeError("packed: invalid row-major layout contract")
+    if not getattr(outputs, "_packed_trusted", False):
+        # Sorted unique in-range indices, N matching population and all selected rows
+        # attended establish the exact row-major bijection without another nonzero sync.
+        valid = ((keep == attended).all() & ~(required & ~keep).any()
+                 & (keep.sum() == indices.numel()) & (indices >= 0).all()
+                 & (indices < b * t).all() & (indices[1:] > indices[:-1]).all()
+                 & keep.reshape(-1)[indices.clamp(0, b * t - 1)].all()
+                 & (positions == (indices % t).unsqueeze(0)).all())
+        if not bool(valid):
+            raise RuntimeError("packed: invalid row-major layout contract")
     return hidden[0], keep
 
 
@@ -213,6 +214,7 @@ def _install():
         output.packed_keep = attention_mask.bool()
         output.packed_indices = flat_index
         output.packed_positions = positions
+        output._packed_trusted = True
         return output
 
     def attention_forward(self, hidden_states, position_embeddings, attention_mask, past_key_values=None, **kwargs):
