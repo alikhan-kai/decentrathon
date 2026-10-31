@@ -212,6 +212,9 @@ def install_saved_activation_packing(*, enable=False, first_order_training=False
     starter = starter_module or importlib.import_module("solution.swiglu")
     if not _verified_starter(starter):
         return SavedActivationPatch(reason="not-exact-r8-starter")
+    from .bnb_provenance import matches
+    if not matches("Linear4bit.forward", bnb.nn.Linear4bit.forward):
+        return SavedActivationPatch(reason="noncanonical-bnb-forward")
     baseline = Qwen2MLP.forward
     code = next(c for c in starter.patch_qwen2_mlp.__code__.co_consts
                 if inspect.iscode(c) and c.co_name == "forward")
