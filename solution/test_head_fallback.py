@@ -8,6 +8,7 @@ arithmetic or CUDA correctness. No production device override is introduced.
 
 import copy
 from contextlib import nullcontext
+from contextvars import ContextVar
 
 import pytest
 import torch
@@ -48,7 +49,7 @@ def installed(monkeypatch):
     # Register restoration before installing the real class patches.
     monkeypatch.setattr(Qwen2ForCausalLM, "forward", Qwen2ForCausalLM.forward)
     monkeypatch.setattr(SFTTrainer, "compute_loss", original_loss)
-    monkeypatch.setattr(head_loss, "_STATE", {"armed": False, "step": None})
+    monkeypatch.setattr(head_loss, "_REQUEST", ContextVar("test_fused_head_request", default=None))
     head_loss._install()
     eligible = head_loss._eligible
 
@@ -133,8 +134,9 @@ def assert_fallback(trainer, original_loss, inputs=None, context=nullcontext):
     actual = run(SFTTrainer.compute_loss)
     torch.testing.assert_close(actual[:3], expected[:3], rtol=0, atol=0)
     assert actual[3] == expected[3]
-    assert getattr(trainer, head_loss.STEP_ATTR) is sentinel
-    assert head_loss._STATE == {"armed": False, "step": None}
+    # Packed bridge clears stale Rewind data before either dispatch route.
+    assert getattr(trainer, head_loss.STEP_ATTR) is None
+    assert head_loss._REQUEST.get() is None
     return actual
 
 
@@ -335,7 +337,7 @@ def test_supported_peft_path_keeps_normalization_metrics_and_rewind(tmp_path, in
     assert step.labelled.item() == 7
     assert step.token_entropy[0, :2].eq(0).all()
     assert step.token_loss[0, 1] > 0
-    assert head_loss._STATE == {"armed": False, "step": None}
+    assert head_loss._REQUEST.get() is None
 
 
 def test_cpu_device_is_rejected_without_override(tmp_path):

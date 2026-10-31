@@ -19,7 +19,7 @@ not work is worse than a crash.
 
 import importlib
 
-MODULES = ["swiglu", "head_loss", "rmsnorm", "nf4", "lora"]
+MODULES = ["swiglu", "head_loss", "rmsnorm", "nf4", "lora", "rotary"]
 
 
 def apply():
@@ -30,3 +30,8 @@ def apply():
         patch = getattr(module, "patch", None)
         if patch is not None:
             patch()
+
+
+# Explicit isolated combined-r1 stage adapter; checkout registry is untouched.
+from .stage_adapter import adapt_apply as _combined_adapt_apply
+apply = _combined_adapt_apply(apply)
