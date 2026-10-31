@@ -1,6 +1,6 @@
 # Frozen MLP experiment on the teammate baseline
 
-Status: prepared-model CUDA correctness passed; repeated full-task qualification is pending. Do not infer submission readiness from the component results.
+Status: the exact selected source passed repeated official T4 qualification and all ten checks. It remains a draft contribution; combination with later main changes is unvalidated.
 
 ## Source and ownership
 
@@ -42,8 +42,19 @@ Both orders used the same unchanged 64-step solution command, fresh compiler cac
 
 Candidate median is 70.725 s versus control 72.04 s: 1.315 s (1.83%) lower. Training-loop time also fell in both orders: 42.92 to 39.97 s and 42.28 to 41.40 s. The small reverse-order effect limits confidence in the gain magnitude. This passes the predeclared selection gate for full qualification; it does not establish the 54.8-second target or the official all-check result.
 
-Full qualification is running against these exact source bytes. Its result will be recorded only after raw evidence is exported. Draft PR: https://github.com/alikhan-kai/decentrathon/pull/10. Published runtime commit: `713f143e711146aaac43b557c560a3c1132e37df`.
+Full qualification completed against these exact source bytes; its raw evidence and separate final receipt are exported. Draft PR: https://github.com/alikhan-kai/decentrathon/pull/10. Published runtime commit: `713f143e711146aaac43b557c560a3c1132e37df`.
 
 ## Later upstream compatibility
 
 Main advanced to `fc9b348` after source freeze. That commit adds a layer-budget policy and background precompilation; neither is included in this evidence. A bounded source audit reproduced 35 failures among 147 cases in its stated budget regression and found that precompile lacks this candidate's all-half pointer signatures. The budget failure demonstrates an infeasible estimate, not a measured OOM. Composing the branches requires resolving those issues and fresh qualification. No merge was performed.
+
+
+## Final official qualification
+
+The unchanged repeated harness completed all four 64-step runs and both evaluations. Official solution summary: **70.54 seconds and 4421 MiB**, from individual times **70.77/70.32 seconds**. The harness rounds its floating-point median to two decimals; the arithmetic mean of the displayed run times is 70.545 seconds. Base summary was 90.57 seconds/14345 MiB (88.96/92.18 seconds). The 1.284x whole-solution speedup versus base includes earlier team work and must not be attributed entirely to this MLP change.
+
+All ten checks passed. Evaluation loss was 2.04944 versus base 2.04967. Tests: 381 passed/135 conditional skips in the full solution suite, 87 interpreter passes and a separately retained 79-passed regression transcript. Minimum useful original-kernel share was **10.295486%**, excluding every starter SwiGLU specialization.
+
+The final receipt reports QUALIFIED with all 24 flags true, source integrity, bounded cleanup/export and completion at 2026-10-31T11:26:59.714807Z. The 146375137-byte raw ZIP has SHA-256 `7733edaf33a0e68939b4260247ae528df2e8cb73b9e91c30095426ad19dcdbe3`. Its 58 source-manifest entries were independently rehashed after download. The separate receipt is authoritative for final export status; the ZIP's earlier job-status snapshot predates export.
+
+The **54.8-second target was not reached**. Memory is below 4693 MiB but did not improve relative to the guarded team control. Incremental time evidence remains the modest matched 1.315-second median gain described above. All artifacts are from one owned T4 session; the session was stopped after export. No automatic merge or localhost write occurred.
