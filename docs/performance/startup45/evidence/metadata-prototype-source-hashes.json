@@ -1,0 +1,10 @@
+{
+  "recorded_at": "2026-10-31T13:12:53.694578+00:00",
+  "source_hashes": {
+    "measure_imports.py": "b908155a8f4146d4d087e868949e9be5ecae853b37effe540316912c74e4abe5",
+    "startup_metadata.py": "0a77508dfad839ce8ef0fe835557a6d8deadfdd8546509396d1bfb9b0c6d2f07",
+    "probe.py": "85d7c00effabdb1a076b4ddb3389d238aa3673b8cd1db146f3e4d07f4f063130",
+    "test_startup_metadata.py": "25a4595e1d97e38eaf25c18144e823dcdb989e9b16cd729e06a770e850ea8dc3"
+  },
+  "scope": "CPU import-only prototype; apply-wrapper lock was added while the measurement script was running but was not exercised by probe.py. No exact whole-file GPU qualification."
+}

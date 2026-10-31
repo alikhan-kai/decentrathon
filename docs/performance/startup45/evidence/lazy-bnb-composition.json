@@ -1,0 +1,26 @@
+{
+  "baseline": {
+    "patch_applied": true,
+    "existing_files_changed": [
+      "solution/stage_adapter.py",
+      "solution/stage_options.py"
+    ],
+    "all_other_existing_files_byte_identical": true
+  },
+  "memory-base": {
+    "patch_applied": true,
+    "existing_files_changed": [
+      "solution/stage_adapter.py",
+      "solution/stage_options.py"
+    ],
+    "all_other_existing_files_byte_identical": true
+  },
+  "main-base": {
+    "patch_applied": true,
+    "existing_files_changed": [
+      "solution/stage_adapter.py",
+      "solution/stage_options.py"
+    ],
+    "all_other_existing_files_byte_identical": true
+  }
+}

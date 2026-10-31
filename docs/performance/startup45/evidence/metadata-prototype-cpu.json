@@ -1,0 +1,220 @@
+{
+  "rows": [
+    {
+      "arm": "control",
+      "import_span_s": 2.6905276469769888,
+      "metadata_calls": 1,
+      "metadata_s": [
+        0.20307274803053588
+      ],
+      "mapping_equal": true,
+      "independent_lists": true,
+      "cuda_initialized": false,
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "process_s": 5.508648073999211
+    },
+    {
+      "arm": "candidate",
+      "import_span_s": 2.457219328964129,
+      "metadata_calls": 0,
+      "metadata_s": [],
+      "mapping_equal": true,
+      "independent_lists": true,
+      "cuda_initialized": false,
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "process_s": 5.239015326020308
+    },
+    {
+      "arm": "candidate",
+      "import_span_s": 2.514107041002717,
+      "metadata_calls": 0,
+      "metadata_s": [],
+      "mapping_equal": true,
+      "independent_lists": true,
+      "cuda_initialized": false,
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "process_s": 5.267775893036742
+    },
+    {
+      "arm": "control",
+      "import_span_s": 2.652501760981977,
+      "metadata_calls": 1,
+      "metadata_s": [
+        0.20019355695694685
+      ],
+      "mapping_equal": true,
+      "independent_lists": true,
+      "cuda_initialized": false,
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "process_s": 5.501144214998931
+    },
+    {
+      "arm": "control",
+      "import_span_s": 2.651608945976477,
+      "metadata_calls": 1,
+      "metadata_s": [
+        0.20004224398871884
+      ],
+      "mapping_equal": true,
+      "independent_lists": true,
+      "cuda_initialized": false,
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "process_s": 5.486810586007778
+    },
+    {
+      "arm": "candidate",
+      "import_span_s": 2.498736494977493,
+      "metadata_calls": 0,
+      "metadata_s": [],
+      "mapping_equal": true,
+      "independent_lists": true,
+      "cuda_initialized": false,
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "process_s": 5.370820618991274
+    },
+    {
+      "arm": "candidate",
+      "import_span_s": 2.4509059240226634,
+      "metadata_calls": 0,
+      "metadata_s": [],
+      "mapping_equal": true,
+      "independent_lists": true,
+      "cuda_initialized": false,
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "process_s": 5.274712731014006
+    },
+    {
+      "arm": "control",
+      "import_span_s": 2.686474258021917,
+      "metadata_calls": 1,
+      "metadata_s": [
+        0.2053363419836387
+      ],
+      "mapping_equal": true,
+      "independent_lists": true,
+      "cuda_initialized": false,
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "process_s": 5.528895529045258
+    },
+    {
+      "arm": "control",
+      "import_span_s": 2.6753446880029514,
+      "metadata_calls": 1,
+      "metadata_s": [
+        0.19974389398703352
+      ],
+      "mapping_equal": true,
+      "independent_lists": true,
+      "cuda_initialized": false,
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "process_s": 5.4635374959907494
+    },
+    {
+      "arm": "candidate",
+      "import_span_s": 2.4632418649853207,
+      "metadata_calls": 0,
+      "metadata_s": [],
+      "mapping_equal": true,
+      "independent_lists": true,
+      "cuda_initialized": false,
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "process_s": 5.243234889989253
+    },
+    {
+      "arm": "candidate",
+      "import_span_s": 2.6491946799797006,
+      "metadata_calls": 0,
+      "metadata_s": [],
+      "mapping_equal": true,
+      "independent_lists": true,
+      "cuda_initialized": false,
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "process_s": 5.429661207017489
+    },
+    {
+      "arm": "control",
+      "import_span_s": 2.676754376036115,
+      "metadata_calls": 1,
+      "metadata_s": [
+        0.20057064102729782
+      ],
+      "mapping_equal": true,
+      "independent_lists": true,
+      "cuda_initialized": false,
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "process_s": 5.457808661041781
+    }
+  ],
+  "complete": true,
+  "summary": {
+    "control": {
+      "median_import_span_s": 2.676049532019533,
+      "median_process_s": 5.493977400503354
+    },
+    "candidate": {
+      "median_import_span_s": 2.480989179981407,
+      "median_process_s": 5.271244312025374
+    }
+  },
+  "scope": "CPU import-only; not CUDA or full training time"
+}

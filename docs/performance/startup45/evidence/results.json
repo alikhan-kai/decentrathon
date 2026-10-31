@@ -1,0 +1,704 @@
+{
+  "complete": true,
+  "scope": "CPU import-only, four fresh processes per arm",
+  "summaries": {
+    "metadata": {
+      "control": {
+        "import_s": 2.820307860529283,
+        "process_s": 5.634404635988176
+      },
+      "metadata": {
+        "import_s": 2.6454311209963635,
+        "process_s": 5.434424560022308
+      }
+    },
+    "lazy-bnb": {
+      "control": {
+        "import_s": 2.8541594495181926,
+        "process_s": 5.639567055011867
+      },
+      "lazy-bnb": {
+        "import_s": 2.1445281649939716,
+        "process_s": 4.9071147445065435
+      }
+    }
+  },
+  "rows": [
+    {
+      "arm": "control",
+      "import_s": 2.8044687130022794,
+      "scope": "CPU dependency imports through Soup CLI; no apply/model/training",
+      "metadata_admitted": false,
+      "lazy_stats": {
+        "status": "disabled",
+        "functions": []
+      },
+      "inductor_loaded": true,
+      "restored": true,
+      "mapping_equal": true,
+      "cuda_initialized": false,
+      "source_sha256": {
+        "startup_metadata.py": "28295012234c21d191263259ac25946d3df186b8a19e0577cef6ca49bb8b69f7",
+        "lazy_bnb_compile.py": "7e6d4f5f380fe9e55cac7894e7029b08684651471cd1e0c745e8a1c07717b7eb"
+      },
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "experiment": "metadata",
+      "process_s": 5.636018224991858,
+      "command": [
+        "/home/homelab/.t3/projects/decentrathon/.venv/bin/python",
+        "-B",
+        "/home/homelab/.t3/worktrees/decentrathon/speed48/docs/performance/startup45/import_probe.py",
+        "control"
+      ]
+    },
+    {
+      "arm": "metadata",
+      "import_s": 2.675113687000703,
+      "scope": "CPU dependency imports through Soup CLI; no apply/model/training",
+      "metadata_admitted": true,
+      "lazy_stats": {
+        "status": "disabled",
+        "functions": []
+      },
+      "inductor_loaded": true,
+      "restored": true,
+      "mapping_equal": true,
+      "cuda_initialized": false,
+      "source_sha256": {
+        "startup_metadata.py": "28295012234c21d191263259ac25946d3df186b8a19e0577cef6ca49bb8b69f7",
+        "lazy_bnb_compile.py": "7e6d4f5f380fe9e55cac7894e7029b08684651471cd1e0c745e8a1c07717b7eb"
+      },
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "experiment": "metadata",
+      "process_s": 5.440520247037057,
+      "command": [
+        "/home/homelab/.t3/projects/decentrathon/.venv/bin/python",
+        "-B",
+        "/home/homelab/.t3/worktrees/decentrathon/speed48/docs/performance/startup45/import_probe.py",
+        "metadata"
+      ]
+    },
+    {
+      "arm": "metadata",
+      "import_s": 2.6213937120046467,
+      "scope": "CPU dependency imports through Soup CLI; no apply/model/training",
+      "metadata_admitted": true,
+      "lazy_stats": {
+        "status": "disabled",
+        "functions": []
+      },
+      "inductor_loaded": true,
+      "restored": true,
+      "mapping_equal": true,
+      "cuda_initialized": false,
+      "source_sha256": {
+        "startup_metadata.py": "28295012234c21d191263259ac25946d3df186b8a19e0577cef6ca49bb8b69f7",
+        "lazy_bnb_compile.py": "7e6d4f5f380fe9e55cac7894e7029b08684651471cd1e0c745e8a1c07717b7eb"
+      },
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "experiment": "metadata",
+      "process_s": 5.4347767860163,
+      "command": [
+        "/home/homelab/.t3/projects/decentrathon/.venv/bin/python",
+        "-B",
+        "/home/homelab/.t3/worktrees/decentrathon/speed48/docs/performance/startup45/import_probe.py",
+        "metadata"
+      ]
+    },
+    {
+      "arm": "control",
+      "import_s": 2.815288878045976,
+      "scope": "CPU dependency imports through Soup CLI; no apply/model/training",
+      "metadata_admitted": false,
+      "lazy_stats": {
+        "status": "disabled",
+        "functions": []
+      },
+      "inductor_loaded": true,
+      "restored": true,
+      "mapping_equal": true,
+      "cuda_initialized": false,
+      "source_sha256": {
+        "startup_metadata.py": "28295012234c21d191263259ac25946d3df186b8a19e0577cef6ca49bb8b69f7",
+        "lazy_bnb_compile.py": "7e6d4f5f380fe9e55cac7894e7029b08684651471cd1e0c745e8a1c07717b7eb"
+      },
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "experiment": "metadata",
+      "process_s": 5.6435799389728345,
+      "command": [
+        "/home/homelab/.t3/projects/decentrathon/.venv/bin/python",
+        "-B",
+        "/home/homelab/.t3/worktrees/decentrathon/speed48/docs/performance/startup45/import_probe.py",
+        "control"
+      ]
+    },
+    {
+      "arm": "control",
+      "import_s": 2.82532684301259,
+      "scope": "CPU dependency imports through Soup CLI; no apply/model/training",
+      "metadata_admitted": false,
+      "lazy_stats": {
+        "status": "disabled",
+        "functions": []
+      },
+      "inductor_loaded": true,
+      "restored": true,
+      "mapping_equal": true,
+      "cuda_initialized": false,
+      "source_sha256": {
+        "startup_metadata.py": "28295012234c21d191263259ac25946d3df186b8a19e0577cef6ca49bb8b69f7",
+        "lazy_bnb_compile.py": "7e6d4f5f380fe9e55cac7894e7029b08684651471cd1e0c745e8a1c07717b7eb"
+      },
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "experiment": "metadata",
+      "process_s": 5.605633208993822,
+      "command": [
+        "/home/homelab/.t3/projects/decentrathon/.venv/bin/python",
+        "-B",
+        "/home/homelab/.t3/worktrees/decentrathon/speed48/docs/performance/startup45/import_probe.py",
+        "control"
+      ]
+    },
+    {
+      "arm": "metadata",
+      "import_s": 2.6440543660428375,
+      "scope": "CPU dependency imports through Soup CLI; no apply/model/training",
+      "metadata_admitted": true,
+      "lazy_stats": {
+        "status": "disabled",
+        "functions": []
+      },
+      "inductor_loaded": true,
+      "restored": true,
+      "mapping_equal": true,
+      "cuda_initialized": false,
+      "source_sha256": {
+        "startup_metadata.py": "28295012234c21d191263259ac25946d3df186b8a19e0577cef6ca49bb8b69f7",
+        "lazy_bnb_compile.py": "7e6d4f5f380fe9e55cac7894e7029b08684651471cd1e0c745e8a1c07717b7eb"
+      },
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "experiment": "metadata",
+      "process_s": 5.421585635980591,
+      "command": [
+        "/home/homelab/.t3/projects/decentrathon/.venv/bin/python",
+        "-B",
+        "/home/homelab/.t3/worktrees/decentrathon/speed48/docs/performance/startup45/import_probe.py",
+        "metadata"
+      ]
+    },
+    {
+      "arm": "metadata",
+      "import_s": 2.6468078759498894,
+      "scope": "CPU dependency imports through Soup CLI; no apply/model/training",
+      "metadata_admitted": true,
+      "lazy_stats": {
+        "status": "disabled",
+        "functions": []
+      },
+      "inductor_loaded": true,
+      "restored": true,
+      "mapping_equal": true,
+      "cuda_initialized": false,
+      "source_sha256": {
+        "startup_metadata.py": "28295012234c21d191263259ac25946d3df186b8a19e0577cef6ca49bb8b69f7",
+        "lazy_bnb_compile.py": "7e6d4f5f380fe9e55cac7894e7029b08684651471cd1e0c745e8a1c07717b7eb"
+      },
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "experiment": "metadata",
+      "process_s": 5.434072334028315,
+      "command": [
+        "/home/homelab/.t3/projects/decentrathon/.venv/bin/python",
+        "-B",
+        "/home/homelab/.t3/worktrees/decentrathon/speed48/docs/performance/startup45/import_probe.py",
+        "metadata"
+      ]
+    },
+    {
+      "arm": "control",
+      "import_s": 2.851306880998891,
+      "scope": "CPU dependency imports through Soup CLI; no apply/model/training",
+      "metadata_admitted": false,
+      "lazy_stats": {
+        "status": "disabled",
+        "functions": []
+      },
+      "inductor_loaded": true,
+      "restored": true,
+      "mapping_equal": true,
+      "cuda_initialized": false,
+      "source_sha256": {
+        "startup_metadata.py": "28295012234c21d191263259ac25946d3df186b8a19e0577cef6ca49bb8b69f7",
+        "lazy_bnb_compile.py": "7e6d4f5f380fe9e55cac7894e7029b08684651471cd1e0c745e8a1c07717b7eb"
+      },
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "experiment": "metadata",
+      "process_s": 5.632791046984494,
+      "command": [
+        "/home/homelab/.t3/projects/decentrathon/.venv/bin/python",
+        "-B",
+        "/home/homelab/.t3/worktrees/decentrathon/speed48/docs/performance/startup45/import_probe.py",
+        "control"
+      ]
+    },
+    {
+      "arm": "control",
+      "import_s": 2.848376162000932,
+      "scope": "CPU dependency imports through Soup CLI; no apply/model/training",
+      "metadata_admitted": false,
+      "lazy_stats": {
+        "status": "disabled",
+        "functions": []
+      },
+      "inductor_loaded": true,
+      "restored": true,
+      "mapping_equal": true,
+      "cuda_initialized": false,
+      "source_sha256": {
+        "startup_metadata.py": "28295012234c21d191263259ac25946d3df186b8a19e0577cef6ca49bb8b69f7",
+        "lazy_bnb_compile.py": "7e6d4f5f380fe9e55cac7894e7029b08684651471cd1e0c745e8a1c07717b7eb"
+      },
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "experiment": "lazy-bnb",
+      "process_s": 5.628982092021033,
+      "command": [
+        "/home/homelab/.t3/projects/decentrathon/.venv/bin/python",
+        "-B",
+        "/home/homelab/.t3/worktrees/decentrathon/speed48/docs/performance/startup45/import_probe.py",
+        "control"
+      ]
+    },
+    {
+      "arm": "lazy-bnb",
+      "import_s": 2.1412415230297484,
+      "scope": "CPU dependency imports through Soup CLI; no apply/model/training",
+      "metadata_admitted": false,
+      "lazy_stats": {
+        "status": "restored; deferred=4",
+        "functions": [
+          {
+            "name": "_dequantize_blockwise_compute",
+            "calls": 0,
+            "constructions": 0,
+            "constructor_failure": null,
+            "runtime_failures": 0,
+            "last_runtime_failure": null,
+            "options": {
+              "dynamic": false
+            }
+          },
+          {
+            "name": "_dequantize_4bit_compute",
+            "calls": 0,
+            "constructions": 0,
+            "constructor_failure": null,
+            "runtime_failures": 0,
+            "last_runtime_failure": null,
+            "options": {
+              "dynamic": false
+            }
+          },
+          {
+            "name": "_optimizer_precondition_32bit",
+            "calls": 0,
+            "constructions": 0,
+            "constructor_failure": null,
+            "runtime_failures": 0,
+            "last_runtime_failure": null,
+            "options": {}
+          },
+          {
+            "name": "_optimizer_update_32bit",
+            "calls": 0,
+            "constructions": 0,
+            "constructor_failure": null,
+            "runtime_failures": 0,
+            "last_runtime_failure": null,
+            "options": {}
+          }
+        ]
+      },
+      "inductor_loaded": false,
+      "restored": true,
+      "mapping_equal": true,
+      "cuda_initialized": false,
+      "source_sha256": {
+        "startup_metadata.py": "28295012234c21d191263259ac25946d3df186b8a19e0577cef6ca49bb8b69f7",
+        "lazy_bnb_compile.py": "7e6d4f5f380fe9e55cac7894e7029b08684651471cd1e0c745e8a1c07717b7eb"
+      },
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "experiment": "lazy-bnb",
+      "process_s": 4.903239520965144,
+      "command": [
+        "/home/homelab/.t3/projects/decentrathon/.venv/bin/python",
+        "-B",
+        "/home/homelab/.t3/worktrees/decentrathon/speed48/docs/performance/startup45/import_probe.py",
+        "lazy-bnb"
+      ]
+    },
+    {
+      "arm": "lazy-bnb",
+      "import_s": 2.0875355990137905,
+      "scope": "CPU dependency imports through Soup CLI; no apply/model/training",
+      "metadata_admitted": false,
+      "lazy_stats": {
+        "status": "restored; deferred=4",
+        "functions": [
+          {
+            "name": "_dequantize_blockwise_compute",
+            "calls": 0,
+            "constructions": 0,
+            "constructor_failure": null,
+            "runtime_failures": 0,
+            "last_runtime_failure": null,
+            "options": {
+              "dynamic": false
+            }
+          },
+          {
+            "name": "_dequantize_4bit_compute",
+            "calls": 0,
+            "constructions": 0,
+            "constructor_failure": null,
+            "runtime_failures": 0,
+            "last_runtime_failure": null,
+            "options": {
+              "dynamic": false
+            }
+          },
+          {
+            "name": "_optimizer_precondition_32bit",
+            "calls": 0,
+            "constructions": 0,
+            "constructor_failure": null,
+            "runtime_failures": 0,
+            "last_runtime_failure": null,
+            "options": {}
+          },
+          {
+            "name": "_optimizer_update_32bit",
+            "calls": 0,
+            "constructions": 0,
+            "constructor_failure": null,
+            "runtime_failures": 0,
+            "last_runtime_failure": null,
+            "options": {}
+          }
+        ]
+      },
+      "inductor_loaded": false,
+      "restored": true,
+      "mapping_equal": true,
+      "cuda_initialized": false,
+      "source_sha256": {
+        "startup_metadata.py": "28295012234c21d191263259ac25946d3df186b8a19e0577cef6ca49bb8b69f7",
+        "lazy_bnb_compile.py": "7e6d4f5f380fe9e55cac7894e7029b08684651471cd1e0c745e8a1c07717b7eb"
+      },
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "experiment": "lazy-bnb",
+      "process_s": 4.881214672001079,
+      "command": [
+        "/home/homelab/.t3/projects/decentrathon/.venv/bin/python",
+        "-B",
+        "/home/homelab/.t3/worktrees/decentrathon/speed48/docs/performance/startup45/import_probe.py",
+        "lazy-bnb"
+      ]
+    },
+    {
+      "arm": "control",
+      "import_s": 2.846809584007133,
+      "scope": "CPU dependency imports through Soup CLI; no apply/model/training",
+      "metadata_admitted": false,
+      "lazy_stats": {
+        "status": "disabled",
+        "functions": []
+      },
+      "inductor_loaded": true,
+      "restored": true,
+      "mapping_equal": true,
+      "cuda_initialized": false,
+      "source_sha256": {
+        "startup_metadata.py": "28295012234c21d191263259ac25946d3df186b8a19e0577cef6ca49bb8b69f7",
+        "lazy_bnb_compile.py": "7e6d4f5f380fe9e55cac7894e7029b08684651471cd1e0c745e8a1c07717b7eb"
+      },
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "experiment": "lazy-bnb",
+      "process_s": 5.6501520180027,
+      "command": [
+        "/home/homelab/.t3/projects/decentrathon/.venv/bin/python",
+        "-B",
+        "/home/homelab/.t3/worktrees/decentrathon/speed48/docs/performance/startup45/import_probe.py",
+        "control"
+      ]
+    },
+    {
+      "arm": "control",
+      "import_s": 2.8599427370354533,
+      "scope": "CPU dependency imports through Soup CLI; no apply/model/training",
+      "metadata_admitted": false,
+      "lazy_stats": {
+        "status": "disabled",
+        "functions": []
+      },
+      "inductor_loaded": true,
+      "restored": true,
+      "mapping_equal": true,
+      "cuda_initialized": false,
+      "source_sha256": {
+        "startup_metadata.py": "28295012234c21d191263259ac25946d3df186b8a19e0577cef6ca49bb8b69f7",
+        "lazy_bnb_compile.py": "7e6d4f5f380fe9e55cac7894e7029b08684651471cd1e0c745e8a1c07717b7eb"
+      },
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "experiment": "lazy-bnb",
+      "process_s": 5.627205711964052,
+      "command": [
+        "/home/homelab/.t3/projects/decentrathon/.venv/bin/python",
+        "-B",
+        "/home/homelab/.t3/worktrees/decentrathon/speed48/docs/performance/startup45/import_probe.py",
+        "control"
+      ]
+    },
+    {
+      "arm": "lazy-bnb",
+      "import_s": 2.147814806958195,
+      "scope": "CPU dependency imports through Soup CLI; no apply/model/training",
+      "metadata_admitted": false,
+      "lazy_stats": {
+        "status": "restored; deferred=4",
+        "functions": [
+          {
+            "name": "_dequantize_blockwise_compute",
+            "calls": 0,
+            "constructions": 0,
+            "constructor_failure": null,
+            "runtime_failures": 0,
+            "last_runtime_failure": null,
+            "options": {
+              "dynamic": false
+            }
+          },
+          {
+            "name": "_dequantize_4bit_compute",
+            "calls": 0,
+            "constructions": 0,
+            "constructor_failure": null,
+            "runtime_failures": 0,
+            "last_runtime_failure": null,
+            "options": {
+              "dynamic": false
+            }
+          },
+          {
+            "name": "_optimizer_precondition_32bit",
+            "calls": 0,
+            "constructions": 0,
+            "constructor_failure": null,
+            "runtime_failures": 0,
+            "last_runtime_failure": null,
+            "options": {}
+          },
+          {
+            "name": "_optimizer_update_32bit",
+            "calls": 0,
+            "constructions": 0,
+            "constructor_failure": null,
+            "runtime_failures": 0,
+            "last_runtime_failure": null,
+            "options": {}
+          }
+        ]
+      },
+      "inductor_loaded": false,
+      "restored": true,
+      "mapping_equal": true,
+      "cuda_initialized": false,
+      "source_sha256": {
+        "startup_metadata.py": "28295012234c21d191263259ac25946d3df186b8a19e0577cef6ca49bb8b69f7",
+        "lazy_bnb_compile.py": "7e6d4f5f380fe9e55cac7894e7029b08684651471cd1e0c745e8a1c07717b7eb"
+      },
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "experiment": "lazy-bnb",
+      "process_s": 4.910989968047943,
+      "command": [
+        "/home/homelab/.t3/projects/decentrathon/.venv/bin/python",
+        "-B",
+        "/home/homelab/.t3/worktrees/decentrathon/speed48/docs/performance/startup45/import_probe.py",
+        "lazy-bnb"
+      ]
+    },
+    {
+      "arm": "lazy-bnb",
+      "import_s": 2.1912594489986077,
+      "scope": "CPU dependency imports through Soup CLI; no apply/model/training",
+      "metadata_admitted": false,
+      "lazy_stats": {
+        "status": "restored; deferred=4",
+        "functions": [
+          {
+            "name": "_dequantize_blockwise_compute",
+            "calls": 0,
+            "constructions": 0,
+            "constructor_failure": null,
+            "runtime_failures": 0,
+            "last_runtime_failure": null,
+            "options": {
+              "dynamic": false
+            }
+          },
+          {
+            "name": "_dequantize_4bit_compute",
+            "calls": 0,
+            "constructions": 0,
+            "constructor_failure": null,
+            "runtime_failures": 0,
+            "last_runtime_failure": null,
+            "options": {
+              "dynamic": false
+            }
+          },
+          {
+            "name": "_optimizer_precondition_32bit",
+            "calls": 0,
+            "constructions": 0,
+            "constructor_failure": null,
+            "runtime_failures": 0,
+            "last_runtime_failure": null,
+            "options": {}
+          },
+          {
+            "name": "_optimizer_update_32bit",
+            "calls": 0,
+            "constructions": 0,
+            "constructor_failure": null,
+            "runtime_failures": 0,
+            "last_runtime_failure": null,
+            "options": {}
+          }
+        ]
+      },
+      "inductor_loaded": false,
+      "restored": true,
+      "mapping_equal": true,
+      "cuda_initialized": false,
+      "source_sha256": {
+        "startup_metadata.py": "28295012234c21d191263259ac25946d3df186b8a19e0577cef6ca49bb8b69f7",
+        "lazy_bnb_compile.py": "7e6d4f5f380fe9e55cac7894e7029b08684651471cd1e0c745e8a1c07717b7eb"
+      },
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "experiment": "lazy-bnb",
+      "process_s": 5.128838326956611,
+      "command": [
+        "/home/homelab/.t3/projects/decentrathon/.venv/bin/python",
+        "-B",
+        "/home/homelab/.t3/worktrees/decentrathon/speed48/docs/performance/startup45/import_probe.py",
+        "lazy-bnb"
+      ]
+    },
+    {
+      "arm": "control",
+      "import_s": 2.8877806999953464,
+      "scope": "CPU dependency imports through Soup CLI; no apply/model/training",
+      "metadata_admitted": false,
+      "lazy_stats": {
+        "status": "disabled",
+        "functions": []
+      },
+      "inductor_loaded": true,
+      "restored": true,
+      "mapping_equal": true,
+      "cuda_initialized": false,
+      "source_sha256": {
+        "startup_metadata.py": "28295012234c21d191263259ac25946d3df186b8a19e0577cef6ca49bb8b69f7",
+        "lazy_bnb_compile.py": "7e6d4f5f380fe9e55cac7894e7029b08684651471cd1e0c745e8a1c07717b7eb"
+      },
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      },
+      "experiment": "lazy-bnb",
+      "process_s": 5.656180787016638,
+      "command": [
+        "/home/homelab/.t3/projects/decentrathon/.venv/bin/python",
+        "-B",
+        "/home/homelab/.t3/worktrees/decentrathon/speed48/docs/performance/startup45/import_probe.py",
+        "control"
+      ]
+    }
+  ]
+}

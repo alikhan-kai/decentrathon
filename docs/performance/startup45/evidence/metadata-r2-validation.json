@@ -1,0 +1,56 @@
+{
+  "limitations": [
+    "Fresh static harness since original Transformers map construction; no general stale-map detection.",
+    "Main requires old PACKAGES_CACHE disabled before first apply; no live old-cache removal.",
+    "One helper module instance; external monkeypatchers are not serialized.",
+    "No GPU, training-speed, or memory validation."
+  ],
+  "patch_checks": {
+    "base2585520": "passed",
+    "main8f50": "passed",
+    "memory1470393": "passed"
+  },
+  "probes": [
+    {
+      "cuda_initialized": false,
+      "harness_import_order": true,
+      "import_dispatch": {
+        "optimized": 1,
+        "scanner": 0
+      },
+      "independent_lists": true,
+      "mapping_equal": true,
+      "repo_root": "/home/homelab/.t3/worktrees/decentrathon/feat-rotary",
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      }
+    },
+    {
+      "cuda_initialized": false,
+      "harness_import_order": true,
+      "import_dispatch": {
+        "optimized": 1,
+        "scanner": 0
+      },
+      "independent_lists": true,
+      "mapping_equal": true,
+      "repo_root": "/home/homelab/.t3/projects/decentrathon",
+      "versions": {
+        "python": "3.13.5",
+        "torch": "2.11.0+cpu",
+        "transformers": "5.16.1",
+        "trl": "0.29.1"
+      }
+    }
+  ],
+  "repository_status": "clean before and after; no edits",
+  "scope": "CPU correctness only; no benchmark reruns",
+  "tests": {
+    "failed": 0,
+    "log": "tests.log",
+    "passed": 29
+  }
+}

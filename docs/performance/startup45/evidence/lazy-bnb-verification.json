@@ -1,0 +1,35 @@
+{
+  "verified_at_utc": "2026-10-31T13:19:07.411041+00:00",
+  "repository_unchanged": true,
+  "composition": {
+    "baseline": {
+      "patch_applied": true,
+      "existing_files_changed": [
+        "solution/stage_adapter.py",
+        "solution/stage_options.py"
+      ],
+      "all_other_existing_files_byte_identical": true
+    },
+    "memory-base": {
+      "patch_applied": true,
+      "existing_files_changed": [
+        "solution/stage_adapter.py",
+        "solution/stage_options.py"
+      ],
+      "all_other_existing_files_byte_identical": true
+    },
+    "main-base": {
+      "patch_applied": true,
+      "existing_files_changed": [
+        "solution/stage_adapter.py",
+        "solution/stage_options.py"
+      ],
+      "all_other_existing_files_byte_identical": true
+    }
+  },
+  "candidate_patch_sha256": "f4180a0d8929174edbb8e8ec1950e41a0b9fd5017bfe4f76c728e0d6d93c393e",
+  "helper_sha256": "b0416ca4ef145e3d8c521269bf3971a5090618394d977f987b30a142b0f4c860",
+  "test_sha256": "d92360b2edb30cd703d8c9841db527ab06117301246a0c05ad0639cccd1c14d7",
+  "cold_tested_helper_sha256": "daffd3bc88414f3d6cfbe4f545993e25eaa27f198d4e1322ed9c04941a97d8a3",
+  "cuda_preflight_executed": false
+}
