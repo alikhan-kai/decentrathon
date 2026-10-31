@@ -24,7 +24,7 @@ import time
 # Per-module import/patch timings to stderr; off by default, switch on by editing this line.
 PRINT_TIMINGS = False
 
-MODULES = ["overhead", "swiglu", "head_loss", "rmsnorm", "nf4", "lora", "rotary", "precompile"]
+MODULES = ["overhead", "precompile", "swiglu", "head_loss", "rmsnorm", "nf4", "lora", "rotary"]
 
 
 def apply():
