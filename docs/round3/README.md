@@ -31,9 +31,11 @@ The exact teammate baseline measured 70.17 and 70.37 seconds, both 4421 MiB, in 
 
 ## Matched whole-command comparison
 
+The paired and prepared-model control is `b0fa8af` plus restored canonical-BNB executable guards (the added provenance module and checks in native_half/swiglu_pack); its admitted arithmetic is unchanged. It is distinct from the byte-identical main observations of 70.17/70.37 seconds.
+
 Both orders used the same unchanged 64-step solution command, fresh compiler caches, production dropout and sequential execution in one T4 session. All source manifests and final cleanup/export receipts were verified.
 
-| Order | Teammate control | Candidate | Paired saving | Peak, both |
+| Order | Guarded teammate control | Candidate | Paired saving | Peak, both |
 |---|---:|---:|---:|---:|
 | Candidate then control | 72.82 s | 70.68 s | 2.14 s | 4421 MiB |
 | Control then candidate | 71.26 s | 70.77 s | 0.49 s | 4421 MiB |
