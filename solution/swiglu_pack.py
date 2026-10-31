@@ -41,6 +41,23 @@ def _verified_starter(starter):
     return ast.dump(tree) == ast.dump(ast.parse(canonical))
 
 
+# Above 1024 rows, recompute the gate/up branch in only as many layers as the memory budget needs,
+# instead of in all of them. Saved bytes per token and layer (fp32 residual stream, Qwen2.5-1.5B),
+# from the single runs in docs/overnight/CANDIDATE.md (native-all 5261 MiB vs 1024-hybrid 4521 MiB,
+# longest step 1427 rows): ~68.8 KB with native fp16 gate/up saves, ~39 KB with the branch recomputed
+# (it keeps only the fp32 input). The budget is BUDGET_ROWS fully native rows, below the 1024 rows the
+# all-native path already allows, so a step above 1024 rows never saves more than one at 1024 did.
+# Fixed constants: no step, seed or dataset lookup, nothing measured at runtime.
+LAYER_BUDGET = True
+NATIVE_KB, REMAT_KB, BUDGET_ROWS = 68.8, 39.0, 960
+
+
+def native_layers(n, layers):
+    """Number of layers (lowest indices first) that keep native saves for an n-row input above 1024."""
+    k = int(layers * (BUDGET_ROWS * NATIVE_KB - n * REMAT_KB) / (n * (NATIVE_KB - REMAT_KB)))
+    return max(0, min(layers, k))
+
+
 def _task_input_shape(x):
     """Metadata only: original B4/T512 or packed B1/N2048, both H1536."""
     return (x.layout == torch.strided and x.ndim == 3 and x.shape[2] == 1536
@@ -107,6 +124,7 @@ class SavedActivationPatch:
         self.packed_calls = 0
         self.remat_calls = 0
         self.fallback_calls = {}
+        self.layer_ids = {}
 
     def remove(self):
         global _active
@@ -234,7 +252,11 @@ def install_saved_activation_packing(*, enable=False, first_order_training=False
             handle.fallback_calls[reason] = handle.fallback_calls.get(reason, 0) + 1
             return baseline(self, x)
         # Fixed working-set policy after unchanged canonical provenance checks.
-        if x.numel() // x.shape[-1] > 1024:
+        n = x.numel() // x.shape[-1]
+        layers = self.config.num_hidden_layers
+        # First calls come in decoder order, so this is the layer index (fixed for the run).
+        layer = handle.layer_ids.setdefault(id(self), len(handle.layer_ids) % layers)
+        if n > 1024 and not (LAYER_BUDGET and layer < native_layers(n, layers)):
             from .hybrid_mlp import hybrid_mlp_forward
             handle.remat_calls += 1
             return hybrid_mlp_forward(self, x, starter, threshold=1024)

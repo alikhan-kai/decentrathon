@@ -1,2 +1,0 @@
-Tesla T4, 42, 300 MHz, 0 MiB
-Tesla T4, 37, 300 MHz, 0 MiB
