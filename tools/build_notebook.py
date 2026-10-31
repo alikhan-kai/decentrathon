@@ -1,7 +1,7 @@
 """Build kaggle/soup_kernel_debug.ipynb from templates/kaggle_notebook.ipynb.
 
     python3 tools/build_notebook.py --username NAME [--branch main] [--commit SHA] [--repo URL]
-        [--mode quick|unit|full|full_profile|check_and_ops] [--module-test solution/test_x.py]
+        [--mode quick|unit|full|full_profile|check_and_ops|pack_check|quick_ab|ab_overhead|ab_commits|pack_and_idle|robust] [--module-test solution/test_x.py]
         [--slug soup-kernel-debug]
 Writes kaggle/build/<username>/soup_kernel_debug.ipynb and kernel-metadata.json (the folder is in
 .gitignore, so nobody's build conflicts with anybody else's). No tokens are touched.
@@ -27,7 +27,7 @@ def code(text):
             "source": text.splitlines(True)}
 
 
-def build(repo_url, branch, commit, mode, username, module_test):
+def build(repo_url, branch, commit, mode, username, module_test, commit_a="", commit_b=""):
     tpl = json.loads((ROOT / "templates" / "kaggle_notebook.ipynb").read_text(encoding="utf-8"))
     cells = ["".join(c["source"]) for c in tpl["cells"]]
     install = next(line for line in cells[2].splitlines() if line.startswith("!python -m pip install"))
@@ -38,14 +38,16 @@ def build(repo_url, branch, commit, mode, username, module_test):
 
     out = [md("# Soup Kernel Challenge: debug runner (generated from templates/kaggle_notebook.ipynb "
               "by tools/build_notebook.py)\n\n"
-              "`MODE`: `unit` (pytest of MODULE_TEST only), `quick` (pytest + one solution run), "
+              "`MODE`: `unit` (pytest of MODULE_TEST, a file or a directory; skip reasons printed), `quick` (pytest + one solution run), "
               "`full` (base + solution x2 + checks), `full_profile` (full + profilers of solution and "
               "base), `check_and_ops` (quick + per-op/per-module profile of the solution).\n"
               "Statuses: `/kaggle/working/out/status.txt`; logs and json: `/kaggle/working/out/`.\n")]
     out.append(code(f'REPO_URL = "{repo_url}"\nBRANCH = "{branch}"\n'
                     f'COMMIT = "{commit}"  # empty = tip of BRANCH\nMODE = "{mode}"\n'
-                    f'MODULE_TEST = "{module_test}"  # unit mode: one test file, e.g. solution/test_nf4.py\n'
-                    f'USERNAME = "{username}"  # Kaggle account that runs this notebook\n'))
+                    f'MODULE_TEST = "{module_test}"  # unit mode: a test file or a directory (default solution/)\n'
+                    f'USERNAME = "{username}"  # Kaggle account that runs this notebook\n'
+                    f'COMMIT_A = "{commit_a}"  # ab_commits: variant A (runs first and last)\n'
+                    f'COMMIT_B = "{commit_b}"  # ab_commits: variant B (runs in the middle)\n'))
     out.append(code(
         'import subprocess\n'
         'print(subprocess.run(["nvidia-smi"], capture_output=True, text=True).stdout)\n'
@@ -126,6 +128,77 @@ def build(repo_url, branch, commit, mode, username, module_test):
         '               TORCHINDUCTOR_CACHE_DIR=str(run_dir / "inductor_cache"))\n'
         '    stage("op_profile", ["python", "tools/op_profile.py", "--config", str(run_dir / "task.yaml"),\n'
         '                         "--out", str(OUT / "op_profile.json")], env=env)\n\n'
+        'def swap_solution(rev):\n'
+        '    """Replace solution/ by the one of git revision `rev` (whole folder, no leftovers)."""\n'
+        '    shutil.rmtree(REPO / "solution")\n'
+        '    return stage(f"git_solution_{rev[:7]}", ["git", "checkout", rev, "--", "solution"])\n\n'
+        'def pack_and_idle():\n'
+        '    """One session: accuracy of the packed path (tools/pack_accuracy.py), then the GPU idle profile of start and\n'
+        '    of this commit (tools/op_profile.py, 24 steps each)."""\n'
+        '    import yaml\n'
+        '    stage("warm_model", ["python", "-c", "from huggingface_hub import snapshot_download as d; "\n'
+        '                                          "print(d(\'Qwen/Qwen2.5-1.5B-Instruct\'))"])\n'
+        '    stage("pack_accuracy", ["python", "tools/pack_accuracy.py", "--out", str(OUT / "pack_accuracy.json")])\n'
+        '    mine = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()\n'
+        '    stage("fetch_start", ["git", "fetch", "-q", "origin", "start"])\n'
+        '    start = subprocess.run(["git", "rev-parse", "FETCH_HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()\n'
+        '    (OUT / "idle_commits.txt").write_text(f"start {start}\\nthis {mine}\\n")\n'
+        '    sys.path.insert(0, str(REPO / "harness"))\n'
+        '    from common import OFFLINE_ENV\n'
+        '    for tag, rev in (("start", start), ("this", mine)):\n'
+        '        swap_solution(rev)\n'
+        '        run_dir = REPO / "runs_idle" / tag\n'
+        '        run_dir.mkdir(parents=True, exist_ok=True)\n'
+        '        cfg = yaml.safe_load((REPO / "task/task.yaml").read_text())\n'
+        '        cfg["data"]["train"], cfg["output"] = str(REPO / "data/train.jsonl"), str(run_dir / "adapter")\n'
+        '        cfg["training"]["seed"] = 1\n'
+        '        (run_dir / "task.yaml").write_text(yaml.safe_dump(cfg, sort_keys=False, allow_unicode=True))\n'
+        '        env = dict(OFFLINE_ENV, SOUP_DB_PATH=str(run_dir / "experiments.db"),\n'
+        '                   TRITON_CACHE_DIR=str(run_dir / "triton_cache"),\n'
+        '                   TORCHINDUCTOR_CACHE_DIR=str(run_dir / "inductor_cache"))\n'
+        '        stage(f"idle_{tag}", ["python", "tools/op_profile.py", "--config", str(run_dir / "task.yaml"),\n'
+        '                              "--out", str(OUT / f"idle_{tag}.json")], env=env)\n'
+        '    swap_solution(mine)\n\n'
+        'def ab():\n'
+        '    """Same T4 session: start (A) / this commit (B) / start (A) so session drift shows."""\n'
+        '    mine = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()\n'
+        '    stage("fetch_start", ["git", "fetch", "-q", "origin", "start"])\n'
+        '    start = subprocess.run(["git", "rev-parse", "FETCH_HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()\n'
+        '    (OUT / "ab_commits.txt").write_text(f"start {start}\\nthis {mine}\\n")\n'
+        '    for tag, rev in (("start1", start), ("this", mine), ("start2", start)):\n'
+        '        swap_solution(rev)\n'
+        '        stage(f"run_{tag}", ["python", "harness/run_task.py", "--only", "solution", "--out", f"runs_ab_{tag}"])\n'
+        '    swap_solution(mine)\n\n'
+        'def ab_overhead():\n'
+        '    """One session, jury order: safe-v1, this commit, this commit, safe-v1; full harness run each."""\n'
+        '    mine = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip()\n'
+        '    safe = subprocess.run(["git", "rev-parse", "safe-v1^{commit}"], cwd=REPO, capture_output=True, text=True).stdout.strip()\n'
+        '    assert safe, "tag safe-v1 is not in the clone"\n'
+        '    (OUT / "ab_commits.txt").write_text(f"safe-v1 {safe}\\nthis {mine}\\n")\n'
+        '    stage("warm_model", ["python", "-c", "from huggingface_hub import snapshot_download as d; "\n'
+        '                                          "print(d(\'Qwen/Qwen2.5-1.5B-Instruct\'))"])\n'
+        '    for tag, rev in (("safe1", safe), ("this1", mine), ("this2", mine), ("safe2", safe)):\n'
+        '        swap_solution(rev)\n'
+        '        stage(f"run_{tag}", ["python", "harness/run_task.py", "--only", "solution", "--out", f"runs_abov_{tag}"])\n'
+        '    swap_solution(mine)\n\n'
+        'def ab_commits():\n'
+        '    """One session: A, B, B, A. A and B are commits of this repository; the harness, task and tests of both\n'
+        '    must be identical, so solution/ is swapped in this clone (what differs is only solution/)."""\n'
+        '    assert COMMIT_A and COMMIT_B, "ab_commits needs --commit-a and --commit-b"\n'
+        '    revs = {}\n'
+        '    for tag, rev in (("a", COMMIT_A), ("b", COMMIT_B)):\n'
+        '        stage(f"fetch_{tag}", ["git", "fetch", "-q", "origin", rev])\n'
+        '        revs[tag] = subprocess.run(["git", "rev-parse", f"{rev}^{{commit}}"], cwd=REPO, capture_output=True, text=True).stdout.strip()\n'
+        '        assert revs[tag], f"commit {rev} is not in the clone"\n'
+        '    same = subprocess.run(["git", "diff", "--quiet", revs["a"], revs["b"], "--", "harness", "task", "tests", "templates"], cwd=REPO).returncode == 0\n'
+        '    (OUT / "ab_commits.txt").write_text(f"A {revs[\'a\']}\\nB {revs[\'b\']}\\nprotected_dirs_identical {same}\\n")\n'
+        '    assert same, "harness/task/tests/templates differ between A and B: swapping solution/ is not a fair A/B"\n'
+        '    stage("warm_model", ["python", "-c", "from huggingface_hub import snapshot_download as d; "\n'
+        '                                          "print(d(\'Qwen/Qwen2.5-1.5B-Instruct\'))"])\n'
+        '    for tag, rev in (("A1", revs["a"]), ("B1", revs["b"]), ("B2", revs["b"]), ("A2", revs["a"])):\n'
+        '        swap_solution(rev)\n'
+        '        stage(f"run_{tag}", ["python", "harness/run_task.py", "--only", "solution", "--out", f"runs_abc_{tag}"])\n'
+        '    swap_solution(revs["a"])\n\n'
         'def quick_metrics():\n'
         '    mp = REPO / "runs_try/solution_1/metrics.json"\n'
         '    if mp.exists():\n'
@@ -134,7 +207,24 @@ def build(repo_url, branch, commit, mode, username, module_test):
         '            print(k, "=", m.get(k))\n\n'
         'if MODE == "unit":\n'
         '    assert MODULE_TEST, "unit mode needs MODULE_TEST"\n'
-        '    stage("pytest_unit", ["python", "-m", "pytest", *MODULE_TEST.split(), "-q", "-s"])\n'
+        '    stage("pytest_unit", ["python", "-m", "pytest", *MODULE_TEST.split(), "-q", "-rs"])\n'
+        'elif MODE == "robust":\n'
+        '    stage("make_robust_data", ["python", "tools/make_robust_data.py", "--out", "data_robust"])\n'
+        '    stage("run_task_robust", ["python", "harness/run_task.py", "--repeats", "2", "--seed", "7",\n'
+        '                              "--train-file", "data_robust/train.jsonl", "--eval-file", "data_robust/eval.jsonl",\n'
+        '                              "--out", "runs_robust"])\n'
+        '    stage("check_rules_robust", ["python", "harness/check_rules.py", "--result", "runs_robust/result.json"])\n'
+        'elif MODE == "pack_and_idle":\n'
+        '    pack_and_idle()\n'
+        'elif MODE == "ab_commits":\n'
+        '    ab_commits()\n'
+        'elif MODE == "ab_overhead":\n'
+        '    ab_overhead()\n'
+        'elif MODE == "quick_ab":\n'
+        '    pytests()\n'
+        '    ab()\n'
+        'elif MODE == "pack_check":\n'
+        '    stage("pack_check", ["python", "tools/pack_check.py", "--out", str(OUT / "pack_check.json")])\n'
         'elif MODE in ("quick", "check_and_ops"):\n'
         '    pytests()\n'
         '    stage("run_task_solution", ["python", "harness/run_task.py", "--only", "solution",\n'
@@ -151,10 +241,10 @@ def build(repo_url, branch, commit, mode, username, module_test):
         '    if MODE == "full_profile":\n'
         '        base_profile()\n'
         'else:\n'
-        '    raise SystemExit("MODE must be unit, quick, full, full_profile or check_and_ops")\n'))
+        '    raise SystemExit("MODE must be unit, quick, full, full_profile, check_and_ops, pack_check, quick_ab, ab_overhead, ab_commits, pack_and_idle or robust")\n'))
     out.append(code(
         'for pattern in ("runs*/**/train.log", "runs*/eval_*.log", "runs*/result.json",\n'
-        '                "runs*/checks.json", "runs*/**/metrics.json", "runs*/solution_profile/profile.json",\n'
+        '                "runs*/checks.json", "runs*/**/rewind.jsonl", "runs*/**/metrics.json", "runs*/solution_profile/profile.json",\n'
         '                "runs/base_profile/train.log", "runs_try/op_profile/train.log"):\n'
         '    for p in glob.glob(str(REPO / pattern), recursive=True):\n'
         '        rel = Path(p).relative_to(REPO)\n'
@@ -174,13 +264,15 @@ def main():
     p.add_argument("--branch", default="main")
     p.add_argument("--commit", default="")
     p.add_argument("--mode", default="quick",
-                   choices=("quick", "unit", "full", "full_profile", "check_and_ops"))
+                   choices=("quick", "unit", "full", "full_profile", "check_and_ops", "pack_check", "quick_ab", "ab_overhead", "ab_commits", "pack_and_idle", "robust"))
     p.add_argument("--module-test", default="", help="unit mode: path of one test file")
+    p.add_argument("--commit-a", default="", help="ab_commits: variant A (first and last)")
+    p.add_argument("--commit-b", default="", help="ab_commits: variant B (middle two)")
     p.add_argument("--slug", default="soup-kernel-debug")
     a = p.parse_args()
     out_dir = ROOT / "kaggle" / "build" / a.username
     out_dir.mkdir(parents=True, exist_ok=True)
-    nb = build(a.repo, a.branch, a.commit, a.mode, a.username, a.module_test)
+    nb = build(a.repo, a.branch, a.commit, a.mode, a.username, a.module_test, a.commit_a, a.commit_b)
     (out_dir / "soup_kernel_debug.ipynb").write_text(json.dumps(nb, indent=1, ensure_ascii=False) + "\n",
                                                       encoding="utf-8")
     meta = {"id": f"{a.username}/{a.slug}", "title": a.slug, "code_file": "soup_kernel_debug.ipynb",
