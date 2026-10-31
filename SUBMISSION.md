@@ -1,3 +1,5 @@
+> **Current source validation:** this branch's runtime is `47aede7`, measured at **50.83 s / 3039 MiB on Kaggle T4**, all 10 checks passing. **Sub-40 seconds is not achieved.** See [the full report and raw evidence](KAGGLE_VALIDATION_47A.md). Original submission documentation below describes separately pinned `fabc67d`, not this branch's current runtime.
+
 # Submission / Сдача: localhost (TODO: confirm official team name)
 
 ## English
@@ -11,7 +13,7 @@
 - **Demo video (up to 3 minutes):** TODO(DEMO_VIDEO_URL)
 - **Presentation:** TODO(PRESENTATION_URL)
 
-The Kaggle notebook URL and final benchmarked SHA match [README.md](README.md) and [README.ru.md](README.ru.md). Run **F** is the paired two-repeat (`--repeats 2`, ABBA) measurement of `fabc67d4b0667be70b846aac29d9be21cb31a212` (`solution_sha256`: `7caf827d0fb87cc23400afb227f2efb17e21fcca5ebd94867732f71f0171285c`, `result_sha256`: `fbf7553e8ca4df347be80f567bf311e92cec21275c65270767cf2d7a89fc8585`); its [checks.json](docs/measurements/submission_fabc67d/checks.json) and full breakdown in [docs/EVIDENCE.md](docs/EVIDENCE.md) are tracked in Git, and `solution/` is byte-for-byte unchanged on HEAD.
+The Kaggle notebook URL and final benchmarked SHA match [README.md](README.md) and [README.ru.md](README.ru.md). Run **F** is the paired two-repeat (`--repeats 2`, ABBA) measurement of `fabc67d4b0667be70b846aac29d9be21cb31a212` (`solution_sha256`: `7caf827d0fb87cc23400afb227f2efb17e21fcca5ebd94867732f71f0171285c`, `result_sha256`: `fbf7553e8ca4df347be80f567bf311e92cec21275c65270767cf2d7a89fc8585`); its [checks.json](docs/measurements/submission_fabc67d/checks.json) and full breakdown in [docs/EVIDENCE.md](docs/EVIDENCE.md) are tracked in Git, and those measurements apply to the pinned `fabc67d` source; this branch uses `47aede7`.
 
 ### Description
 

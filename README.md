@@ -1,3 +1,5 @@
+> **Current source validation:** this branch's runtime is `47aede7`, measured at **50.83 s / 3039 MiB on Kaggle T4**, all 10 checks passing. **Sub-40 seconds is not achieved.** See [the full report and raw evidence](KAGGLE_VALIDATION_47A.md). Original submission documentation below describes separately pinned `fabc67d`, not this branch's current runtime.
+
 # Soup Kernel Challenge — Decentrathon 6.0
 
 [Русский](README.ru.md) · [Submission](SUBMISSION.md)
