@@ -73,6 +73,9 @@ def _specs():
         specs.append((swiglu.example_swiglu_fwd_kernel, (gate, gate, f32, n), dict(BLOCK=swiglu.BLOCK)))
         specs.append((swiglu.example_swiglu_bwd_kernel, (f32, gate, gate, f32, f32, n),
                       dict(BLOCK=swiglu.BLOCK)))
+    specs.append((swiglu.example_swiglu_fwd_kernel, (f16, f16, f16, n), dict(BLOCK=swiglu.BLOCK)))
+    specs.append((swiglu.example_swiglu_bwd_kernel, (f16, f16, f16, f16, f16, n),
+                  dict(BLOCK=swiglu.BLOCK)))
     return specs
 
 
