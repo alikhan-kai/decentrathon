@@ -1,0 +1,128 @@
+--- a/solution/head_loss.py
++++ b/solution/head_loss.py
+@@ -2,11 +2,12 @@
+ 
+ Base Soup builds the full logits [B, T, 151936], upcasts them to fp32 and keeps several copies for
+ the loss, TRL's entropy, TRL's accuracy and the rewind log. Here:
+-  * pad positions are dropped before the head (attention_mask), so the head sees real tokens only;
++  * rows used by attention or a shifted target are retained before the head;
+   * the head runs `chunk` rows at a time; one Triton kernel reads each logits chunk and produces
+-    per-row loss, entropy, argmax-hit and (in place) the gradient softmax - onehot;
+-  * the gradient w.r.t. the hidden states is taken right away (dlogits @ W) and scaled in backward,
+-    so the lm_head (frozen, tied to the embedding) never needs a weight gradient.
++    per-row loss, entropy and argmax-hit;
++  * backward recomputes logits chunks and scales softmax - onehot in fp32 before storing fp16
++    dlogits and taking dlogits @ W. The frozen lm_head never needs a weight gradient, and no
++    full logits or unscaled fp16 gradient is saved across forward/backward.
+ Design idea (chunking the head + loss, hooking the causal-LM forward and the trainer's
+ compute_loss) is the same as Soup's own `stream_loss_chunk` (soup_cli/utils/stream_loss_chunk.py,
+ Apache-2.0); the Triton kernel and this code are new.
+@@ -22,7 +23,7 @@
+ 
+ 
+ @triton.jit
+-def head_loss_kernel(logits_ptr, target_ptr, stride, V, loss_ptr, ent_ptr, hit_ptr,
++def head_loss_kernel(logits_ptr, target_ptr, stride, V, loss_ptr, ent_ptr, hit_ptr, grad_scale_ptr,
+                      WITH_GRAD: tl.constexpr, BLOCK: tl.constexpr):
+     row = tl.program_id(0)
+     base = logits_ptr + row.to(tl.int64) * stride
+@@ -64,16 +65,21 @@
+     gbest = tl.max(best_l, 0)
+     arg = tl.min(tl.where(best_l == gbest, bi_l, 2147483647), 0)
+ 
+-    tl.store(loss_ptr + row, tl.where(valid, lse - xt, 0.0))
+-    tl.store(ent_ptr + row, entropy)
+-    tl.store(hit_ptr + row, tl.where(valid & (arg == tgt), 1, 0))
++    if not WITH_GRAD:
++        tl.store(loss_ptr + row, tl.where(valid, lse - xt, 0.0))
++        tl.store(ent_ptr + row, entropy)
++        tl.store(hit_ptr + row, tl.where(valid & (arg == tgt), 1, 0))
+ 
+     if WITH_GRAD:
++        grad_scale = tl.load(grad_scale_ptr).to(tl.float32)
+         for start in range(0, V, BLOCK):
+             offs = start + lane
+             mask = offs < V
+             x = tl.load(base + offs, mask=mask, other=-float("inf")).to(tl.float32)
+             g = tl.exp(x - lse) - tl.where(offs == tgt, 1.0, 0.0)
++            # Apply the incoming loss scale before either fp16 rounding boundary.
++            g = g * grad_scale
++            # Mask last: an ignored row must stay zero even when denom == 0.
+             g = tl.where(valid, g, 0.0)
+             tl.store(base + offs, g.to(logits_ptr.dtype.element_ty), mask=mask)
+ 
+@@ -88,27 +94,44 @@
+         loss_row = torch.empty(n, dtype=torch.float32, device=h.device)
+         ent = torch.empty_like(loss_row)
+         hit = torch.empty(n, dtype=torch.int32, device=h.device)
+-        dh = torch.empty_like(h) if need else None
+         for s in range(0, n, chunk):
+             e = min(s + chunk, n)
+             logits = h[s:e] @ w.t()                       # [c, V] fp16
+             head_loss_kernel[(e - s,)](logits, target[s:e], logits.stride(0), vocab,
+-                                       loss_row[s:e], ent[s:e], hit[s:e],
+-                                       WITH_GRAD=need, BLOCK=BLOCK, num_warps=8)
+-            if need:
+-                torch.mm(logits, w, out=dh[s:e])          # unscaled dL/dh for these rows
++                                       loss_row[s:e], ent[s:e], hit[s:e], None,
++                                       WITH_GRAD=False, BLOCK=BLOCK, num_warps=8)
+             del logits
+         denom = torch.as_tensor(denom, dtype=torch.float32, device=h.device)
+         ctx.hidden_dtype = hidden.dtype
++        ctx.chunk = chunk
+         if need:
+-            ctx.save_for_backward(dh, denom)
++            ctx.save_for_backward(h, w, target, denom)
+         ctx.mark_non_differentiable(loss_row, ent, hit)
+         return loss_row.sum() / denom, loss_row, ent, hit
+ 
+     @staticmethod
+     def backward(ctx, grad_loss, *_):
+-        dh, denom = ctx.saved_tensors
+-        return (dh.float() * (grad_loss / denom)).to(ctx.hidden_dtype), None, None, None, None
++        h, w, target, denom = ctx.saved_tensors
++        grad_scale = grad_loss.float() / denom
++        # Ignored targets have identically zero dlogits. Compact only backward;
++        # forward still needs every retained row for entropy and other metrics.
++        # CUDA nonzero synchronizes to determine the compacted length once per
++        # backward. No explicit tensor-content readback is used.
++        rows = torch.nonzero(target >= 0, as_tuple=False).flatten()
++        dh = torch.zeros_like(h)
++        n, vocab = rows.numel(), w.shape[0]
++        for s in range(0, n, ctx.chunk):
++            e = min(s + ctx.chunk, n)
++            selected = rows[s:e]
++            h_chunk = h.index_select(0, selected)
++            target_chunk = target.index_select(0, selected)
++            logits = h_chunk @ w.t()                    # same fp16 projection as forward
++            head_loss_kernel[(e - s,)](logits, target_chunk, logits.stride(0), vocab,
++                                       None, None, None, grad_scale,
++                                       WITH_GRAD=True, BLOCK=BLOCK, num_warps=8)
++            dh.index_copy_(0, selected, torch.mm(logits, w))  # already scaled, fp16 dL/dh
++            del logits
++        return dh.to(ctx.hidden_dtype), None, None, None, None
+ 
+ 
+ def fused_head_loss(hidden, weight, target, denom, chunk=CHUNK):
+@@ -168,9 +191,11 @@
+                              inputs_embeds=inputs_embeds, use_cache=use_cache, **kwargs)
+         hidden = outputs.last_hidden_state
+         b, t, _ = hidden.shape
+-        keep = attention_mask.bool()
+         target_full = F.pad(labels, (0, 1), value=IGNORE)[:, 1:]
+-        h, tgt = hidden[keep], target_full[keep]            # real tokens only, no pad rows
++        # A left-pad row can predict the first supervised token after shifting.
++        attended = attention_mask.bool()
++        keep = attended | (target_full != IGNORE)
++        h, tgt = hidden[keep], target_full[keep]
+         labelled = (tgt != IGNORE).sum()
+         denom = labelled if num_items is None else num_items
+         loss, loss_row, ent, hit = fused_head_loss(h, self.lm_head.weight, tgt, denom)
+@@ -178,6 +203,7 @@
+         tok_loss = torch.zeros(b * t, dtype=torch.float32, device=hidden.device)
+         tok_ent = torch.zeros_like(tok_loss)
+         tok_loss[flat], tok_ent[flat] = loss_row, ent
++        tok_ent.masked_fill_(~attended.reshape(-1), 0.0)  # original attention population
+         _STATE["step"] = _Step(tok_ent.view(b, t), tok_loss.view(b, t), hit.sum(), labelled)
+         return CausalLMOutputWithPast(loss=loss, logits=None,
+                                       past_key_values=outputs.past_key_values,

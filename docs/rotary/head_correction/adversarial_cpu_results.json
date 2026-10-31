@@ -1,0 +1,100 @@
+[
+  {
+    "source": "head_loss.original",
+    "logits": [
+      0,
+      -20.0
+    ],
+    "weight_small": 1.0,
+    "upstream": 65536,
+    "gradient": [
+      [
+        0.0,
+        0.0
+      ]
+    ],
+    "dense_gradient": [
+      [
+        -0.0027008056640625,
+        0.00013506412506103516
+      ]
+    ]
+  },
+  {
+    "source": "head_loss.original",
+    "logits": [
+      0,
+      -10.0
+    ],
+    "weight_small": 0.0001,
+    "upstream": 65536,
+    "gradient": [
+      [
+        -29.765625,
+        0.0
+      ]
+    ],
+    "dense_gradient": [
+      [
+        -29.75,
+        0.00029754638671875
+      ]
+    ]
+  },
+  {
+    "source": "head_loss.original",
+    "case": "all_ignored_denom_zero",
+    "loss_is_nan": true,
+    "gradient_is_finite": false,
+    "gradient_is_zero": false
+  },
+  {
+    "source": "head_loss",
+    "logits": [
+      0,
+      -20.0
+    ],
+    "weight_small": 1.0,
+    "upstream": 65536,
+    "gradient": [
+      [
+        -0.0027008056640625,
+        0.00013506412506103516
+      ]
+    ],
+    "dense_gradient": [
+      [
+        -0.0027008056640625,
+        0.00013506412506103516
+      ]
+    ]
+  },
+  {
+    "source": "head_loss",
+    "logits": [
+      0,
+      -10.0
+    ],
+    "weight_small": 0.0001,
+    "upstream": 65536,
+    "gradient": [
+      [
+        -29.75,
+        0.00029754638671875
+      ]
+    ],
+    "dense_gradient": [
+      [
+        -29.75,
+        0.00029754638671875
+      ]
+    ]
+  },
+  {
+    "source": "head_loss",
+    "case": "all_ignored_denom_zero",
+    "loss_is_nan": true,
+    "gradient_is_finite": true,
+    "gradient_is_zero": true
+  }
+]
