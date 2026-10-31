@@ -258,6 +258,8 @@ def _install():
                                     inputs_embeds=inputs_embeds, labels=labels, use_cache=use_cache,
                                     logits_to_keep=logits_to_keep, **kwargs)
         request.consumed = True
+        from .frozen_weight import compact_tied_weight
+        compact_tied_weight(self)
         num_items = kwargs.pop("num_items_in_batch", None)
         # Shift on the ORIGINAL [B,T] layout, before any packed gather.
         b, t = labels.shape
