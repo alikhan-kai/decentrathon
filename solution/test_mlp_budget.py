@@ -1,4 +1,4 @@
-"""solution/swiglu_pack.native_layers: the per-step MLP save budget above 1024 rows (CPU only)."""
+"""CPU checks for the MLP activation budget, including its irreducible floor."""
 
 import pytest
 
@@ -12,12 +12,15 @@ def saved_kb(n, k, layers=28):
 
 
 @pytest.mark.parametrize("n", range(1025, 2049, 7))
-def test_budget_never_exceeds_all_native_1024_rows(n):
-    from solution.swiglu_pack import NATIVE_KB, native_layers
+def test_budget_or_irreducible_floor(n):
+    from solution.swiglu_pack import BUDGET_ROWS, NATIVE_KB, REMAT_KB, native_layers
 
     k = native_layers(n, 28)
     assert 0 <= k <= 28
-    assert saved_kb(n, k) <= 1024 * 28 * NATIVE_KB
+    limit = max(BUDGET_ROWS * 28 * NATIVE_KB, n * 28 * REMAT_KB)
+    assert saved_kb(n, k) <= limit
+    if k < 28:
+        assert saved_kb(n, k + 1) > limit
 
 
 def test_more_rows_keep_fewer_native_layers():

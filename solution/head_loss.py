@@ -20,7 +20,7 @@ import triton
 import triton.language as tl
 
 BLOCK = 2048
-CHUNK = 1536
+CHUNK = 128
 IGNORE = -100
 
 
@@ -138,14 +138,18 @@ class _FusedHeadLoss(torch.autograd.Function):
 
 def fused_head_loss(hidden, weight, target, denom, chunk=CHUNK):
     """hidden [N, H], weight [V, H] (frozen), target [N] with -100 = ignore, denom = divisor.
-    Returns loss (scalar, grad flows to hidden), per-row loss, per-row entropy, per-row hit."""
-    return _FusedHeadLoss.apply(hidden, weight, target.contiguous(), denom, chunk)
+
+    Computes sum(cross_entropy(logits, target)) / denom, row entropy, and argmax hits in chunks.
+    No [N, V] tensor or unscaled gradient is ever materialized.
+    """
+    return _FusedHeadLoss.apply(hidden, weight, target, denom, chunk)
 
 
-# ----------------------------------------------------------------------------------------------
-# Hooking into Soup: patch Qwen2ForCausalLM.forward (labelled, training) and SFTTrainer.compute_loss
-# ----------------------------------------------------------------------------------------------
-_REQUEST = ContextVar("fused_head_request", default=None)
+# Dynamic patch: hooked callers read _CURRENT_MODEL to bridge causal-LM forward to compute_loss.
+# ContextVar keeps the pair thread-safe if evaluation or a future task runs in a worker thread.
+_CURRENT_MODEL = ContextVar("current_model", default=None)
+_PATCHED = False
+_ORIGINAL = {}
 
 
 class _Request:
@@ -173,6 +177,8 @@ def _bridge_eligible(model, inputs):
     if not (getattr(getattr(base, "config", None), "return_dict", True) if value is None else value):
         return False
     return True
+
+
 STEP_ATTR = "_soup_chunked_step"   # what Soup's rewind recorder reads (rewind_hf.py)
 
 
@@ -230,109 +236,142 @@ def _eligible(trainer, inputs):
     autocast = torch.is_autocast_enabled(weight.device.type)
     if autocast and torch.get_autocast_dtype(weight.device.type) != torch.float16:
         return False
-    if getattr(accelerator, "native_amp", False):
-        # A disabled prepared wrapper also disables an outer autocast context.
-        return (precision == "fp16"
-                and getattr(getattr(accelerator, "autocast_handler", None), "enabled", True))
-    return weight.dtype == torch.float16 or autocast
+    return True
 
 
-def _install():
-    import torch.nn.functional as F
+def _compute_loss_hook(trainer, orig_compute_loss, model, inputs, return_outputs=False, num_items_in_batch=None):
+    if not _eligible(trainer, inputs):
+        return orig_compute_loss(model, inputs, return_outputs=return_outputs, num_items_in_batch=num_items_in_batch)
+
+    # Shifted target matching CausalLM forward: row [b, t] predicts labels[b, t+1].
+    # row [b, -1] has no target and is ignored; row [b, t] is ignored if labels[b, t+1] == -100.
+    labels, mask = inputs["labels"], inputs["attention_mask"]
+    target = torch.full_like(labels, IGNORE)
+    target[:, :-1] = labels[:, 1:]
+    target = torch.where(mask == 1, target, IGNORE)
+    # Rows with no target are excluded from denom and from backward logits projection.
+    # Same denominator as ForCausalLMLoss: num_items_in_batch if given, else non-ignored targets.
+    if num_items_in_batch is not None:
+        denom = num_items_in_batch
+    else:
+        denom = (target != IGNORE).sum()
+    denom = max(1, int(denom))
+
+    # Request the model hook to capture and compact the hidden states on the very next forward.
+    # If the forward falls back, the request is marked consumed and compute_loss follows suit.
+    req = _Request(model)
+    tok = _CURRENT_MODEL.set(req)
+    try:
+        # Pass shifted target and attended mask down so packed / selective forwards can retain only
+        # rows that matter for loss or for attention to a loss row (e.g. prompt prefix).
+        attended = mask == 1
+        required = (target != IGNORE) | attended
+        from . import packed
+        with packed.head_request(model, required):
+            outputs = model(**inputs)
+        step = req.step
+        if not req.consumed or step is None:
+            # Model hook did not run (e.g. an unexpected inner wrapper swallowed it). Fall back.
+            return orig_compute_loss(model, inputs, return_outputs=return_outputs, num_items_in_batch=num_items_in_batch)
+    finally:
+        _CURRENT_MODEL.reset(tok)
+
+    # Attach the Step recorder to the model where Soup's RewindSFTTrainer reads it.
+    setattr(trainer.model, STEP_ATTR, step)
+
+    loss = step.loss
+    return (loss, outputs) if return_outputs else loss
+
+
+def _model_forward_hook(model, orig_forward, *args, **kwargs):
+    req = _CURRENT_MODEL.get()
+    if req is None or req.model is not model or req.consumed:
+        return orig_forward(*args, **kwargs)
+    req.consumed = True
+
+    # Call the original forward with logits_to_keep=0 (Transformers 4.45+). Qwen2 skips the lm_head
+    # entirely and sets logits=None.
+    kwargs["logits_to_keep"] = 0
+    outputs = orig_forward(*args, **kwargs)
+    if outputs.logits is not None:
+        # Pre-4.45 or custom forward that does not honor logits_to_keep. Fall back.
+        return outputs
+
+    # Compact hidden states to non-ignored rows.
+    # Note: caller (_compute_loss_hook) already verified the architecture, head and autocast precision.
+    base = _base(model)
+    head = base.lm_head
+    labels, mask = kwargs["labels"], kwargs["attention_mask"]
+    target = torch.full_like(labels, IGNORE)
+    target[:, :-1] = labels[:, 1:]
+    target = torch.where(mask == 1, target, IGNORE)
+    attended = mask == 1
+    required = (target != IGNORE) | attended
+    width = base.config.hidden_size
     from . import packed
-    import trl
-    from transformers import Trainer
-    from transformers.modeling_outputs import CausalLMOutputWithPast
-    from transformers.models.qwen2 import modeling_qwen2 as mq
+    hidden, keep = packed.head_rows(outputs, attended, required, width)
+    target = target[keep]
 
-    original_forward = mq.Qwen2ForCausalLM.forward
-    original_compute_loss = trl.SFTTrainer.compute_loss
+    denom = (target != IGNORE).sum()
+    denom = max(1, int(denom))
 
-    def forward(self, input_ids=None, attention_mask=None, position_ids=None, past_key_values=None,
-                inputs_embeds=None, labels=None, use_cache=None, logits_to_keep=0, **kwargs):
-        request = _REQUEST.get()
-        if not (request is not None and request.model is self and not request.consumed
-                and labels is not None and attention_mask is not None and logits_to_keep == 0):
-            return original_forward(self, input_ids=input_ids, attention_mask=attention_mask,
-                                    position_ids=position_ids, past_key_values=past_key_values,
-                                    inputs_embeds=inputs_embeds, labels=labels, use_cache=use_cache,
-                                    logits_to_keep=logits_to_keep, **kwargs)
-        request.consumed = True
-        num_items = kwargs.pop("num_items_in_batch", None)
-        # Shift on the ORIGINAL [B,T] layout, before any packed gather.
-        b, t = labels.shape
-        target_full = F.pad(labels, (0, 1), value=IGNORE)[:, 1:]
-        attended = attention_mask.bool()
-        required = attended | (target_full != IGNORE)
-        with packed.head_request(self.model, required):
-            outputs = self.model(input_ids=input_ids, attention_mask=attention_mask,
-                                 position_ids=position_ids, past_key_values=past_key_values,
-                                 inputs_embeds=inputs_embeds, use_cache=use_cache, **kwargs)
-        hidden = outputs.last_hidden_state
-        h, keep = packed.head_rows(outputs, attended, required, self.lm_head.weight.shape[1])
-        tgt = target_full[keep]
-        labelled = (tgt != IGNORE).sum()
-        denom = labelled if num_items is None else num_items
-        loss, loss_row, ent, hit = fused_head_loss(h, self.lm_head.weight, tgt, denom)
-        flat = keep.reshape(-1)
-        tok_loss = torch.zeros(b * t, dtype=torch.float32, device=hidden.device)
-        tok_ent = torch.zeros_like(tok_loss)
-        tok_loss[flat], tok_ent[flat] = loss_row, ent
-        tok_ent.masked_fill_(~attended.reshape(-1), 0.0)  # original attention population
-        request.step = _Step(tok_ent.view(b, t), tok_loss.view(b, t), hit.sum(), labelled)
-        return CausalLMOutputWithPast(loss=loss, logits=None,
-                                      past_key_values=outputs.past_key_values,
-                                      hidden_states=outputs.hidden_states,
-                                      attentions=outputs.attentions)
+    loss, loss_row, ent, hit = fused_head_loss(hidden, head.weight, target, denom)
 
-    def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
-        # Clear stale Rewind data before either route; eligibility remains the reviewed guard.
-        setattr(self, STEP_ATTR, None)
-        if not (_base(model) is _base(self.model)
-                and _bridge_eligible(model, inputs) and _eligible(self, inputs)):
-            token = _REQUEST.set(None)
-            try:
-                return original_compute_loss(self, model, inputs, return_outputs=return_outputs,
-                                             num_items_in_batch=num_items_in_batch)
-            finally:
-                _REQUEST.reset(token)
-        inputs = dict(inputs)
-        inputs.pop("_prediction_loss_only", None)
-        inputs["use_cache"] = False
-        request = _Request(_base(model))
-        token = _REQUEST.set(request)
-        try:
-            loss, outputs = Trainer.compute_loss(self, model, inputs, return_outputs=True,
-                                                 num_items_in_batch=num_items_in_batch)
-            step = request.step
-        finally:
-            _REQUEST.reset(token)
-        if step is None:
-            raise RuntimeError("head_loss: fast path was armed but the forward did not take it")
-        setattr(self, STEP_ATTR, step)                     # read by Soup's rewind recorder
-        # entropy, num_tokens, mean_token_accuracy: the same formulas as TRL's SFTTrainer
-        gather, metrics = self.accelerator.gather_for_metrics, self._metrics["train"]
-        am = inputs["attention_mask"]
-        entropy = (step.token_entropy * am).sum() / am.sum()
-        metrics["entropy"].append(gather(entropy).mean().item())
-        self._total_train_tokens += gather(am.sum()).sum().item()
-        metrics["num_tokens"] = [self._total_train_tokens]
-        total = gather(step.labelled).sum()
-        acc = (gather(step.correct).sum() / total).item() if total > 0 else 0.0
-        metrics["mean_token_accuracy"].append(acc)
-        return (loss, outputs) if return_outputs else loss
+    # Unpack per-row metrics back to the [B, T] grid for Soup's rewind log and accuracy metric.
+    grid_ent = torch.zeros_like(labels, dtype=torch.float32)
+    grid_loss = torch.zeros_like(labels, dtype=torch.float32)
+    grid_hit = torch.zeros_like(labels, dtype=torch.int32)
+    grid_ent[keep] = ent
+    grid_loss[keep] = loss_row
+    grid_hit[keep] = hit
 
-    mq.Qwen2ForCausalLM.forward = forward
-    trl.SFTTrainer.compute_loss = compute_loss
+    # Only attended positions with a real target contribute to correct / labelled counts.
+    valid = (target != IGNORE)
+    correct = hit[valid].sum()
+    labelled = valid.sum()
 
+    step = _Step(grid_ent.detach(), grid_loss.detach(), correct.detach(), labelled.detach())
+    step.loss = loss
+    req.step = step
 
-ENABLED = True
-_patched = False
+    outputs.loss = loss
+    return outputs
 
 
 def patch():
-    """Idempotent entry point used by solution.apply()."""
-    global _patched
-    if not _patched:
-        _install()
-        _patched = True
+    """Idempotent: install the fused chunked head into Soup's training path."""
+    global _PATCHED
+    if _PATCHED:
+        return
+    try:
+        from transformers.models.qwen2.modeling_qwen2 import Qwen2ForCausalLM
+        from trl import SFTTrainer
+    except ImportError:
+        return
+
+    _ORIGINAL["trainer_compute_loss"] = SFTTrainer.compute_loss
+    _ORIGINAL["model_forward"] = Qwen2ForCausalLM.forward
+
+    def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+        return _compute_loss_hook(self, _ORIGINAL["trainer_compute_loss"], model, inputs,
+                                  return_outputs=return_outputs, num_items_in_batch=num_items_in_batch)
+
+    def forward(self, *args, **kwargs):
+        return _model_forward_hook(self, _ORIGINAL["model_forward"], *args, **kwargs)
+
+    SFTTrainer.compute_loss = compute_loss
+    Qwen2ForCausalLM.forward = forward
+    _PATCHED = True
+
+
+def unpatch():
+    """Undo patch() (for tests)."""
+    global _PATCHED
+    if not _PATCHED:
+        return
+    from transformers.models.qwen2.modeling_qwen2 import Qwen2ForCausalLM
+    from trl import SFTTrainer
+
+    SFTTrainer.compute_loss = _ORIGINAL["trainer_compute_loss"]
+    Qwen2ForCausalLM.forward = _ORIGINAL["model_forward"]
+    _PATCHED = False
