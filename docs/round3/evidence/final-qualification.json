@@ -1,0 +1,16 @@
+{
+  "qualified": true,
+  "flags": {
+    "checks_all_ten_true": true,
+    "four_complete_64_step_runs": true,
+    "solution_peak_at_most_4693_mib": true,
+    "checker_result_bound": true,
+    "checker_solution_bound": true,
+    "source_integrity": true,
+    "official_plan_unchanged": true,
+    "solution_tests_passed": true,
+    "portable_interpreter_tests_passed": true,
+    "raw79_passed": true
+  },
+  "failures": {}
+}

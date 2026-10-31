@@ -19,5 +19,12 @@
     "sha256": "3ed1ed8b30e2c3d641bab6b70550ffbe6f3fc4036ba6bbc629a939dcb3dcd1b3",
     "bytes": 73498285,
     "source_files_verified": 101
+  },
+  {
+    "name": "final-forward",
+    "sha256": "7733edaf33a0e68939b4260247ae528df2e8cb73b9e91c30095426ad19dcdbe3",
+    "bytes": 146375137,
+    "source_files_verified": 58,
+    "receipt_flags_all_true": 24
   }
 ]
