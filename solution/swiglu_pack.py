@@ -213,11 +213,8 @@ def install_for_measurement(*, enable=False, first_order_training=False, starter
     starter = starter_module or importlib.import_module("solution.swiglu")
     if not _verified_starter(starter):
         return MeasurementPatch(reason="not-exact-r8-starter")
-    try:
-        forward_hash = hashlib.sha256(inspect.getsource(bnb.nn.Linear4bit.forward).encode()).hexdigest()
-    except (OSError, TypeError):
-        forward_hash = None
-    if forward_hash != BNB_FORWARD_SHA256:
+    from .bnb_provenance import matches
+    if not matches("Linear4bit.forward", bnb.nn.Linear4bit.forward):
         return MeasurementPatch(reason="noncanonical-bnb-forward")
     baseline = Qwen2MLP.forward
     code = next(c for c in starter.patch_qwen2_mlp.__code__.co_consts
