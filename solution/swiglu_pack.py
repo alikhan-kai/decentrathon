@@ -49,7 +49,7 @@ def _verified_starter(starter):
 # all-native path already allows, so a step above 1024 rows never saves more than one at 1024 did.
 # Fixed constants: no step, seed or dataset lookup, nothing measured at runtime.
 LAYER_BUDGET = True
-NATIVE_KB, REMAT_KB, BUDGET_ROWS = 68.8, 39.0, 960
+NATIVE_KB, REMAT_KB, BUDGET_ROWS = 68.8, 39.0, 768
 
 
 def native_layers(n, layers):
@@ -256,10 +256,10 @@ def install_saved_activation_packing(*, enable=False, first_order_training=False
         layers = self.config.num_hidden_layers
         # First calls come in decoder order, so this is the layer index (fixed for the run).
         layer = handle.layer_ids.setdefault(id(self), len(handle.layer_ids) % layers)
-        if n > 1024 and not (LAYER_BUDGET and layer < native_layers(n, layers)):
+        if n > BUDGET_ROWS and not (LAYER_BUDGET and layer < native_layers(n, layers)):
             from .hybrid_mlp import hybrid_mlp_forward
             handle.remat_calls += 1
-            return hybrid_mlp_forward(self, x, starter, threshold=1024)
+            return hybrid_mlp_forward(self, x, starter, threshold=BUDGET_ROWS)
         handle.packed_calls += 1
         return native_half._validated_entry(self, x, starter)
 
