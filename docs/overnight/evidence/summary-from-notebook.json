@@ -1,0 +1,23 @@
+{
+  "base": {
+    "ok": true,
+    "runs": 2,
+    "wall_s": 76.64,
+    "gpu_peak_mib": 14345,
+    "train_loop_s": 55.34,
+    "eval_loss": 2.04969
+  },
+  "solution": {
+    "ok": true,
+    "runs": 2,
+    "wall_s": 59.52,
+    "gpu_peak_mib": 4421,
+    "train_loop_s": 38.1,
+    "eval_loss": 2.04944
+  },
+  "ratios": {
+    "speedup": 1.2876,
+    "memory_ratio": 3.2447,
+    "quality_delta_pct": -0.012
+  }
+}
