@@ -47,15 +47,15 @@ def nf4_dequant_kernel(packed_ptr, absmax_ptr, code_ptr, code2_ptr, absmax2_ptr,
                        out_ptr, n, BYTES: tl.constexpr, BLOCKSIZE: tl.constexpr,
                        BLOCKSIZE2: tl.constexpr = 256, NESTED: tl.constexpr = False):
     pid = tl.program_id(0)
-    # Factor the tile into [N_BLOCKS, BLOCKSIZE // 2, 2] so each 64-weight block decodes its
-    # double-quantized scale once instead of 64 times, and decode the 16-entry NF4 codebook in
-    # registers via a 4-bit binary tree without divergent global memory gathers.
-    blk = pid * ((BYTES * 2) // BLOCKSIZE) + tl.arange(0, (BYTES * 2) // BLOCKSIZE)
-    blk_mask = blk * BLOCKSIZE < n
+    byte_idx = pid * BYTES + tl.arange(0, BYTES)
+    byte_mask = byte_idx * 2 < n
+    packed = tl.load(packed_ptr + byte_idx, mask=byte_mask, other=0).to(tl.int32)
+    # High nibble (2*i) and low nibble (2*i + 1) of byte i always share block i // (BLOCKSIZE // 2).
+    blk = byte_idx // (BLOCKSIZE // 2)
     if NESTED:
-        qabs = tl.load(absmax_ptr + blk, mask=blk_mask, other=0).to(tl.int32)
-        c2 = tl.load(code2_ptr + qabs, mask=blk_mask, other=0.0)
-        a2 = tl.load(absmax2_ptr + (blk // BLOCKSIZE2), mask=blk_mask, other=0.0)
+        qabs = tl.load(absmax_ptr + blk, mask=byte_mask, other=0).to(tl.int32)
+        c2 = tl.load(code2_ptr + qabs, mask=byte_mask, other=0.0)
+        a2 = tl.load(absmax2_ptr + (blk // BLOCKSIZE2), mask=byte_mask, other=0.0)
         off = tl.load(offset_ptr)
         # Match bitsandbytes' separate fp32 multiply then fp32 add without FMA contraction.
         scale = tl.inline_asm_elementwise(
@@ -67,38 +67,13 @@ def nf4_dequant_kernel(packed_ptr, absmax_ptr, code_ptr, code2_ptr, absmax2_ptr,
             pack=1,
         )
     else:
-        scale = tl.load(absmax_ptr + blk, mask=blk_mask, other=0.0)
-
-    byte_in_blk = tl.arange(0, BLOCKSIZE // 2)
-    byte_idx = blk[:, None] * (BLOCKSIZE // 2) + byte_in_blk[None, :]
-    packed = tl.load(packed_ptr + byte_idx, mask=byte_idx * 2 < n, other=0).to(tl.int32)
+        scale = tl.load(absmax_ptr + blk, mask=byte_mask, other=0.0)
     half = tl.arange(0, 2)
-    # [N_BLOCKS, BLOCKSIZE // 2, 2] tile: high nibble = weight 2i, low nibble = weight 2i + 1
-    nibble = tl.where(half[None, None, :] == 0, packed[:, :, None] >> 4, packed[:, :, None] & 15)
-
-    b0 = (nibble & 1) != 0
-    b1 = (nibble & 2) != 0
-    b2 = (nibble & 4) != 0
-    b3 = (nibble & 8) != 0
-    t0 = tl.where(b0, -0.6961928009986877, -1.0)
-    t1 = tl.where(b0, -0.39491748809814453, -0.5250730514526367)
-    t2 = tl.where(b0, -0.18477343022823334, -0.28444138169288635)
-    t3 = tl.where(b0, 0.0, -0.09105003625154495)
-    t4 = tl.where(b0, 0.16093020141124725, 0.07958029955625534)
-    t5 = tl.where(b0, 0.33791524171829224, 0.24611230194568634)
-    t6 = tl.where(b0, 0.5626170039176941, 0.44070982933044434)
-    t7 = tl.where(b0, 1.0, 0.7229568362236023)
-    u0 = tl.where(b1, t1, t0)
-    u1 = tl.where(b1, t3, t2)
-    u2 = tl.where(b1, t5, t4)
-    u3 = tl.where(b1, t7, t6)
-    v0 = tl.where(b2, u1, u0)
-    v1 = tl.where(b2, u3, u2)
-    code = tl.where(b3, v1, v0)
-
-    elem = byte_idx[:, :, None] * 2 + half[None, None, :]
+    # [BYTES, 2] tile: column 0 is the high nibble (weight 2i), column 1 the low nibble (weight 2i + 1)
+    nibble = tl.where(half[None, :] == 0, packed[:, None] >> 4, packed[:, None] & 15)
+    elem = byte_idx[:, None] * 2 + half[None, :]
     mask = elem < n
-    value = code * scale[:, None, None]
+    value = tl.load(code_ptr + nibble) * scale[:, None]
     tl.store(out_ptr + elem, value.to(out_ptr.dtype.element_ty), mask=mask)
 
 
