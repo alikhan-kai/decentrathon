@@ -1,0 +1,33 @@
+test_admission_exception_is_noop (solution.test_lazy_bnb_compile.Contract.test_admission_exception_is_noop) ... ok
+test_background_scope_is_noop (solution.test_lazy_bnb_compile.Contract.test_background_scope_is_noop) ... ok
+test_baseexception_is_not_swallowed (solution.test_lazy_bnb_compile.Contract.test_baseexception_is_not_swallowed) ... ok
+test_concurrent_first_calls_construct_once (solution.test_lazy_bnb_compile.Contract.test_concurrent_first_calls_construct_once) ... ok
+test_constructor_failure_does_not_retry_failing_eager_body (solution.test_lazy_bnb_compile.Contract.test_constructor_failure_does_not_retry_failing_eager_body) ... ok
+test_direct_lazy_preserves_metadata_and_all_compiler_arguments (solution.test_lazy_bnb_compile.Contract.test_direct_lazy_preserves_metadata_and_all_compiler_arguments) ... ok
+test_disabled_is_noop_without_admission (solution.test_lazy_bnb_compile.Contract.test_disabled_is_noop_without_admission) ... ok
+test_first_call_uses_real_original_compiler_success (solution.test_lazy_bnb_compile.Contract.test_first_call_uses_real_original_compiler_success) ... /home/homelab/.t3/projects/decentrathon/.venv/lib/python3.13/site-packages/torch/jit/_script.py:365: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+ok
+test_name_spoof_is_rejected (solution.test_lazy_bnb_compile.Contract.test_name_spoof_is_rejected) ... ok
+test_no_early_construction_or_body_and_original_arguments (solution.test_lazy_bnb_compile.Contract.test_no_early_construction_or_body_and_original_arguments) ... ok
+test_permanent_constructor_failure_and_single_eager_call (solution.test_lazy_bnb_compile.Contract.test_permanent_constructor_failure_and_single_eager_call) ... ok
+test_real_admission (solution.test_lazy_bnb_compile.Contract.test_real_admission) ... ok
+test_runtime_failure_remains_per_call_not_permanent_eager (solution.test_lazy_bnb_compile.Contract.test_runtime_failure_remains_per_call_not_permanent_eager) ... ok
+test_runtime_failure_retries_compiled_on_next_call (solution.test_lazy_bnb_compile.Contract.test_runtime_failure_retries_compiled_on_next_call) ... ok
+test_unknown_source_is_noop (solution.test_lazy_bnb_compile.Contract.test_unknown_source_is_noop) ... ok
+test_unknown_version_is_noop (solution.test_lazy_bnb_compile.Contract.test_unknown_version_is_noop) ... ok
+test_unrelated_dispatch_and_restoration_success_failure_nested (solution.test_lazy_bnb_compile.Contract.test_unrelated_dispatch_and_restoration_success_failure_nested) ... ok
+test_a_import_no_execution_metadata_canonical_code_and_preimport_noop (solution.test_lazy_bnb_compile.ZRealBNB.test_a_import_no_execution_metadata_canonical_code_and_preimport_noop) ... ok
+test_b_actual_default_dequantization_real_compile_and_parity (solution.test_lazy_bnb_compile.ZRealBNB.test_b_actual_default_dequantization_real_compile_and_parity) ... CPU_CODEGEN_ERROR InvalidCxxCompiler: No working C++ compiler found in torch._inductor.config.cpp.cxx: (None, 'g++')
+
+Set TORCHDYNAMO_VERBOSE=1 for the internal stack trace (please do this especially if you're reporting a bug to PyTorch). For even more developer context, set TORCH_LOGS="+dynamo"
+
+ok
+test_c_actual_default_optimizer_real_compile_and_mutation_parity (solution.test_lazy_bnb_compile.ZRealBNB.test_c_actual_default_optimizer_real_compile_and_mutation_parity) ... LAZY_BNB_CPU_STATS {"status": "bitsandbytes already imported or importing", "functions": [{"name": "_dequantize_blockwise_compute", "calls": 1, "constructions": 1, "constructor_failure": null, "runtime_failures": 1, "last_runtime_failure": "InductorError", "options": {"dynamic": false}}, {"name": "_dequantize_4bit_compute", "calls": 1, "constructions": 1, "constructor_failure": null, "runtime_failures": 1, "last_runtime_failure": "InductorError", "options": {"dynamic": false}}, {"name": "_optimizer_precondition_32bit", "calls": 1, "constructions": 1, "constructor_failure": null, "runtime_failures": 1, "last_runtime_failure": "InductorError", "options": {}}, {"name": "_optimizer_update_32bit", "calls": 1, "constructions": 1, "constructor_failure": null, "runtime_failures": 1, "last_runtime_failure": "InductorError", "options": {}}]}
+ok
+test_d_cpu_codegen_success_when_toolchain_available (solution.test_lazy_bnb_compile.ZRealBNB.test_d_cpu_codegen_success_when_toolchain_available) ... skipped 'No installed C++ compiler; actual tensor parity above exercised BNB runtime fallback'
+
+----------------------------------------------------------------------
+Ran 21 tests in 5.502s
+
+OK (skipped=1)

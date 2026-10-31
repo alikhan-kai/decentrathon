@@ -1,0 +1,66 @@
+{
+  "six_final_source_compositions": [
+    {
+      "base_sha": "25855208695fd113fa1897385abccc73f71a19cd",
+      "variant": "metadata",
+      "changed_files": [
+        "solution/__init__.py",
+        "solution/startup_metadata.py"
+      ],
+      "old_cache_disabled": false
+    },
+    {
+      "base_sha": "25855208695fd113fa1897385abccc73f71a19cd",
+      "variant": "lazy-bnb",
+      "changed_files": [
+        "solution/__init__.py",
+        "solution/lazy_bnb_compile.py"
+      ],
+      "old_cache_disabled": false
+    },
+    {
+      "base_sha": "1470393c64c09a6be6e48bd643f1a5de07574d19",
+      "variant": "metadata",
+      "changed_files": [
+        "solution/__init__.py",
+        "solution/startup_metadata.py"
+      ],
+      "old_cache_disabled": false
+    },
+    {
+      "base_sha": "1470393c64c09a6be6e48bd643f1a5de07574d19",
+      "variant": "lazy-bnb",
+      "changed_files": [
+        "solution/__init__.py",
+        "solution/lazy_bnb_compile.py"
+      ],
+      "old_cache_disabled": false
+    },
+    {
+      "base_sha": "8f50dcbb5c7edacc4d6738a58b7d254274b85004",
+      "variant": "metadata",
+      "changed_files": [
+        "solution/__init__.py",
+        "solution/overhead.py",
+        "solution/startup_metadata.py"
+      ],
+      "old_cache_disabled": true
+    },
+    {
+      "base_sha": "8f50dcbb5c7edacc4d6738a58b7d254274b85004",
+      "variant": "lazy-bnb",
+      "changed_files": [
+        "solution/__init__.py",
+        "solution/lazy_bnb_compile.py"
+      ],
+      "old_cache_disabled": false
+    }
+  ],
+  "protected_unchanged": true,
+  "protected_count": 15,
+  "helper_sha256": {
+    "startup_metadata.py": "28295012234c21d191263259ac25946d3df186b8a19e0577cef6ca49bb8b69f7",
+    "lazy_bnb_compile.py": "7e6d4f5f380fe9e55cac7894e7029b08684651471cd1e0c745e8a1c07717b7eb"
+  },
+  "gpu_run": false
+}

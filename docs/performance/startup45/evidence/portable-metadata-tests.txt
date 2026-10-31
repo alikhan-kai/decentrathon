@@ -1,0 +1,3 @@
+22 passed in 2.75s
+Command: CUDA_VISIBLE_DEVICES='' PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 python -B -m pytest -q -p no:cacheprovider solution/test_startup_metadata.py
+Portable runtime subset; three-base installer and old-cache integration remain in archived 29-test evidence.

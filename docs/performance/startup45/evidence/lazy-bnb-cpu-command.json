@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "/home/homelab/.t3/projects/decentrathon/.venv/bin/python",
+    "-B",
+    "-m",
+    "unittest",
+    "solution.test_lazy_bnb_compile",
+    "-v"
+  ],
+  "cwd": "/tmp/decentrathon-speed45-lazy-bnb-r1/candidate",
+  "environment_overrides": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "HF_DATASETS_OFFLINE": "1",
+    "HF_HUB_DISABLE_TELEMETRY": "1",
+    "DO_NOT_TRACK": "1",
+    "TOKENIZERS_PARALLELISM": "false",
+    "XDG_CACHE_HOME": "/tmp/decentrathon-speed45-lazy-bnb-r1/cache",
+    "TRITON_CACHE_DIR": "/tmp/decentrathon-speed45-lazy-bnb-r1/cache/triton",
+    "TORCHINDUCTOR_CACHE_DIR": "/tmp/decentrathon-speed45-lazy-bnb-r1/cache/inductor",
+    "HF_HOME": "/tmp/decentrathon-speed45-lazy-bnb-r1/cache/huggingface",
+    "PYTHONPATH": "/tmp/decentrathon-speed45-lazy-bnb-r1/candidate",
+    "TORCHINDUCTOR_COMPILE_THREADS": "1"
+  },
+  "returncode": 0,
+  "wall_s": 7.581813595024869
+}
