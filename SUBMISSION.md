@@ -1,82 +1,73 @@
-# Submission / Сдача: TODO(TEAM_NAME)
+# Submission / Сдача: localhost (TODO: confirm official team name)
 
 ## English
 
 ### Links
 
-- Repository: [alikhan-kai/decentrathon](https://github.com/alikhan-kai/decentrathon).
-- Final submission commit: [632851f0f2c3d202ae898d07b9b7b050eed61699](https://github.com/alikhan-kai/decentrathon/commit/632851f0f2c3d202ae898d07b9b7b050eed61699).
-- Submission Kaggle notebook, configured with the submission SHA: [decentrathon-soup-kernel-final](https://www.kaggle.com/code/iencis/decentrathon-soup-kernel-final).
-- Demo video, up to 3 minutes: TODO(DEMO_VIDEO_URL).
-- Presentation: TODO(PRESENTATION_URL).
+- **Repository (team public):** [alikhan-kai/decentrathon](https://github.com/alikhan-kai/decentrathon)
+- **Repository (hackathon platform):** [BAITC-Hacks/hack-d2097b50-localhost](https://github.com/BAITC-Hacks/hack-d2097b50-localhost)
+- **Final benchmarked runtime commit:** [`fabc67d4b0667be70b846aac29d9be21cb31a212`](https://github.com/alikhan-kai/decentrathon/commit/fabc67d4b0667be70b846aac29d9be21cb31a212) ([hackathon commit link](https://github.com/BAITC-Hacks/hack-d2097b50-localhost/commit/fabc67d4b0667be70b846aac29d9be21cb31a212))
+- **Public Kaggle notebook (`COMMIT` pinned to final SHA):** [decentrathon-soup-kernel-final](https://www.kaggle.com/code/iencis/decentrathon-soup-kernel-final)
+- **Demo video (up to 3 minutes):** TODO(DEMO_VIDEO_URL)
+- **Presentation:** TODO(PRESENTATION_URL)
 
-The notebook URL and final SHA match [README](README.md). F is the recorded run of that SHA; its [result](docs/measurements/submission_632851f/result.json), [checks](docs/measurements/submission_632851f/checks.json) and [notebook log](docs/measurements/submission_632851f/decentrathon-soup-kernel-final.log) are tracked. Public notebook visibility and a version-specific URL remain unverified; local [metadata](submission/kernel-metadata.json) says `is_private: true`.
+The Kaggle notebook URL and final benchmarked SHA match [README.md](README.md) and [README.ru.md](README.ru.md). Run **F** is the paired two-repeat (`--repeats 2`, ABBA) measurement of `fabc67d4b0667be70b846aac29d9be21cb31a212` (`solution_sha256`: `7caf827d0fb87cc23400afb227f2efb17e21fcca5ebd94867732f71f0171285c`, `result_sha256`: `fbf7553e8ca4df347be80f567bf311e92cec21275c65270767cf2d7a89fc8585`); its [checks.json](docs/measurements/submission_fabc67d/checks.json) and full breakdown in [docs/EVIDENCE.md](docs/EVIDENCE.md) are tracked in Git, and `solution/` is byte-for-byte unchanged on HEAD.
 
 ### Description
 
-Custom Triton kernels accelerate NF4 unpacking, RMSNorm, rotary position encoding and chunked head loss/metrics. The solution also removes padding inside existing batches, preserves independent attention per example, reduces MLP saved activations and startup overhead. It preserves the fixed Soup/Qwen LoRA task and saves a standard PEFT adapter.
+Custom `@triton.jit` kernels accelerate nested double-quantized NF4 unpacking (`nf4_dequant_kernel`), forward/backward RMSNorm (`rmsnorm_fwd_kernel`, `rmsnorm_bwd_kernel`), joint Q/K split-half rotary position embedding (`ember_rope_joint`) and chunked LM-head cross-entropy/entropy/accuracy (`head_loss_kernel`). Together with within-batch padding removal, native FP16 QKV / fused LoRA epilogue / RoPE / batched `repeat_kv`, lossless FP16 tied embedding/head storage, budgeted FP16 MLP activation saves (`BUDGET_ROWS=940`), startup overhead elimination and background 9-specialization Triton precompilation, the solution achieves **1.5903× speedup** and **4.3748× lower peak GPU memory (`3 279 MiB` vs `14 345 MiB`)** while preserving the exact Soup/Qwen2.5-1.5B LoRA task and standard PEFT adapter output.
 
-### Team
+### Team (up to 4 people)
 
-| Required team information | Status |
-|---|---|
-| Names or handles, roles, GitHub and Kaggle accounts, captain contact | TODO(TEAM_ROSTER_AND_CAPTAIN_CONTACT) |
-
-The organizer allows up to 4 participants. Git contribution credits appear in [README](README.md); they are not a confirmed competition roster. No private contact information is inferred from commit metadata.
+| Name / Handle | Role | GitHub | Kaggle | Contact (captain) |
+|---|---|---|---|---|
+| Ansar | Integrator, Head Loss / NF4 / RMSNorm / Packed Decoder | `iencislennon` | `iencis` | TODO(CAPTAIN_CONTACT) |
+| TODO(MEMBER_2) | Rotary Kernel, Lossless Tied Weight, Native/Hybrid MLP & Precompile | `stritphatographir` | TODO | — |
+| Alikhan | Startup Overhead, Fused LoRA Epilogue & Nested NF4 Integration | `alikhan-kai` | TODO | — |
+| TODO(MEMBER_4_IF_ANY) | Documentation, Video & Presentation | TODO | TODO | — |
 
 ### Our kernels
 
-| Kernel (`@triton.jit` name) | File | What it replaces | Share of timed training in F, two repeats |
+| Kernel (`@triton.jit` name) | File | What it replaces | Share of timed training in F, two repeats (Check 4) |
 |---|---|---|---:|
-| `head_loss_kernel` | [head_loss.py](solution/head_loss.py) | Separate vocabulary loss, entropy, accuracy and gradient elementwise work | 0.5981–0.6015% |
-| `nf4_dequant_kernel` | [nf4.py](solution/nf4.py) | bitsandbytes NF4 unpacking | 7.1514–7.2678% |
-| `rmsnorm_fwd_kernel` | [rmsnorm.py](solution/rmsnorm.py) | Qwen2 RMSNorm forward operations | 0.6593–0.6723% |
-| `rmsnorm_bwd_kernel` | [rmsnorm.py](solution/rmsnorm.py) | RMSNorm input-gradient operations | 0.6985–0.7076% |
-| `ember_rope_joint` | [rotary.py](solution/rotary.py) | Q/K rotary forward/backward elementwise chain | 0.9202–0.9463% |
+| `nf4_dequant_kernel` | [`solution/nf4.py`](solution/nf4.py) | bitsandbytes flat & nested double-quantized NF4 unpacking | 8.2659–8.3073% |
+| `head_loss_kernel` | [`solution/head_loss.py`](solution/head_loss.py) | Full-vocab logits materialization + separate CE loss, entropy, accuracy & `dlogits` | 0.7654–0.7693% |
+| `rmsnorm_bwd_kernel` | [`solution/rmsnorm.py`](solution/rmsnorm.py) | Qwen2 RMSNorm backward input-gradient elementwise/reduction chain | 0.7158–0.7302% |
+| `rmsnorm_fwd_kernel` | [`solution/rmsnorm.py`](solution/rmsnorm.py) | Qwen2 RMSNorm forward variance, `rsqrt` & weight-multiply chain | 0.6241–0.6469% |
+| `ember_rope_joint` | [`solution/rotary.py`](solution/rotary.py) | Separate Q and K split-half rotary forward/backward elementwise chains | 0.5526–0.5746% |
 
-Per-kernel percentages are derived separately for each F solution run as `100 × own_kernel_ms / (1000 × timed_loop_s)`, then shown as ranges. Range endpoints need not come from the same repeat. The combined eligible share is **10.0% in the lowest repeat**, as reported by check 4. These are runtime shares, not speedup contributions. Source: F `runs.solution[].metrics` and checks, defined in [README results](README.md#results).
+Per-kernel shares are computed per repeat as `100 × own_kernel_ms / (1000 × timed_loop_s)` from `F` (`solution_1`: `timed_loop_s = 31.660 s`, total `11.0244%`; `solution_2`: `timed_loop_s = 32.218 s`, total `10.9276%`). **Combined eligible share in the lowest repeat: `10.9%`** (Check 4 requires `≥ 5.0%`). Starter `example_swiglu_fwd_kernel` and `example_swiglu_bwd_kernel` are **excluded** from our kernel share; `_rope_rotate_block` is an inlined device helper; `residual_norm_*` is disabled.
 
-The starter `example_swiglu_*` kernels are **not our own** and are excluded from eligible time. `_rope_rotate_block` is a helper, not a separately launched kernel. Residual/norm kernels are disabled in the measured candidate.
+Ideas taken from other kernels / references (all Triton kernels above were written by our team):
 
-Ideas and reference code:
+- **Chunked LM-head + loss:** Makazhan Alpamys and Soup contributors, [`stream_loss_chunk`](https://github.com/MakazhanAlpamys/Soup/blob/main/src/soup_cli/utils/stream_loss_chunk.py) (Apache-2.0).
+- **NF4 & double quantization:** Tim Dettmers et al., [QLoRA](https://arxiv.org/abs/2305.14314); reference layout in [bitsandbytes 0.50.2](https://github.com/bitsandbytes-foundation/bitsandbytes/blob/0.50.2/bitsandbytes/backends/cuda/ops.py).
+- **RMSNorm & RoPE arithmetic:** Hugging Face Transformers contributors, [`modeling_qwen2.py` (v5.16.1)](https://github.com/huggingface/transformers/blob/v5.16.1/src/transformers/models/qwen2/modeling_qwen2.py).
+- **Starter SwiGLU (`example_swiglu_*`):** Organizer [starter kit](https://github.com/MakazhanAlpamys/soup-kernel-challenge) (no original-kernel credit claimed).
 
-- Head chunking: Makazhan Alpamys and Soup contributors, [stream_loss_chunk](https://github.com/MakazhanAlpamys/Soup/blob/main/src/soup_cli/utils/stream_loss_chunk.py). Our head Triton kernel is original.
-- NF4 format: Tim Dettmers, Artidoro Pagnoni, Ari Holtzman and Luke Zettlemoyer, [QLoRA](https://arxiv.org/abs/2305.14314); [bitsandbytes reference](https://github.com/bitsandbytes-foundation/bitsandbytes/blob/0.50.2/bitsandbytes/backends/cuda/ops.py).
-- RMSNorm/RoPE semantics: Hugging Face Transformers contributors, [Qwen2](https://github.com/huggingface/transformers/blob/v5.16.1/src/transformers/models/qwen2/modeling_qwen2.py).
-- SwiGLU: organizer [starter kit](https://github.com/MakazhanAlpamys/soup-kernel-challenge); no original-kernel credit claimed.
-- Packed decoder and native/hybrid saves: team work documented in [candidate provenance](https://github.com/alikhan-kai/decentrathon/blob/62cd831c582298d53345b5d80feba3ea9796914a/docs/overnight/CANDIDATE.md). Startup changes: Alikhan-kai, [merge record](docs/MERGE_OVERHEAD.md).
+### Results on Kaggle T4 (`--repeats 2`, ABBA, public rows, seed 1)
 
-### Results on Kaggle T4
-
-Each dataset was measured in one **base → solution → solution → base** invocation. F is the submission-source run at `632851f`; R is the earlier additional-row/seed-7 run at `952f20a`, with identical `solution/`. Time is the per-side median; memory is the maximum peak. Sources and publication limits are in [README](README.md#results) and [experiment notes](notes/experiments.md).
-
-| F: public rows | Base Soup | Ours | Comparison |
+| Metric | Base Soup | Ours (`fabc67d`) | Ratio / Delta |
 |---|---:|---:|---|
-| Whole `soup train`, s | 83.25 | 59.66 | Speedup 1.3954× |
-| Peak GPU memory, MiB | 14345 | 4421 | Base/ours 3.2447× |
-| Eval loss | 2.04966 | 2.04942 | −0.012% vs base |
+| Time of `soup train`, s (median of 2) | 84.59 | 53.19 | **Speedup 1.5903×** |
+| Peak GPU memory, MiB (max of 2) | 14345 | 3279 | **Base/ours 4.3748×** |
+| Eval loss (public held-out rows) | 2.04965 | 2.04941 | **−0.012% vs base** |
 
-| R: other rows, seed 7 | Base Soup | Ours | Comparison |
-|---|---:|---:|---|
-| Whole `soup train`, s | 81.68 | 61.91 | Speedup 1.3193× |
-| Peak GPU memory, MiB | 14351 | 4405 | Base/ours 3.2579× |
-| Eval loss | 2.11513 | 2.11550 | +0.017% vs base |
-
-- [x] All 10 automatic checks passed for recorded F and R.
-- [x] README rewritten with implementation, reproduction, results and limitations in English and Russian.
-- [x] Final submission SHA and notebook URL supplied; automatic checks at that SHA recorded in F.
-- [ ] Public notebook visibility, saved-version URL and downloadable outputs verified.
-- [ ] Team details, video and presentation supplied.
-
-F result/check JSON and training logs are tracked in `docs/measurements/submission_632851f/`. Historical P/R raw evidence remains locally ignored. Downloading outputs through the saved Kaggle notebook remains unverified. The 79 official Soup regressions passed; the separate F solution suite had 298 passed, 126 skipped and 5 PEFT/torchao environment failures. See [README](README.md#correctness-validation).
+- [x] All 10 checks of `harness/check_rules.py` passed (`2 base + 2 solution` runs, 79 Soup regression tests passed in `0.49s`).
+- [x] `README.md` (and `README.ru.md`) rewritten for our solution: what we did, how to run it, results and limitations.
+- [x] `submission/kaggle_notebook.ipynb` updated with `COMMIT = "fabc67d4b0667be70b846aac29d9be21cb31a212"` and `--repeats 2`.
+- [ ] Verify public Kaggle saved-version URL (`?scriptVersionId=...`) after final **Save & Run All** and fill remaining `TODO(...)` fields (captain contact, video, presentation).
 
 ### Presentation covers
 
-The requested presentation should explain the fixed task; memory pressure from logits and saved activations; the head, NF4, RMSNorm and RoPE kernels; padding/MLP integration; paired results and quality checks; attribution, limitations and next experiments. The video must fit the organizer's 3-minute limit. No completed media is claimed until its links are supplied.
+1. Bottleneck profile of baseline Qwen2.5-1.5B NF4 LoRA training on T4 (`14.3 GiB` VRAM spike from full-vocabulary FP32 logits and padded FP32 activations; Python/import/compilation startup overhead; 25K NF4 dequantization launches).
+2. Architecture of our 5 custom Triton kernels (`nf4_dequant_kernel` with inline-PTX IEEE-754 nested scale fusion, `head_loss_kernel` online softmax + scaled backward compaction, `rmsnorm_fwd/bwd_kernel`, and FP16 `ember_rope_joint`).
+3. Memory & compute co-design: within-batch padding removal with isolated causal SDPA, lossless FP16 tied embedding/head compaction (`-467 MiB`), budgeted native-FP16 / rematerialized MLP saves (`3 279 MiB` steady peak), and 9-spec background Triton precompilation.
+4. Verified 2-repeat ABBA results (`1.5903×` speedup, `4.3748×` memory reduction, `−0.012%` eval loss, `10.9%` own-kernel share, 10/10 checks PASS), limitations and next steps.
 
 ### Limitations
 
-The candidate targets the recorded T4 FP16/library combination. MLP optimization is restricted by source hashes and first-order eager guards. Attention falls back for 256/7168 calls per F run (3.5714%, call share). R contains a 7.04% row-loss gap on a 7-answer-token row while its mean gaps, 0.225%/0.221%, pass check 5. Packing changes dropout RNG assignment. Cross-session times do not isolate gains. LoRA epilogue work is unfinished; residual fusion is disabled. Individual final-module gains and full notebook duration are unknown. Full evidence and proposed measurements are in [README](README.md#limitations-and-unsuccessful-work).
+Fast paths are specialized and guarded for Tesla T4 (`sm_75`), FP16 autocast and the pinned challenge package versions, falling back cleanly otherwise. Above `BUDGET_ROWS = 940` packed tokens, upper MLP layers trade extra backward recomputation for the `3 279 MiB` memory ceiling. A 3D `[16, 32, 2]` NF4 tile with register-tree lookup regressed coalescing on `sm_75` and was reverted; `residual_norm` fusion remains disabled. Full details are in [README.md](README.md#limitations-and-unsuccessful-work).
 
 ---
 
@@ -84,76 +75,34 @@ The candidate targets the recorded T4 FP16/library combination. MLP optimization
 
 ### Ссылки
 
-- Репозиторий: [alikhan-kai/decentrathon](https://github.com/alikhan-kai/decentrathon).
-- Финальный коммит сдачи: [632851f0f2c3d202ae898d07b9b7b050eed61699](https://github.com/alikhan-kai/decentrathon/commit/632851f0f2c3d202ae898d07b9b7b050eed61699).
-- Kaggle-ноутбук сдачи, настроенный на финальный SHA: [decentrathon-soup-kernel-final](https://www.kaggle.com/code/iencis/decentrathon-soup-kernel-final).
-- Видео до 3 минут: TODO(DEMO_VIDEO_URL).
-- Презентация: TODO(PRESENTATION_URL).
-
-URL ноутбука и финальный SHA совпадают с [README](README.md). F — записанный запуск этого SHA; его [результат](docs/measurements/submission_632851f/result.json), [проверки](docs/measurements/submission_632851f/checks.json) и [лог ноутбука](docs/measurements/submission_632851f/decentrathon-soup-kernel-final.log) отслеживаются Git. Публичность и ссылка на конкретную сохранённую версию пока не проверены; локальные [метаданные](submission/kernel-metadata.json) содержат `is_private: true`.
-
-### Описание
-
-Свои Triton-кернелы ускоряют распаковку NF4, RMSNorm, RoPE и порционное вычисление ошибки и метрик головы. Дополнительно удаляется padding внутри исходных батчей, сохраняется независимое внимание каждого примера, уменьшается память активаций MLP и время подготовки. Фиксированная задача Soup/Qwen LoRA сохраняется; на выходе получается обычный PEFT-адаптер.
-
-### Команда
-
-| Сведения о команде | Статус |
-|---|---|
-| Имена/ники, роли, GitHub и Kaggle, контакт капитана | TODO(TEAM_ROSTER_AND_CAPTAIN_CONTACT) |
-
-Организатор разрешает до 4 участников. Авторство изменений указано в [README](README.md), но не заменяет подтверждённый состав. Личные контакты из метаданных коммитов не подставляются.
+- **Репозиторий команды:** [alikhan-kai/decentrathon](https://github.com/alikhan-kai/decentrathon)
+- **Репозиторий платформы хакатона:** [BAITC-Hacks/hack-d2097b50-localhost](https://github.com/BAITC-Hacks/hack-d2097b50-localhost)
+- **Финальный измеренный коммит кода:** [`fabc67d4b0667be70b846aac29d9be21cb31a212`](https://github.com/alikhan-kai/decentrathon/commit/fabc67d4b0667be70b846aac29d9be21cb31a212) ([ссылка в репо хакатона](https://github.com/BAITC-Hacks/hack-d2097b50-localhost/commit/fabc67d4b0667be70b846aac29d9be21cb31a212))
+- **Публичный ноутбук Kaggle (`COMMIT` закреплён на финальном SHA):** [decentrathon-soup-kernel-final](https://www.kaggle.com/code/iencis/decentrathon-soup-kernel-final)
+- **Демо-видео (до 3 минут):** TODO(DEMO_VIDEO_URL)
+- **Презентация:** TODO(PRESENTATION_URL)
 
 ### Наши кернелы
 
-| Имя `@triton.jit` | Файл | Что заменяет | Доля измеряемого времени F, два повтора |
+| Имя `@triton.jit` | Файл | Что заменяет | Доля времени обучения в F, 2 повтора (Check 4) |
 |---|---|---|---:|
-| `head_loss_kernel` | [head_loss.py](solution/head_loss.py) | Отдельные вычисления loss, entropy, accuracy и градиентов по словарю | 0.5981–0.6015% |
-| `nf4_dequant_kernel` | [nf4.py](solution/nf4.py) | Распаковку NF4 в bitsandbytes | 7.1514–7.2678% |
-| `rmsnorm_fwd_kernel` | [rmsnorm.py](solution/rmsnorm.py) | Операции прямого прохода Qwen2 RMSNorm | 0.6593–0.6723% |
-| `rmsnorm_bwd_kernel` | [rmsnorm.py](solution/rmsnorm.py) | Вычисление градиента входа RMSNorm | 0.6985–0.7076% |
-| `ember_rope_joint` | [rotary.py](solution/rotary.py) | Поэлементную цепочку RoPE для Q/K в обоих направлениях | 0.9202–0.9463% |
+| `nf4_dequant_kernel` | [`solution/nf4.py`](solution/nf4.py) | Обычную и вложенную (`double-quant`) распаковку NF4 в bitsandbytes | 8.2659–8.3073% |
+| `head_loss_kernel` | [`solution/head_loss.py`](solution/head_loss.py) | Полные logits словаря + раздельные loss, entropy, accuracy и `dlogits` | 0.7654–0.7693% |
+| `rmsnorm_bwd_kernel` | [`solution/rmsnorm.py`](solution/rmsnorm.py) | Цепочку операций градиента входа Qwen2 RMSNorm | 0.7158–0.7302% |
+| `rmsnorm_fwd_kernel` | [`solution/rmsnorm.py`](solution/rmsnorm.py) | Прямой проход Qwen2 RMSNorm (`var`, `rsqrt`, умножение на вес) | 0.6241–0.6469% |
+| `ember_rope_joint` | [`solution/rotary.py`](solution/rotary.py) | Раздельные поэлементные цепочки RoPE для Q и K (forward и backward) | 0.5526–0.5746% |
 
-Для каждого повтора доля считается как `100 × own_kernel_ms / (1000 × timed_loop_s)` из F. В таблице — диапазон между повторами, поэтому границы разных строк могут относиться к разным прогонам. Общая зачётная доля в худшем повторе — **10.0%**, как в проверке 4. Это доля времени, а не вклад в ускорение. Источник: `runs.solution[].metrics` и проверки F, описанные в [README](README.md#результаты).
+**Суммарная зачётная доля наших кернелов в худшем повторе: `10.9%`** (при требовании Check 4 `≥ 5.0%`). Кернелы стартового примера `example_swiglu_*` в зачёт не входят.
 
-Кернелы `example_swiglu_*` принадлежат стартовому примеру и **не считаются нашими**. `_rope_rotate_block` — внутренняя функция, не отдельный запуск. Residual/norm-кернелы в измеренном кандидате выключены.
+### Результаты на Kaggle T4 (`--repeats 2`, ABBA, публичные строки, seed 1)
 
-Идеи и эталонный код:
-
-- Порционная голова: Makazhan Alpamys и участники Soup, [stream_loss_chunk](https://github.com/MakazhanAlpamys/Soup/blob/main/src/soup_cli/utils/stream_loss_chunk.py). Triton-кернел головы написан командой.
-- NF4: Tim Dettmers, Artidoro Pagnoni, Ari Holtzman, Luke Zettlemoyer, [QLoRA](https://arxiv.org/abs/2305.14314); [эталон bitsandbytes](https://github.com/bitsandbytes-foundation/bitsandbytes/blob/0.50.2/bitsandbytes/backends/cuda/ops.py).
-- Семантика RMSNorm/RoPE: участники Hugging Face Transformers, [Qwen2](https://github.com/huggingface/transformers/blob/v5.16.1/src/transformers/models/qwen2/modeling_qwen2.py).
-- SwiGLU: [стартовый набор организатора](https://github.com/MakazhanAlpamys/soup-kernel-challenge), без заявления собственного авторства кернелов.
-- Packed decoder и native/hybrid saves: [история кандидата](https://github.com/alikhan-kai/decentrathon/blob/62cd831c582298d53345b5d80feba3ea9796914a/docs/overnight/CANDIDATE.md). Подготовка запуска: Alikhan-kai, [запись интеграции](docs/MERGE_OVERHEAD.md).
-
-### Результаты на Kaggle T4
-
-Для каждой выборки выполнен один запуск **база → решение → решение → база**. F — замер сдаваемого кода на `632851f`; R — ранняя проверка других строк и seed 7 на `952f20a`, с той же папкой `solution/`. Время — медиана стороны, память — максимальный пик. Источники и ограничения публикации: [README](README.md#результаты), [журнал](notes/experiments.md).
-
-| F: публичные строки | База Soup | Решение | Сравнение |
+| Показатель | База Soup | Наше решение (`fabc67d`) | Сравнение |
 |---|---:|---:|---|
-| Вся команда `soup train`, с | 83.25 | 59.66 | Ускорение 1.3954× |
-| Пик памяти GPU, MiB | 14345 | 4421 | База/решение 3.2447× |
-| Eval loss | 2.04966 | 2.04942 | −0.012% |
+| Время всей команды `soup train`, с | 84.59 | 53.19 | **Ускорение 1.5903×** |
+| Пик памяти GPU, MiB | 14345 | 3279 | **База/решение 4.3748×** |
+| Eval loss (отложенная выборка) | 2.04965 | 2.04941 | **−0.012% (лучше базы)** |
 
-| R: другие строки, seed 7 | База Soup | Решение | Сравнение |
-|---|---:|---:|---|
-| Вся команда `soup train`, с | 81.68 | 61.91 | Ускорение 1.3193× |
-| Пик памяти GPU, MiB | 14351 | 4405 | База/решение 3.2579× |
-| Eval loss | 2.11513 | 2.11550 | +0.017% |
-
-- [x] Все 10 автоматических проверок прошли для сохранённых F и R.
-- [x] README описывает реализацию, запуск, результаты и ограничения на английском и русском.
-- [x] Получены финальный SHA и URL ноутбука; автоматические проверки этого SHA записаны в F.
-- [ ] Проверены публичность, ссылка на сохранённую версию и скачивание результатов ноутбука.
-- [ ] Получены состав команды, видео и презентация.
-
-JSON результата/проверок и логи F отслеживаются в `docs/measurements/submission_632851f/`. Исторические исходные данные P/R по-прежнему локально игнорируются. Скачивание результатов через сохранённую версию Kaggle пока не проверено. Отдельные 79 регрессионных тестов Soup прошли; в наборе решения F — 298 passed, 126 skipped и 5 ошибок окружения PEFT/torchao. См. [проверку корректности](README.md#как-проверяли-корректность).
-
-### Содержание презентации
-
-В презентации следует показать фиксированную задачу; расход памяти на logits и активации; кернелы головы, NF4, RMSNorm, RoPE; интеграцию padding/MLP; парные результаты и проверку качества; авторство, ограничения и следующие эксперименты. Видео должно укладываться в ограничение организатора — 3 минуты. Готовность медиаматериалов не заявляется без ссылок.
-
-### Ограничения
-
-Кандидат рассчитан на указанное окружение T4 FP16. MLP ограничен хэшами исходника и обучением первого порядка в eager-режиме. Внимание использует fallback для 256/7168 вызовов F (3.5714% вызовов). В R есть отклонение row loss 7.04% на строке с 7 токенами ответа при проходящих средних 0.225%/0.221%. Packing меняет назначение dropout RNG. Межсессионные замеры не выделяют вклад оптимизаций. LoRA-эпилог не завершён, residual fusion выключена. Отдельные финальные выигрыши модулей и полная длительность ноутбука неизвестны. Подробности и нужные замеры — в [README](README.md#ограничения-и-что-не-получилось).
+- [x] Все 10 проверок `harness/check_rules.py` пройдены (`2 base + 2 solution`, 79 тестов Soup за `0.49 с`).
+- [x] `README.md` и `README.ru.md` полностью обновлены под финальное решение.
+- [x] В `submission/kaggle_notebook.ipynb` закреплён `COMMIT = "fabc67d4b0667be70b846aac29d9be21cb31a212"` и `--repeats 2`.
+- [ ] После финального **Save & Run All** сделать ноутбук Public на Kaggle и вставить ссылки на сохранённую версию, видео, презентацию и контакт капитана.
