@@ -1,3 +1,5 @@
+> **H20 balanced-cache experiment:** exact runtime `2e7df7b8abf89879b8825ea297afbbcbbaf363f7`, officially measured at **52.62 s / 3065 MiB**, all **10/10 checks passed**. See [KAGGLE_BALANCED_RESULTS.md](KAGGLE_BALANCED_RESULTS.md) for exact source, repeated measurements, fresh controls, timing drift, and raw evidence. The earlier H16 46.05 s / 3325 MiB version is preserved separately. Sub-40 seconds remains unachieved.
+
 # Soup Kernel Challenge — Decentrathon 6.0
 
 [Русский](README.ru.md) · [Submission](SUBMISSION.md)

@@ -1,0 +1,57 @@
+{
+  "result_sha256": "a87915134bf7b9540f63289a1bc10ed0fc91ca1c32a635e48caa3ddbb9be4e50",
+  "solution_sha256": "6a2eb11e753b5b4217e7989efd6c1335bdb90c6e2cac46784fee5090009a944a",
+  "checks": [
+    {
+      "check": "1. every base and solution run finished",
+      "ok": true,
+      "detail": "2 base and 2 solution runs of 2 each"
+    },
+    {
+      "check": "2. no ready-made kernel libraries",
+      "ok": true,
+      "detail": "loaded: none; imported in solution/: none; packages changed during the run: none"
+    },
+    {
+      "check": "3. own @triton.jit kernels in solution/ run in training",
+      "ok": true,
+      "detail": "_cache_labelled_logits (solution/head_loss.py), ember_rope_joint (solution/rotary.py), head_loss_kernel (solution/head_loss.py), nf4_dequant_kernel (solution/nf4.py), rmsnorm_bwd_kernel (solution/rmsnorm.py), rmsnorm_fwd_kernel (solution/rmsnorm.py); not launched in every solution run: _rope_rotate_block, residual_norm_bwd_kernel, residual_norm_fwd_kernel; the example's kernels do not count, under any name: example_swiglu_fwd_kernel, example_swiglu_bwd_kernel"
+    },
+    {
+      "check": "4. own kernels together take >= 5% of the training time",
+      "ok": true,
+      "detail": "11.8% of the training time (lowest of 2 runs, steps 3+)"
+    },
+    {
+      "check": "5. same task and Soup outputs (steps, adapter, settings, tokens, metrics, rewind)",
+      "ok": true,
+      "detail": "identical within tolerance"
+    },
+    {
+      "check": "6. loss curve follows the base",
+      "ok": true,
+      "detail": "base_2: first step 0.00%, mean of all steps 0.01%; solution_1: first step 0.01%, mean of all steps 0.05%; solution_2: first step 0.01%, mean of all steps 0.05% (max 1% and 3%)"
+    },
+    {
+      "check": "7. quality: eval loss at most 0.5% above the base",
+      "ok": true,
+      "detail": "+0.010%"
+    },
+    {
+      "check": "8. not worse than the base on time or memory (10% margin)",
+      "ok": true,
+      "detail": "time x0.607, memory x0.214 of the base"
+    },
+    {
+      "check": "9. clean measurement (a T4, idle GPUs, one GPU, harness allocator, peaks agree)",
+      "ok": true,
+      "detail": "clean"
+    },
+    {
+      "check": "10. Soup regression tests with your patches",
+      "ok": true,
+      "detail": "79 passed in 0.54s"
+    }
+  ],
+  "notes": []
+}

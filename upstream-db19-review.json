@@ -1,0 +1,16 @@
+{
+  "repository": "BAITC-Hacks/hack-d2097b50-localhost",
+  "commit": "db19acab9cfcb9944a7ffcd7737383b588247212",
+  "commit_change": "Moves precompile after overhead and before remaining patches",
+  "current_runtime": "2e32ef05b6487a2c58608e10a886a6f9a94fd1e5",
+  "current_precompile_order": "precompile is already first, before overhead",
+  "whole_snapshot_differences": [
+    "db19 has no fused manual MLP path or cached metadata fast path",
+    "db19 has no head projection cache or reusable head work buffers",
+    "db19 has separate packed attention calls rather than native variable-length attention",
+    "db19 retains precompile waiting hooks after compilation",
+    "db19 lacks shared QKV half conversion and the single-process metric readback optimization"
+  ],
+  "harness_task_tests_blobs": "Identical to current runtime",
+  "decision": "No wholesale replacement. The individual db19 scheduling idea is already incorporated earlier in current initialization. No unsupported speed claim made for db19; not separately benchmarked."
+}

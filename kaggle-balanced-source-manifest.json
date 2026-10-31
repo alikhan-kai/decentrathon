@@ -1,0 +1,9 @@
+{
+  "runtime_commit": "2e7df7b8abf89879b8825ea297afbbcbbaf363f7",
+  "base_commit": "2e32ef05b6487a2c58608e10a886a6f9a94fd1e5",
+  "variant": "h20-head-partial",
+  "sha256": {
+    "solution/head_loss.py": "2f7bdcffbfe390c93523b237b544813fa6525c80fd94480544eab7244e355a68",
+    "solution/test_head_partial_cache.py": "19dc664fb4af5bc8caa8280db338bb3ea2de15ff34a9ada5d9f755de061ceed8"
+  }
+}
