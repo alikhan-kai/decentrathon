@@ -4,55 +4,15 @@
    infer_auto_device_map. The harness exposes GPU 0 only, so the placement is the same.
 2. FAST_MAP: build the tokenized dataset in memory instead of Dataset.from_list(...).map(...)
    (no Arrow write). Same rows and columns; test_overhead.py compares it with Soup's own function.
-3. FAST_TRL: stub out unused TRL trainers (DPO, PPO, GRPO, KTO, etc.) so `import trl` loads in <0.1s
-   instead of 5.4s without reading diffusers, scipy, and dead trainer code from disk.
 
 Derived from feat/overhead (Alikhan-kai). Each flag is separate; a failed import is an error.
 """
 
-import sys
-import types
-
 ENABLED = True
 DEVICE_MAP = True
 FAST_MAP = True
-FAST_TRL = True
 _orig_map_rows = None
 _patched = False
-
-UNUSED_TRL_TRAINERS = [
-    "bco_trainer",
-    "cpo_trainer",
-    "dpo_trainer",
-    "g_dpo_trainer",
-    "grpo_trainer",
-    "iterative_sft_trainer",
-    "kto_trainer",
-    "nash_md_trainer",
-    "online_dpo_trainer",
-    "orpo_trainer",
-    "ppo_trainer",
-    "prm_trainer",
-    "reward_trainer",
-    "xpo_trainer",
-]
-
-
-def _patch_fast_trl():
-    class _Stub(types.ModuleType):
-
-        def __getattr__(self, name):
-            class _Dummy:
-
-                def __init__(self, *args, **kwargs):
-                    pass
-
-            return _Dummy
-
-    for mod in UNUSED_TRL_TRAINERS:
-        full_name = f"trl.trainer.{mod}"
-        if full_name not in sys.modules:
-            sys.modules[full_name] = _Stub(full_name)
 
 
 def _patch_device_map(sft):
@@ -70,10 +30,7 @@ def _patch_device_map(sft):
 def _patch_fast_map(sft):
     global _orig_map_rows
     from datasets import Dataset
-    from soup_cli.data.loss_mask import (
-        NoCausalLossTargetError,
-        ensure_causal_loss_target,
-    )
+    from soup_cli.data.loss_mask import NoCausalLossTargetError, ensure_causal_loss_target
 
     _orig_map_rows = sft._map_text_sft_rows
 
@@ -91,15 +48,11 @@ def _patch_fast_map(sft):
                 raise ValueError(f"{split} row {i + 1}: {exc}") from exc
             formatted_rows.append(formatted)
         if not rows:
-            return _orig_map_rows(
-                rows, format_row=format_row, split=split, max_length=max_length
-            )
+            return _orig_map_rows(rows, format_row=format_row, split=split, max_length=max_length)
         keep = [k for k in rows[0] if k != "messages"]
         out_keys = list(dict.fromkeys(keep + list(formatted_rows[0])))
-        cols = {
-            k: [f[k] if k in f else r[k] for f, r in zip(formatted_rows, rows)]
-            for k in out_keys
-        }
+        cols = {k: [f[k] if k in f else r[k] for f, r in zip(formatted_rows, rows)]
+                for k in out_keys}
         return Dataset.from_dict(cols)
 
     sft._map_text_sft_rows = fast_map_text_sft_rows
@@ -109,13 +62,7 @@ def patch():
     global _patched
     if _patched:
         return
-    if FAST_TRL:
-        _patch_fast_trl()
-    try:
-        from soup_cli.trainer import sft
-    except (ImportError, ModuleNotFoundError):
-        _patched = True
-        return
+    from soup_cli.trainer import sft
 
     if DEVICE_MAP:
         _patch_device_map(sft)

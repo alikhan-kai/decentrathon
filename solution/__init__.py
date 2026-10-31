@@ -22,9 +22,9 @@ import sys
 import time
 
 # Per-module import/patch timings to stderr; off by default, switch on by editing this line.
-PRINT_TIMINGS = True
+PRINT_TIMINGS = False
 
-MODULES = ["overhead", "swiglu", "head_loss", "rmsnorm", "nf4", "lora", "rotary"]
+MODULES = ["swiglu", "head_loss", "rmsnorm", "nf4", "lora", "rotary", "overhead"]
 
 
 def apply():
@@ -46,18 +46,12 @@ def apply():
 
     if not PRINT_TIMINGS:
         return
-    print(
-        f"[overhead] solution.apply() total: {time.perf_counter() - t_start:.3f}s",
-        file=sys.stderr,
-    )
+    print(f"[overhead] solution.apply() total: {time.perf_counter() - t_start:.3f}s", file=sys.stderr)
     for mod, (enabled, t_import, t_patch) in timings.items():
-        print(
-            f"  - {mod:10s} (enabled={enabled}): import={t_import:.4f}s, patch={t_patch:.4f}s",
-            file=sys.stderr,
-        )
+        print(f"  - {mod:10s} (enabled={enabled}): import={t_import:.4f}s, patch={t_patch:.4f}s",
+              file=sys.stderr)
 
 
 # Explicit isolated combined-r1 stage adapter; checkout registry is untouched.
 from .stage_adapter import adapt_apply as _combined_adapt_apply
-
 apply = _combined_adapt_apply(apply)
