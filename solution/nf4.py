@@ -48,14 +48,17 @@ def nf4_dequant_kernel(packed_ptr, absmax_ptr, code_ptr, code2_ptr, absmax2_ptr,
                        BLOCKSIZE2: tl.constexpr = 256, NESTED: tl.constexpr = False):
     pid = tl.program_id(0)
     byte_idx = pid * BYTES + tl.arange(0, BYTES)
-    byte_mask = byte_idx * 2 < n
-    packed = tl.load(packed_ptr + byte_idx, mask=byte_mask, other=0).to(tl.int32)
-    # High nibble (2*i) and low nibble (2*i + 1) of byte i always share block i // (BLOCKSIZE // 2).
-    blk = byte_idx // (BLOCKSIZE // 2)
+    packed = tl.load(packed_ptr + byte_idx, mask=byte_idx * 2 < n, other=0).to(tl.int32)
+    half = tl.arange(0, 2)
+    # [BYTES, 2] tile: column 0 is the high nibble (weight 2i), column 1 the low nibble (weight 2i + 1)
+    nibble = tl.where(half[None, :] == 0, packed[:, None] >> 4, packed[:, None] & 15)
+    elem = byte_idx[:, None] * 2 + half[None, :]
+    mask = elem < n
+    blk = elem // BLOCKSIZE
     if NESTED:
-        qabs = tl.load(absmax_ptr + blk, mask=byte_mask, other=0).to(tl.int32)
-        c2 = tl.load(code2_ptr + qabs, mask=byte_mask, other=0.0)
-        a2 = tl.load(absmax2_ptr + (blk // BLOCKSIZE2), mask=byte_mask, other=0.0)
+        qabs = tl.load(absmax_ptr + blk, mask=mask, other=0).to(tl.int32)
+        c2 = tl.load(code2_ptr + qabs)
+        a2 = tl.load(absmax2_ptr + (blk // BLOCKSIZE2), mask=mask, other=0.0)
         off = tl.load(offset_ptr)
         # Match bitsandbytes' separate fp32 multiply then fp32 add without FMA contraction.
         scale = tl.inline_asm_elementwise(
@@ -67,13 +70,8 @@ def nf4_dequant_kernel(packed_ptr, absmax_ptr, code_ptr, code2_ptr, absmax2_ptr,
             pack=1,
         )
     else:
-        scale = tl.load(absmax_ptr + blk, mask=byte_mask, other=0.0)
-    half = tl.arange(0, 2)
-    # [BYTES, 2] tile: column 0 is the high nibble (weight 2i), column 1 the low nibble (weight 2i + 1)
-    nibble = tl.where(half[None, :] == 0, packed[:, None] >> 4, packed[:, None] & 15)
-    elem = byte_idx[:, None] * 2 + half[None, :]
-    mask = elem < n
-    value = tl.load(code_ptr + nibble) * scale[:, None]
+        scale = tl.load(absmax_ptr + blk, mask=mask, other=0.0)
+    value = tl.load(code_ptr + nibble) * scale
     tl.store(out_ptr + elem, value.to(out_ptr.dtype.element_ty), mask=mask)
 
 
@@ -199,10 +197,7 @@ class _FastNF4MatMul(torch.autograd.Function):
             dequantize_nf4_nested(ctx.B, qs.absmax, s2.code, s2.absmax, ctx.off_dev, w)
             if grad_output.dtype != torch.float16:
                 w = w.to(grad_output.dtype)
-            g2d = grad_output.contiguous().view(-1, w.shape[0])
-            grad_A = torch.mm(g2d, w).view(ctx.x_shape)
-            if grad_A.dtype != ctx.x_dtype:
-                grad_A = grad_A.to(ctx.x_dtype)
+            grad_A = torch.matmul(grad_output, w).view(ctx.x_shape).to(ctx.x_dtype)
         return grad_A, None, None, None, None
 
 
