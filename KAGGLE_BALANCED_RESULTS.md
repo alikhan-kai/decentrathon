@@ -31,6 +31,8 @@ Grouped gate/up BMM was rejected before a full-training screen: it was slower th
 
 51 focused GPU tests passed, including cache-boundary, ignored-target, scaled-gradient and repeated-backward cases. All 79 official Soup regressions passed through the rules checker.
 
+Repository static checks are a separate gate: all 48 Python files in `solution/` and `tools/` parse, but `tools/lint_rules.py` reports 37 inherited findings, identical to H16, with zero new findings. CI is therefore not fully green despite the 10/10 official benchmark checks. Details: [static-checks.json](static-checks.json).
+
 ```sh
 git checkout 2e7df7b8abf89879b8825ea297afbbcbbaf363f7
 python -m pytest -q solution/test_head_partial_cache.py solution/test_head_cache_probe.py solution/test_head_loss.py solution/test_head_fallback.py -k 'not speed'
