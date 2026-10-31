@@ -1,0 +1,109 @@
+{
+  "setup_metadata_equal": true,
+  "variant": "map",
+  "control_times": {
+    "arrow_from_dict_inclusive": {
+      "calls": 1,
+      "seconds": 0.00733159900028113
+    },
+    "balanced_memory": {
+      "calls": 1,
+      "seconds": 0.007938419999845792
+    },
+    "causal_model_load": {
+      "calls": 1,
+      "seconds": 3.2860680580001826
+    },
+    "dataset_map_inclusive": {
+      "calls": 3,
+      "seconds": 2.7268837460001123
+    },
+    "infer_auto_device_map": {
+      "calls": 1,
+      "seconds": 0.006818088000272837
+    },
+    "initial_arrow_from_list": {
+      "calls": 1,
+      "seconds": 0.007383219000075769
+    },
+    "model_setup_total": {
+      "calls": 1,
+      "seconds": 4.2034026020000965
+    },
+    "solution_apply": {
+      "calls": 1,
+      "seconds": 12.734916562999842
+    },
+    "soup_device_resolver": {
+      "calls": 1,
+      "seconds": 5.231999693933176e-06
+    },
+    "text_map_total": {
+      "calls": 1,
+      "seconds": 2.670797556999787
+    },
+    "tokenizer_load": {
+      "calls": 1,
+      "seconds": 0.7045562439998321
+    }
+  },
+  "candidate_times": {
+    "arrow_from_dict_inclusive": {
+      "calls": 2,
+      "seconds": 0.0371131060001062
+    },
+    "balanced_memory": {
+      "calls": 1,
+      "seconds": 0.007650685000044177
+    },
+    "causal_model_load": {
+      "calls": 1,
+      "seconds": 3.299491115999899
+    },
+    "dataset_map_inclusive": {
+      "calls": 2,
+      "seconds": 0.07240885399960462
+    },
+    "formatter_guard": {
+      "calls": 1,
+      "seconds": 2.842599997165962e-05
+    },
+    "infer_auto_device_map": {
+      "calls": 1,
+      "seconds": 0.007481105999886495
+    },
+    "initial_arrow_from_list": {
+      "calls": 1,
+      "seconds": 0.007262914999955683
+    },
+    "model_setup_total": {
+      "calls": 1,
+      "seconds": 4.187053640000158
+    },
+    "normalized_map_core_inclusive": {
+      "calls": 1,
+      "seconds": 0.5288782460002039
+    },
+    "normalized_schema_guard": {
+      "calls": 1,
+      "seconds": 0.008406442999785213
+    },
+    "solution_apply": {
+      "calls": 1,
+      "seconds": 12.829072394999912
+    },
+    "soup_device_resolver": {
+      "calls": 1,
+      "seconds": 5.133999820827739e-06
+    },
+    "text_map_total": {
+      "calls": 1,
+      "seconds": 0.5446661740002128
+    },
+    "tokenizer_load": {
+      "calls": 1,
+      "seconds": 0.7063912019998497
+    }
+  },
+  "remaining": "full outputs/Rewind/numerics and uninstrumented official T4 runs"
+}

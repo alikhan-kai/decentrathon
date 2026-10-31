@@ -1,0 +1,34 @@
+{
+  "runs": [
+    {
+      "result": "repeat-runs-1-result.json",
+      "wall_s": 69.13,
+      "peak_mib": 4419,
+      "timed_loop_s": 37.18,
+      "eligible_share_pct": 9.237918235610543
+    },
+    {
+      "result": "control-runs-0-result.json",
+      "wall_s": 68.49,
+      "peak_mib": 4421,
+      "timed_loop_s": 34.058,
+      "eligible_share_pct": 10.155919314111223
+    },
+    {
+      "result": "repeat-runs-2-result.json",
+      "wall_s": 66.67,
+      "peak_mib": 4419,
+      "timed_loop_s": 36.794,
+      "eligible_share_pct": 9.188606838071426
+    },
+    {
+      "result": "control-runs-3-result.json",
+      "wall_s": 68.19,
+      "peak_mib": 4421,
+      "timed_loop_s": 37.411,
+      "eligible_share_pct": 9.186394375985675
+    }
+  ],
+  "decision": "Reject: whole-command timing difference is within variability; warmed training does not improve.",
+  "raw_archive_sha256": "e9256d844ed8d9f84f882294619d3f87a3554759ce3b43df02b4f710c4f488af"
+}

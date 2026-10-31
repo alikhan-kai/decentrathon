@@ -1,0 +1,11 @@
+{
+  "status": "NO_GO",
+  "budget_seconds": 115,
+  "completed": [
+    "component"
+  ],
+  "default_enabled": false,
+  "error": "RuntimeError('phase exited 1; see /kaggle/working/round2-repeat-gate-dy300oik/decentrathon-round2-repeat-r2/evidence/parent-cuda-gate/baseline.log')",
+  "seconds": 44.51809962100015,
+  "limits": "Incomplete or failed gate cannot enable the experiment."
+}

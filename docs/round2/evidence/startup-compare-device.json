@@ -1,0 +1,89 @@
+{
+  "setup_metadata_equal": true,
+  "variant": "device",
+  "control_times": {
+    "arrow_from_dict_inclusive": {
+      "calls": 1,
+      "seconds": 0.00733159900028113
+    },
+    "balanced_memory": {
+      "calls": 1,
+      "seconds": 0.007938419999845792
+    },
+    "causal_model_load": {
+      "calls": 1,
+      "seconds": 3.2860680580001826
+    },
+    "dataset_map_inclusive": {
+      "calls": 3,
+      "seconds": 2.7268837460001123
+    },
+    "infer_auto_device_map": {
+      "calls": 1,
+      "seconds": 0.006818088000272837
+    },
+    "initial_arrow_from_list": {
+      "calls": 1,
+      "seconds": 0.007383219000075769
+    },
+    "model_setup_total": {
+      "calls": 1,
+      "seconds": 4.2034026020000965
+    },
+    "solution_apply": {
+      "calls": 1,
+      "seconds": 12.734916562999842
+    },
+    "soup_device_resolver": {
+      "calls": 1,
+      "seconds": 5.231999693933176e-06
+    },
+    "text_map_total": {
+      "calls": 1,
+      "seconds": 2.670797556999787
+    },
+    "tokenizer_load": {
+      "calls": 1,
+      "seconds": 0.7045562439998321
+    }
+  },
+  "candidate_times": {
+    "arrow_from_dict_inclusive": {
+      "calls": 1,
+      "seconds": 0.006675341000118351
+    },
+    "causal_model_load": {
+      "calls": 1,
+      "seconds": 3.2579923929997676
+    },
+    "dataset_map_inclusive": {
+      "calls": 3,
+      "seconds": 2.7495146670003123
+    },
+    "initial_arrow_from_list": {
+      "calls": 1,
+      "seconds": 0.006719354999859206
+    },
+    "model_setup_total": {
+      "calls": 1,
+      "seconds": 4.148712295999758
+    },
+    "solution_apply": {
+      "calls": 1,
+      "seconds": 13.09571781800014
+    },
+    "soup_device_resolver": {
+      "calls": 1,
+      "seconds": 0.00014681500033475459
+    },
+    "text_map_total": {
+      "calls": 1,
+      "seconds": 2.6936497540000346
+    },
+    "tokenizer_load": {
+      "calls": 1,
+      "seconds": 0.7071936620000088
+    }
+  },
+  "remaining": "full outputs/Rewind/numerics and uninstrumented official T4 runs"
+}
