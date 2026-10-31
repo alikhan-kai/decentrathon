@@ -1,3 +1,5 @@
+> **This branch is the 3029 MiB memory experiment.** Its Colab T4 result is **58.06 s**, with all 10 checks passing. See [measurements and exact reproduction commands](MEMORY_EXPERIMENT.md). This is not a sub-40-second result and has not yet been measured on Kaggle. The original submission documentation below describes the separately pinned `fabc67d` source, not this branch's current `solution/`.
+
 # Soup Kernel Challenge — Decentrathon 6.0
 
 [Русский](README.ru.md) · [Submission](SUBMISSION.md)

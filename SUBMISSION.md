@@ -1,3 +1,5 @@
+> **This branch is the 3029 MiB memory experiment.** Its Colab T4 result is **58.06 s**, with all 10 checks passing. See [measurements and exact reproduction commands](MEMORY_EXPERIMENT.md). This is not a sub-40-second result and has not yet been measured on Kaggle. The original submission documentation below describes the separately pinned `fabc67d` source, not this branch's current `solution/`.
+
 # Submission / Сдача: localhost (TODO: confirm official team name)
 
 ## English
@@ -11,7 +13,7 @@
 - **Demo video (up to 3 minutes):** TODO(DEMO_VIDEO_URL)
 - **Presentation:** TODO(PRESENTATION_URL)
 
-The Kaggle notebook URL and final benchmarked SHA match [README.md](README.md) and [README.ru.md](README.ru.md). Run **F** is the paired two-repeat (`--repeats 2`, ABBA) measurement of `fabc67d4b0667be70b846aac29d9be21cb31a212` (`solution_sha256`: `7caf827d0fb87cc23400afb227f2efb17e21fcca5ebd94867732f71f0171285c`, `result_sha256`: `fbf7553e8ca4df347be80f567bf311e92cec21275c65270767cf2d7a89fc8585`); its [checks.json](docs/measurements/submission_fabc67d/checks.json) and full breakdown in [docs/EVIDENCE.md](docs/EVIDENCE.md) are tracked in Git, and `solution/` is byte-for-byte unchanged on HEAD.
+The Kaggle notebook URL and final benchmarked SHA match [README.md](README.md) and [README.ru.md](README.ru.md). Run **F** is the paired two-repeat (`--repeats 2`, ABBA) measurement of `fabc67d4b0667be70b846aac29d9be21cb31a212` (`solution_sha256`: `7caf827d0fb87cc23400afb227f2efb17e21fcca5ebd94867732f71f0171285c`, `result_sha256`: `fbf7553e8ca4df347be80f567bf311e92cec21275c65270767cf2d7a89fc8585`); its [checks.json](docs/measurements/submission_fabc67d/checks.json) and full breakdown in [docs/EVIDENCE.md](docs/EVIDENCE.md) are tracked in Git, and those measurements apply to the pinned `fabc67d` source; this experimental branch has different runtime code.
 
 ### Description
 
