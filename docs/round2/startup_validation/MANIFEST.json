@@ -1,0 +1,16 @@
+{
+  "NOTICE": "2f0089a88e9623e5f6eba497796f279c2fdb3a15be1df0973e4d0055d35876e4",
+  "compare_setup.py": "da214a87a7c79644d68b6e15fdbbadbd3d08033614a54df3b97052f7a152fbfc",
+  "trusted-native-tokenizer.json": "9912804346f339cf7d733dbcb2ab13d45594dd958c9cccbfc17885bcbaadd806",
+  "fixtures.py": "41b1c3101b2c315dd2a66d9a8ae9f822d365e9250ae2b311bf4369072d7f4f47",
+  "initializer_candidate.py": "1f55e6596f99c8ca57dcc585d4e165014b25652bd2d53480b5f3623fa50bbd0b",
+  "test_overhead.py": "23e5a25d6abc61ee3555cd9e2b41aacfccdae565299cb5b3969dd107581c6d2c",
+  "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+  "parity_gate.py": "5c3338a2373a0a092332bdf096853240b5e665fed2506de9d7bfb57d156251cd",
+  "README.md": "c66e6ff1cd7d14cde0288aabb9eaddb8b86ba4093fb4c7ef55dc8694cf2665cc",
+  "overhead.py": "74bee5eea77c9073d38332f212b1b039370efd5bb444f07b6a6a2b5e84c2d494",
+  "component_timing.py": "d851a4a9083bc568c97bf4fb3c53babe6f4138feaf5879da18302bc8e30af77b",
+  "native-tokenizer-tree.json": "280ebebb0168c00342f321c7b3f3a16307856d20f28c7da12a703c1abdd7d7e1",
+  "setup_probe.py": "04b166e5cedbfe3c105a99262f40eb8fbef846d3aa2a72a5b6281b8c35cd2cf4",
+  "fresh_import.py": "94a3eaaf10fa20ea23bf563f95aad7fb97c7b8a9a8f9618ca196080fa2a10d14"
+}
