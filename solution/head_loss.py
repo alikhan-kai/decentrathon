@@ -96,13 +96,18 @@ class _FusedHeadLoss(torch.autograd.Function):
         loss_row = torch.empty(n, dtype=torch.float32, device=h.device)
         ent = torch.empty_like(loss_row)
         hit = torch.empty(n, dtype=torch.int32, device=h.device)
-        for s in range(0, n, chunk):
-            e = min(s + chunk, n)
-            logits = h[s:e] @ w.t()                       # [c, V] fp16
-            head_loss_kernel[(e - s,)](logits, target[s:e], logits.stride(0), vocab,
+        if n > 0:
+            wt = w.t()
+            logits_buf = torch.empty((min(chunk, n), vocab), dtype=torch.float16, device=h.device)
+            for s in range(0, n, chunk):
+                e = min(s + chunk, n)
+                c = e - s
+                logits = logits_buf[:c]
+                torch.mm(h[s:e], wt, out=logits)          # [c, V] fp16
+                head_loss_kernel[(c,)](logits, target[s:e], vocab, vocab,
                                        loss_row[s:e], ent[s:e], hit[s:e], None,
                                        WITH_GRAD=False, BLOCK=BLOCK, num_warps=8)
-            del logits
+            del logits_buf
         denom = torch.as_tensor(denom, dtype=torch.float32, device=h.device)
         ctx.hidden_dtype = hidden.dtype
         ctx.chunk = chunk
@@ -122,17 +127,26 @@ class _FusedHeadLoss(torch.autograd.Function):
         rows = torch.nonzero(target >= 0, as_tuple=False).flatten()
         dh = torch.zeros_like(h)
         n, vocab = rows.numel(), w.shape[0]
-        for s in range(0, n, ctx.chunk):
-            e = min(s + ctx.chunk, n)
-            selected = rows[s:e]
-            h_chunk = h.index_select(0, selected)
-            target_chunk = target.index_select(0, selected)
-            logits = h_chunk @ w.t()                    # same fp16 projection as forward
-            head_loss_kernel[(e - s,)](logits, target_chunk, logits.stride(0), vocab,
+        if n > 0:
+            wt = w.t()
+            max_c = min(ctx.chunk, n)
+            logits_buf = torch.empty((max_c, vocab), dtype=torch.float16, device=h.device)
+            dh_buf = torch.empty((max_c, h.shape[1]), dtype=torch.float16, device=h.device)
+            for s in range(0, n, ctx.chunk):
+                e = min(s + ctx.chunk, n)
+                c = e - s
+                selected = rows[s:e]
+                h_chunk = h.index_select(0, selected)
+                target_chunk = target.index_select(0, selected)
+                logits = logits_buf[:c]
+                torch.mm(h_chunk, wt, out=logits)         # same fp16 projection as forward
+                head_loss_kernel[(c,)](logits, target_chunk, vocab, vocab,
                                        None, None, None, grad_scale,
                                        WITH_GRAD=True, BLOCK=BLOCK, num_warps=8)
-            dh.index_copy_(0, selected, torch.mm(logits, w))  # already scaled, fp16 dL/dh
-            del logits
+                dh_chunk = dh_buf[:c]
+                torch.mm(logits, w, out=dh_chunk)         # already scaled, fp16 dL/dh
+                dh.index_copy_(0, selected, dh_chunk)
+            del logits_buf, dh_buf
         return dh.to(ctx.hidden_dtype), None, None, None, None
 
 
@@ -321,15 +335,27 @@ def _install():
             raise RuntimeError("head_loss: fast path was armed but the forward did not take it")
         setattr(self, STEP_ATTR, step)                     # read by Soup's rewind recorder
         # entropy, num_tokens, mean_token_accuracy: the same formulas as TRL's SFTTrainer
-        gather, metrics = self.accelerator.gather_for_metrics, self._metrics["train"]
+        metrics = self._metrics["train"]
         am = inputs["attention_mask"]
-        entropy = (step.token_entropy * am).sum() / am.sum()
-        metrics["entropy"].append(gather(entropy).mean().item())
-        self._total_train_tokens += gather(am.sum()).sum().item()
-        metrics["num_tokens"] = [self._total_train_tokens]
-        total = gather(step.labelled).sum()
-        acc = (gather(step.correct).sum() / total).item() if total > 0 else 0.0
-        metrics["mean_token_accuracy"].append(acc)
+        am_sum = am.sum()
+        entropy = (step.token_entropy * am).sum() / am_sum
+        if getattr(self.accelerator, "num_processes", None) == 1:
+            acc_t = step.correct / step.labelled.clamp_min(1)
+            ent_v, am_v, lab_v, acc_v = torch.stack((
+                entropy.float(), am_sum.float(), step.labelled.float(), acc_t.float()
+            )).tolist()
+            metrics["entropy"].append(ent_v)
+            self._total_train_tokens += int(am_v)
+            metrics["num_tokens"] = [self._total_train_tokens]
+            metrics["mean_token_accuracy"].append(acc_v if lab_v > 0 else 0.0)
+        else:
+            gather = self.accelerator.gather_for_metrics
+            metrics["entropy"].append(gather(entropy).mean().item())
+            self._total_train_tokens += gather(am_sum).sum().item()
+            metrics["num_tokens"] = [self._total_train_tokens]
+            total = gather(step.labelled).sum()
+            acc = (gather(step.correct).sum() / total).item() if total > 0 else 0.0
+            metrics["mean_token_accuracy"].append(acc)
         return (loss, outputs) if return_outputs else loss
 
     mq.Qwen2ForCausalLM.forward = forward

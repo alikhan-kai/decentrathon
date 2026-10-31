@@ -143,7 +143,21 @@ def _get_offset_cuda(quant_state, device):
 
 
 def _eligible_nested(A, quant_state, out=None, require_fp16_state=True):
-    if (quant_state is None or not getattr(quant_state, "nested", False)
+    if quant_state is None:
+        return False
+    if out is None:
+        cached = getattr(quant_state, "_ember_nested_ok", None)
+        if cached is not None:
+            qabs, s2, code2, absmax2, n, qs_dtype = cached
+            if ((not require_fp16_state or qs_dtype == torch.float16)
+                    and getattr(quant_state, "absmax", None) is qabs
+                    and getattr(quant_state, "state2", None) is s2
+                    and getattr(s2, "code", None) is code2
+                    and getattr(s2, "absmax", None) is absmax2
+                    and isinstance(A, torch.Tensor) and A.is_cuda
+                    and A.dtype == torch.uint8 and A.numel() * 2 >= n):
+                return True
+    if (not getattr(quant_state, "nested", False)
             or quant_state.quant_type != "nf4" or quant_state.blocksize != BLOCKSIZE):
         return False
     if require_fp16_state and quant_state.dtype != torch.float16:
@@ -171,6 +185,11 @@ def _eligible_nested(A, quant_state, out=None, require_fp16_state=True):
         if (not isinstance(out, torch.Tensor) or not out.is_cuda or out.dtype != torch.float16
                 or not out.is_contiguous() or tuple(out.shape) != shape_t):
             return False
+    else:
+        try:
+            quant_state._ember_nested_ok = (qabs, s2, s2.code, s2.absmax, n, quant_state.dtype)
+        except AttributeError:
+            pass
     return True
 
 
@@ -195,9 +214,13 @@ class _FastNF4MatMul(torch.autograd.Function):
             s2 = qs.state2
             w = torch.empty(qs.shape, dtype=torch.float16, device=grad_output.device)
             dequantize_nf4_nested(ctx.B, qs.absmax, s2.code, s2.absmax, ctx.off_dev, w)
-            if grad_output.dtype != torch.float16:
+            if grad_output.dtype == torch.float16:
+                grad_A = torch.mm(grad_output.contiguous().view(-1, w.shape[0]), w).view(ctx.x_shape)
+                if ctx.x_dtype != torch.float16:
+                    grad_A = grad_A.to(ctx.x_dtype)
+            else:
                 w = w.to(grad_output.dtype)
-            grad_A = torch.matmul(grad_output, w).view(ctx.x_shape).to(ctx.x_dtype)
+                grad_A = torch.matmul(grad_output, w).view(ctx.x_shape).to(ctx.x_dtype)
         return grad_A, None, None, None, None
 
 

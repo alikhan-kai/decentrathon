@@ -80,8 +80,26 @@ def plan(attention_mask, required=None):
         return "no_pad"
     positions = torch.cat([torch.arange(n) for n in lens])
     rows = torch.repeat_interleave(torch.arange(b) * t, torch.tensor(lens))
-    device = attention_mask.device
-    return lens, (positions + rows).to(device), positions.to(device).unsqueeze(0)
+    packed_dev = torch.stack((positions + rows, positions)).to(attention_mask.device)
+    return lens, packed_dev[0], packed_dev[1].unsqueeze(0)
+
+
+class _SafeHalfFanout3(torch.autograd.Function):
+    """Single FP32->FP16 cast for Q/K/V inputs with FP32 gradient accumulation."""
+
+    @staticmethod
+    def forward(ctx, x):
+        ctx.set_materialize_grads(False)
+        x16 = x.detach().to(torch.float16)
+        return x16, x16.view_as(x16), x16.view_as(x16)
+
+    @staticmethod
+    def backward(ctx, g0, g1, g2):
+        out = None
+        for g in (g0, g1, g2):
+            if g is not None:
+                out = g.to(torch.float32) if out is None else out.add_(g)
+        return out
 
 
 def _option(model, kwargs, name, default):
@@ -249,15 +267,19 @@ def _install():
                 and kwargs.get("is_causal", True)
                 and kwargs.get("output_hidden_states") in (None, False)
                 and kwargs.get("return_dict") in (None, True)
-                and not (set(kwargs) - _fast_attn_kwargs)
+                and (not kwargs or _fast_attn_kwargs.issuperset(kwargs))
                 and min(lens) > 1
                 and hidden_states.dtype == torch.float32
                 and torch.is_autocast_enabled("cuda")
                 and torch.get_autocast_dtype("cuda") == torch.float16
+                and not torch.compiler.is_compiling()
+                and not torch._C._are_functorch_transforms_active()
                 and _pinned_versions() and _is_t4(hidden_states.device.index)):
-            query_states = self.q_proj(hidden_states.to(torch.float16)).view(hidden_shape).transpose(1, 2)
-            key_states = self.k_proj(hidden_states.to(torch.float16)).view(hidden_shape).transpose(1, 2)
-            value_states = self.v_proj(hidden_states.to(torch.float16)).view(hidden_shape).transpose(1, 2)
+            hq, hk, hv = _SafeHalfFanout3.apply(hidden_states)
+            query_states = self.q_proj(hq).view(hidden_shape).transpose(1, 2)
+            key_states = self.k_proj(hk).view(hidden_shape).transpose(1, 2)
+            value_states = self.v_proj(hv).view(hidden_shape).transpose(1, 2)
+            del hq, hk, hv
             if (query_states.dtype == torch.float16 and key_states.dtype == torch.float16
                     and value_states.dtype == torch.float16
                     and query_states.requires_grad and value_states.requires_grad):
@@ -272,10 +294,10 @@ def _install():
                         query_states[:, :, start:end], k16[:, :, start:end], v16[:, :, start:end],
                         attn_mask=None, dropout_p=dropout, is_causal=True,
                         scale=self.scaling, enable_gqa=False,
-                    ))
+                    ).transpose(1, 2))
                     start = end
-                attn_output = torch.cat(pieces, dim=2).transpose(1, 2).contiguous().reshape(*input_shape, -1)
-                return self.o_proj(attn_output).to(torch.float32), None
+                attn_output = torch.cat(pieces, dim=1).reshape(*input_shape, -1)
+                return self.o_proj(attn_output), None
             query_states = query_states.to(torch.float32)
             key_states = key_states.to(torch.float32)
             value_states = value_states.to(torch.float32)

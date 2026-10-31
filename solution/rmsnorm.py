@@ -58,6 +58,10 @@ def rmsnorm_bwd_kernel(dy_ptr, x_ptr, w_ptr, rstd_ptr, dx_ptr, hidden, BLOCK: tl
     tl.store(dx_ptr + offs, ((wdy - xhat * c) * rstd).to(dx_ptr.dtype.element_ty), mask=mask)
 
 
+def _block_size(hidden):
+    return 2048 if hidden == 1536 else triton.next_power_of_2(hidden)
+
+
 class FusedRMSNorm(torch.autograd.Function):
     @staticmethod
     def forward(ctx, x, weight, eps):
@@ -65,10 +69,12 @@ class FusedRMSNorm(torch.autograd.Function):
         x2 = x.reshape(-1, hidden).contiguous()
         y = torch.empty_like(x2)
         rstd = torch.empty(x2.shape[0], dtype=torch.float32, device=x.device)
+        block = _block_size(hidden)
         rmsnorm_fwd_kernel[(x2.shape[0],)](x2, weight, y, rstd, hidden, eps,
-                                           BLOCK=triton.next_power_of_2(hidden), num_warps=NUM_WARPS)
+                                           BLOCK=block, num_warps=NUM_WARPS)
         ctx.save_for_backward(x2, weight, rstd)
         ctx.shape = x.shape
+        ctx.block = block
         return y.view(x.shape)
 
     @staticmethod
@@ -78,7 +84,7 @@ class FusedRMSNorm(torch.autograd.Function):
         dy = grad_out.reshape(-1, hidden).contiguous()
         dx = torch.empty_like(x2)
         rmsnorm_bwd_kernel[(x2.shape[0],)](dy, x2, weight, rstd, dx, hidden,
-                                           BLOCK=triton.next_power_of_2(hidden), num_warps=NUM_WARPS)
+                                           BLOCK=ctx.block, num_warps=NUM_WARPS)
         dw = None
         if ctx.needs_input_grad[1]:  # not the case in this task (frozen norm weight)
             dw = (dy.float() * (x2.float() * rstd[:, None])).sum(0).to(weight.dtype)
@@ -86,6 +92,14 @@ class FusedRMSNorm(torch.autograd.Function):
 
 
 def rmsnorm(x, weight, eps):
+    if not torch.is_grad_enabled() or not (x.requires_grad or weight.requires_grad):
+        hidden = x.shape[-1]
+        x2 = x.reshape(-1, hidden).contiguous()
+        y = torch.empty_like(x2)
+        rstd = torch.empty(x2.shape[0], dtype=torch.float32, device=x.device)
+        rmsnorm_fwd_kernel[(x2.shape[0],)](x2, weight, y, rstd, hidden, eps,
+                                           BLOCK=_block_size(hidden), num_warps=NUM_WARPS)
+        return y.view(x.shape)
     return FusedRMSNorm.apply(x, weight, eps)
 
 

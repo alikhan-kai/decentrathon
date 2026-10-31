@@ -26,6 +26,7 @@ HIDDEN, VOCAB, HEADS, KV_HEADS, HEAD_DIM = 1536, 151936, 12, 2, 128
 _STATS = {"specs": 0, "compiled": 0, "failed": [], "seconds": None}
 _specs_per_kernel = {}
 _events = {}
+_hooks = {}
 _thread = None
 
 
@@ -70,6 +71,18 @@ def _variants(kernel):
     return sum(len(cache[0]) for cache in list(kernel.device_caches.values()))
 
 
+def _clear_hook(kid):
+    entry = _hooks.pop(kid, None)
+    if entry is not None:
+        kernel, hook = entry
+        hooks = getattr(kernel, "pre_run_hooks", None)
+        if isinstance(hooks, list):
+            try:
+                hooks.remove(hook)
+            except ValueError:
+                pass
+
+
 def compile_all(specs=None):
     """Compile every spec in order; never raises (the real launch compiles on a miss anyway)."""
     t0 = time.perf_counter()
@@ -92,11 +105,13 @@ def compile_all(specs=None):
                 remaining[kid] -= 1
                 if remaining[kid] <= 0 and kid in _events:
                     _events[kid].set()
+                    _clear_hook(kid)
     except Exception as exc:  # noqa: BLE001
         _STATS["failed"].append(repr(exc))
     finally:
-        for ev in _events.values():
+        for kid, ev in list(_events.items()):
             ev.set()
+            _clear_hook(kid)
     _STATS["seconds"] = round(time.perf_counter() - t0, 2)
     if _STATS["failed"]:
         print("PRECOMPILE FAILED (kernels compile at first launch instead): " + "; ".join(_STATS["failed"]),
@@ -129,8 +144,9 @@ def patch():
     rotary._triton_kernel()
     specs = _specs()
     for kernel in {id(k): k for k, _, _ in specs}.values():
+        kid = id(kernel)
         ev = threading.Event()
-        _events[id(kernel)] = ev
+        _events[kid] = ev
 
         def _make_hook(event=ev):
             def _wait_kernel(*args, **kwargs):
@@ -138,7 +154,9 @@ def patch():
                     event.wait()
             return _wait_kernel
 
-        kernel.add_pre_run_hook(_make_hook())
+        hook = _make_hook()
+        kernel.add_pre_run_hook(hook)
+        _hooks[kid] = (kernel, hook)
     # Not a daemon: interpreter exit waits for it instead of killing it inside a compile.
     _thread = threading.Thread(target=compile_all, args=(specs,), name="solution-precompile")
     _thread.start()

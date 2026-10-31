@@ -59,7 +59,13 @@ def patch():
             dropout = self.lora_dropout[active_adapter]
             scaling = self.scaling[active_adapter]
 
-            x_ = self._cast_input_dtype(x, lora_A.weight.dtype)
+            if (x.dtype == torch.float16 and x.is_cuda
+                    and lora_A.weight.dtype in (torch.float16, torch.float32)
+                    and torch.is_autocast_enabled("cuda")
+                    and torch.get_autocast_dtype("cuda") == torch.float16):
+                x_ = x
+            else:
+                x_ = self._cast_input_dtype(x, lora_A.weight.dtype)
             lora_out = lora_B(lora_A(dropout(x_)))
             if lora_out.dtype != result_dtype:
                 lora_out = lora_out.to(result_dtype)
