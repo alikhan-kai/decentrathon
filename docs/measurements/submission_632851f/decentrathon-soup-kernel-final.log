@@ -1,0 +1,463 @@
+[{"stream_name":"stderr","time":7.725294126,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.725338714,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.72534517,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.725349494,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.338444723,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.33848131,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.338485265,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.33848794,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":9.674828911,"data":"Tesla T4\n"}
+,{"stream_name":"stdout","time":9.6748596,"data":"Tesla T4\n"}
+,{"stream_name":"stdout","time":9.674864275000001,"data":"\n"}
+,{"stream_name":"stdout","time":22.070826454,"data":"No GITHUB_TOKEN secret, cloning without it: ConnectionError\n"}
+,{"stream_name":"stdout","time":22.904644153,"data":"632851f0f2c3d202ae898d07b9b7b050eed61699 Remove candidate measurement data not needed for submission\n"}
+,{"stream_name":"stdout","time":22.904668446,"data":"\n"}
+,{"stream_name":"stdout","time":26.773813731,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\r\n"}
+,{"stream_name":"stdout","time":26.824559614,"data":"\rREADME.md:   0%|                                    | 0.00/1.79k [00:00\u003c?, ?B/s]\rREADME.md: 100%|████████████████████████████| 1.79k/1.79k [00:00\u003c00:00, 844kB/s]\r\n"}
+,{"stream_name":"stdout","time":27.785623456,"data":"\r\n"}
+,{"stream_name":"stdout","time":28.291993179,"data":"\rkaz_instructions.json: reconstructing file:   0%|  |  0.00B / 35.6MB            \u001b[A\rkaz_instructions.json: downloading bytes:                   |  0.00B            \rkaz_instructions.json: downloading bytes: █████▌            | 10.9MB            \r\n"}
+,{"stream_name":"stdout","time":28.29202612,"data":"\rkaz_instructions.json: reconstructing file: 100%|██| 35.6MB / 35.6MB            \u001b[A\rkaz_instructions.json: downloading bytes: ██████████████████| 15.4MB, 1.52MB/s  \rkaz_instructions.json: downloading bytes: ██████████████████| 15.4MB, 1.52MB/s  \r\n"}
+,{"stream_name":"stdout","time":28.292030124,"data":"\rkaz_instructions.json: reconstructing file: 100%|██| 35.6MB / 35.6MB, 3.52MB/s  \r\n"}
+,{"stream_name":"stdout","time":30.217495124,"data":"\rGenerating train split: 0 examples [00:00, ? examples/s]\rGenerating train split: 52201 examples [00:01, 28477.79 examples/s]\rGenerating train split: 52201 examples [00:01, 28211.56 examples/s]\r\n"}
+,{"stream_name":"stdout","time":30.268262518,"data":"wrote 256 training rows and 256 eval rows to /kaggle/working/repo/data\r\n"}
+,{"stream_name":"stdout","time":80.85891058,"data":"\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[31mF\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[31mF\u001b[0m\u001b[31mF\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[31m [ 16%]\r\n"}
+,{"stream_name":"stdout","time":85.277429719,"data":"\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[31m [ 33%]\r\n"}
+,{"stream_name":"stdout","time":90.807367961,"data":"\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[31mF\u001b[0m\u001b[31mF\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[31m [ 50%]\r\n"}
+,{"stream_name":"stdout","time":94.357740526,"data":"\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[31m [ 67%]\r\n"}
+,{"stream_name":"stdout","time":95.727518954,"data":"\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[31m [ 83%]\r\n"}
+,{"stream_name":"stdout","time":99.328564809,"data":"\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[33ms\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[32m.\u001b[0m\u001b[31m    [100%]\u001b[0m\r\n"}
+,{"stream_name":"stdout","time":99.328606872,"data":"=================================== FAILURES ===================================\r\n"}
+,{"stream_name":"stdout","time":99.328611911,"data":"\u001b[31m\u001b[1m_________ test_custom_head_behavior_and_gradients_are_preserved[lora] __________\u001b[0m\r\n"}
+,{"stream_name":"stdout","time":99.328615928,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.32861925,"data":"tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_custom_head_behavior_and_7')\r\n"}
+,{"stream_name":"stdout","time":99.328622964,"data":"installed = \u003cfunction SFTTrainer.compute_loss at 0x7c2580ff2980\u003e, kind = 'lora'\r\n"}
+,{"stream_name":"stdout","time":99.328626829,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.381541759,"data":"    \u001b[0m\u001b[37m@pytest\u001b[39;49;00m.mark.parametrize(\u001b[33m\"\u001b[39;49;00m\u001b[33mkind\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, [\u001b[33m\"\u001b[39;49;00m\u001b[33mbias\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, \u001b[33m\"\u001b[39;49;00m\u001b[33msubclass\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, \u001b[33m\"\u001b[39;49;00m\u001b[33mforward\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, \u001b[33m\"\u001b[39;49;00m\u001b[33mpre-hook\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, \u001b[33m\"\u001b[39;49;00m\u001b[33mpost-hook\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, \u001b[33m\"\u001b[39;49;00m\u001b[33mbackward-pre-hook\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, \u001b[33m\"\u001b[39;49;00m\u001b[33mbackward-hook\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, \u001b[33m\"\u001b[39;49;00m\u001b[33mlora\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m])\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381568948,"data":"    \u001b[94mdef\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[92mtest_custom_head_behavior_and_gradients_are_preserved\u001b[39;49;00m(tmp_path, installed, kind):\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381574705,"data":"        model = tiny_model()\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381578764,"data":"        head = model.lm_head\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381582735,"data":"        \u001b[94mif\u001b[39;49;00m kind == \u001b[33m\"\u001b[39;49;00m\u001b[33mbias\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381587459,"data":"            head.bias = torch.nn.Parameter(torch.linspace(-\u001b[94m1\u001b[39;49;00m, \u001b[94m1\u001b[39;49;00m, \u001b[94m32\u001b[39;49;00m, dtype=head.weight.dtype))\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381592254,"data":"        \u001b[94melif\u001b[39;49;00m kind == \u001b[33m\"\u001b[39;49;00m\u001b[33msubclass\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381596959,"data":"            \u001b[94mclass\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[04m\u001b[92mScaledLinear\u001b[39;49;00m(torch.nn.Linear):\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381601494,"data":"                \u001b[94mdef\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[92mforward\u001b[39;49;00m(\u001b[96mself\u001b[39;49;00m, inputs):\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381605992,"data":"                    \u001b[94mreturn\u001b[39;49;00m \u001b[96msuper\u001b[39;49;00m().forward(inputs) * \u001b[94m1.7\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381623452,"data":"            head.\u001b[91m__class__\u001b[39;49;00m = ScaledLinear\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381627738,"data":"        \u001b[94melif\u001b[39;49;00m kind == \u001b[33m\"\u001b[39;49;00m\u001b[33mforward\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381632362,"data":"            original_forward = head.forward\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381636228,"data":"            head.forward = \u001b[94mlambda\u001b[39;49;00m inputs: original_forward(inputs) * \u001b[94m1.7\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.38164178,"data":"        \u001b[94melif\u001b[39;49;00m kind == \u001b[33m\"\u001b[39;49;00m\u001b[33mpre-hook\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381646462,"data":"            head.register_forward_pre_hook(\u001b[94mlambda\u001b[39;49;00m module, inputs: (inputs[\u001b[94m0\u001b[39;49;00m] * \u001b[94m1.7\u001b[39;49;00m,))\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381651017,"data":"        \u001b[94melif\u001b[39;49;00m kind == \u001b[33m\"\u001b[39;49;00m\u001b[33mpost-hook\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.38165557,"data":"            head.register_forward_hook(\u001b[94mlambda\u001b[39;49;00m module, inputs, output: output * \u001b[94m1.7\u001b[39;49;00m)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381660122,"data":"        \u001b[94melif\u001b[39;49;00m kind == \u001b[33m\"\u001b[39;49;00m\u001b[33mbackward-pre-hook\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381664908,"data":"            head.register_full_backward_pre_hook(\u001b[94mlambda\u001b[39;49;00m module, grad_out: (grad_out[\u001b[94m0\u001b[39;49;00m] * \u001b[94m1.7\u001b[39;49;00m,))\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381669471,"data":"        \u001b[94melif\u001b[39;49;00m kind == \u001b[33m\"\u001b[39;49;00m\u001b[33mbackward-hook\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381673968,"data":"            head.register_full_backward_hook(\u001b[94mlambda\u001b[39;49;00m module, grad_in, grad_out: (grad_in[\u001b[94m0\u001b[39;49;00m] * \u001b[94m1.7\u001b[39;49;00m,))\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.38167861,"data":"        \u001b[94melse\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381682682,"data":"\u003e           model = get_peft_model(model, LoraConfig(\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381686828,"data":"                task_type=\u001b[33m\"\u001b[39;49;00m\u001b[33mCAUSAL_LM\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, target_modules=[\u001b[33m\"\u001b[39;49;00m\u001b[33mlm_head\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m], r=\u001b[94m2\u001b[39;49;00m, lora_alpha=\u001b[94m4\u001b[39;49;00m,\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381692243,"data":"            ))\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381696051,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.381699614,"data":"\u001b[1m\u001b[31msolution/test_head_fallback.py\u001b[0m:190: \r\n"}
+,{"stream_name":"stdout","time":99.38170361,"data":"_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n"}
+,{"stream_name":"stdout","time":99.381710785,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/mapping_func.py\u001b[0m:122: in get_peft_model\r\n"}
+,{"stream_name":"stdout","time":99.381715024,"data":"    \u001b[0m\u001b[94mreturn\u001b[39;49;00m MODEL_TYPE_TO_PEFT_MODEL_MAPPING[peft_config.task_type](\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.3817193,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/peft_model.py\u001b[0m:2063: in __init__\r\n"}
+,{"stream_name":"stdout","time":99.38172336,"data":"    \u001b[0m\u001b[96msuper\u001b[39;49;00m().\u001b[92m__init__\u001b[39;49;00m(model, peft_config, adapter_name, **kwargs)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381728012,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/peft_model.py\u001b[0m:164: in __init__\r\n"}
+,{"stream_name":"stdout","time":99.38173249,"data":"    \u001b[0m\u001b[96mself\u001b[39;49;00m.base_model = \u001b[96mcls\u001b[39;49;00m(model, {adapter_name: peft_config}, adapter_name)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381736978,"data":"                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381741033,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/tuners_utils.py\u001b[0m:318: in __init__\r\n"}
+,{"stream_name":"stdout","time":99.381745221,"data":"    \u001b[0m\u001b[96mself\u001b[39;49;00m.inject_adapter(\u001b[96mself\u001b[39;49;00m.model, adapter_name, low_cpu_mem_usage=low_cpu_mem_usage, state_dict=state_dict)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381749898,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/tuners_utils.py\u001b[0m:917: in inject_adapter\r\n"}
+,{"stream_name":"stdout","time":99.381754,"data":"    \u001b[0m\u001b[96mself\u001b[39;49;00m._create_and_replace(\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381758022,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/lora/model.py\u001b[0m:281: in _create_and_replace\r\n"}
+,{"stream_name":"stdout","time":99.381762186,"data":"    \u001b[0mnew_module = \u001b[96mself\u001b[39;49;00m._create_new_module(lora_config, adapter_name, target, device_map=device_map, **kwargs)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.38176652,"data":"                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.38177068,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/lora/model.py\u001b[0m:430: in _create_new_module\r\n"}
+,{"stream_name":"stdout","time":99.381774608,"data":"    \u001b[0mnew_module = dispatcher(target, adapter_name, config=lora_config, **kwargs)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.3817787,"data":"                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381782772,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/lora/torchao.py\u001b[0m:160: in dispatch_torchao\r\n"}
+,{"stream_name":"stdout","time":99.381786842,"data":"    \u001b[0m\u001b[94mif\u001b[39;49;00m \u001b[95mnot\u001b[39;49;00m is_torchao_available():\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381791076,"data":"           ^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381794888,"data":"_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n"}
+,{"stream_name":"stdout","time":99.381801381,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.381804916,"data":"    \u001b[0m\u001b[37m@lru_cache\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381808717,"data":"    \u001b[94mdef\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[92mis_torchao_available\u001b[39;49;00m() -\u003e \u001b[96mbool\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381812899,"data":"        \u001b[94mif\u001b[39;49;00m importlib.util.find_spec(\u001b[33m\"\u001b[39;49;00m\u001b[33mtorchao\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m) \u001b[95mis\u001b[39;49;00m \u001b[94mNone\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381818453,"data":"            \u001b[94mreturn\u001b[39;49;00m \u001b[94mFalse\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.38182253,"data":"    \u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381829459,"data":"        TORCHAO_MINIMUM_VERSION = packaging.version.parse(\u001b[33m\"\u001b[39;49;00m\u001b[33m0.16.0\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381834556,"data":"        \u001b[94mtry\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381838764,"data":"            torchao_version = packaging.version.parse(importlib_metadata.version(\u001b[33m\"\u001b[39;49;00m\u001b[33mtorchao\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m))\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381843163,"data":"        \u001b[94mexcept\u001b[39;49;00m importlib_metadata.PackageNotFoundError:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381847316,"data":"            \u001b[90m# Same idea as in diffusers:\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381851718,"data":"            \u001b[90m# https://github.com/huggingface/diffusers/blob/9f06a0d1a4a998ac6a463c5be728c892f95320a8/src/diffusers/utils/import_utils.py#L351-L357\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381856656,"data":"            \u001b[90m# It's not clear under what circumstances `importlib_metadata.version(\"torchao\")` can raise an error even\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381860934,"data":"            \u001b[90m# though `importlib.util.find_spec(\"torchao\") is not None` but it has been observed, so adding this for\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381865095,"data":"            \u001b[90m# precaution.\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381868864,"data":"            \u001b[94mreturn\u001b[39;49;00m \u001b[94mFalse\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381872854,"data":"    \u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.38187645,"data":"        \u001b[94mif\u001b[39;49;00m torchao_version \u003c TORCHAO_MINIMUM_VERSION:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381880722,"data":"\u003e           \u001b[94mraise\u001b[39;49;00m \u001b[96mImportError\u001b[39;49;00m(\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381885179,"data":"                \u001b[33mf\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[33mFound an incompatible version of torchao. Found version \u001b[39;49;00m\u001b[33m{\u001b[39;49;00mtorchao_version\u001b[33m}\u001b[39;49;00m\u001b[33m, \u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381910276,"data":"                \u001b[33mf\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[33mbut only versions above \u001b[39;49;00m\u001b[33m{\u001b[39;49;00mTORCHAO_MINIMUM_VERSION\u001b[33m}\u001b[39;49;00m\u001b[33m are supported\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381924043,"data":"            )\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381938604,"data":"\u001b[1m\u001b[31mE           ImportError: Found an incompatible version of torchao. Found version 0.10.0, but only versions above 0.16.0 are supported\u001b[0m\r\n"}
+,{"stream_name":"stdout","time":99.381942477,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.381946701,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/import_utils.py\u001b[0m:147: ImportError\r\n"}
+,{"stream_name":"stdout","time":99.381950536,"data":"\u001b[31m\u001b[1m_ test_supported_peft_path_keeps_normalization_metrics_and_rewind[fp16-storage] _\u001b[0m\r\n"}
+,{"stream_name":"stdout","time":99.381954294,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.381957488,"data":"tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_supported_peft_path_keeps0')\r\n"}
+,{"stream_name":"stdout","time":99.381961006,"data":"installed = \u003cfunction SFTTrainer.compute_loss at 0x7c2580ff2980\u003e\r\n"}
+,{"stream_name":"stdout","time":99.381964433,"data":"monkeypatch = \u003c_pytest.monkeypatch.MonkeyPatch object at 0x7c257f5e7230\u003e\r\n"}
+,{"stream_name":"stdout","time":99.3819682,"data":"prepared_amp = False\r\n"}
+,{"stream_name":"stdout","time":99.381971532,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.381974808,"data":"    \u001b[0m\u001b[37m@pytest\u001b[39;49;00m.mark.parametrize(\u001b[33m\"\u001b[39;49;00m\u001b[33mprepared_amp\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, [\u001b[94mFalse\u001b[39;49;00m, \u001b[94mTrue\u001b[39;49;00m], ids=[\u001b[33m\"\u001b[39;49;00m\u001b[33mfp16-storage\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, \u001b[33m\"\u001b[39;49;00m\u001b[33mprepared-fp16-amp\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m])\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381980258,"data":"    \u001b[94mdef\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[92mtest_supported_peft_path_keeps_normalization_metrics_and_rewind\u001b[39;49;00m(tmp_path, installed, monkeypatch, prepared_amp):\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381984539,"data":"\u003e       model = get_peft_model(tiny_model(torch.float32 \u001b[94mif\u001b[39;49;00m prepared_amp \u001b[94melse\u001b[39;49;00m torch.float16), LoraConfig(\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381988692,"data":"            task_type=\u001b[33m\"\u001b[39;49;00m\u001b[33mCAUSAL_LM\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, target_modules=[\u001b[33m\"\u001b[39;49;00m\u001b[33mq_proj\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m], r=\u001b[94m2\u001b[39;49;00m, lora_alpha=\u001b[94m4\u001b[39;49;00m,\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381993514,"data":"        ))\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.381996929,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.382000259,"data":"\u001b[1m\u001b[31msolution/test_head_fallback.py\u001b[0m:298: \r\n"}
+,{"stream_name":"stdout","time":99.382004032,"data":"_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n"}
+,{"stream_name":"stdout","time":99.382007727,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/mapping_func.py\u001b[0m:122: in get_peft_model\r\n"}
+,{"stream_name":"stdout","time":99.382011689,"data":"    \u001b[0m\u001b[94mreturn\u001b[39;49;00m MODEL_TYPE_TO_PEFT_MODEL_MAPPING[peft_config.task_type](\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382015719,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/peft_model.py\u001b[0m:2063: in __init__\r\n"}
+,{"stream_name":"stdout","time":99.382022785,"data":"    \u001b[0m\u001b[96msuper\u001b[39;49;00m().\u001b[92m__init__\u001b[39;49;00m(model, peft_config, adapter_name, **kwargs)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382026984,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/peft_model.py\u001b[0m:164: in __init__\r\n"}
+,{"stream_name":"stdout","time":99.382030794,"data":"    \u001b[0m\u001b[96mself\u001b[39;49;00m.base_model = \u001b[96mcls\u001b[39;49;00m(model, {adapter_name: peft_config}, adapter_name)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382035712,"data":"                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382039581,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/tuners_utils.py\u001b[0m:318: in __init__\r\n"}
+,{"stream_name":"stdout","time":99.382043538,"data":"    \u001b[0m\u001b[96mself\u001b[39;49;00m.inject_adapter(\u001b[96mself\u001b[39;49;00m.model, adapter_name, low_cpu_mem_usage=low_cpu_mem_usage, state_dict=state_dict)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382047872,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/tuners_utils.py\u001b[0m:917: in inject_adapter\r\n"}
+,{"stream_name":"stdout","time":99.382051827,"data":"    \u001b[0m\u001b[96mself\u001b[39;49;00m._create_and_replace(\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382055717,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/lora/model.py\u001b[0m:281: in _create_and_replace\r\n"}
+,{"stream_name":"stdout","time":99.382059708,"data":"    \u001b[0mnew_module = \u001b[96mself\u001b[39;49;00m._create_new_module(lora_config, adapter_name, target, device_map=device_map, **kwargs)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.38206395,"data":"                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382067849,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/lora/model.py\u001b[0m:430: in _create_new_module\r\n"}
+,{"stream_name":"stdout","time":99.382071679,"data":"    \u001b[0mnew_module = dispatcher(target, adapter_name, config=lora_config, **kwargs)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382075585,"data":"                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382079326,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/lora/torchao.py\u001b[0m:160: in dispatch_torchao\r\n"}
+,{"stream_name":"stdout","time":99.382083238,"data":"    \u001b[0m\u001b[94mif\u001b[39;49;00m \u001b[95mnot\u001b[39;49;00m is_torchao_available():\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382087181,"data":"           ^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382090844,"data":"_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n"}
+,{"stream_name":"stdout","time":99.382094471,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.382097876,"data":"    \u001b[0m\u001b[37m@lru_cache\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382101634,"data":"    \u001b[94mdef\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[92mis_torchao_available\u001b[39;49;00m() -\u003e \u001b[96mbool\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382108991,"data":"        \u001b[94mif\u001b[39;49;00m importlib.util.find_spec(\u001b[33m\"\u001b[39;49;00m\u001b[33mtorchao\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m) \u001b[95mis\u001b[39;49;00m \u001b[94mNone\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382113776,"data":"            \u001b[94mreturn\u001b[39;49;00m \u001b[94mFalse\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382117752,"data":"    \u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382121629,"data":"        TORCHAO_MINIMUM_VERSION = packaging.version.parse(\u001b[33m\"\u001b[39;49;00m\u001b[33m0.16.0\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382125876,"data":"        \u001b[94mtry\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382129814,"data":"            torchao_version = packaging.version.parse(importlib_metadata.version(\u001b[33m\"\u001b[39;49;00m\u001b[33mtorchao\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m))\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382134394,"data":"        \u001b[94mexcept\u001b[39;49;00m importlib_metadata.PackageNotFoundError:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382138214,"data":"            \u001b[90m# Same idea as in diffusers:\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382142072,"data":"            \u001b[90m# https://github.com/huggingface/diffusers/blob/9f06a0d1a4a998ac6a463c5be728c892f95320a8/src/diffusers/utils/import_utils.py#L351-L357\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382146286,"data":"            \u001b[90m# It's not clear under what circumstances `importlib_metadata.version(\"torchao\")` can raise an error even\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382150436,"data":"            \u001b[90m# though `importlib.util.find_spec(\"torchao\") is not None` but it has been observed, so adding this for\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382154621,"data":"            \u001b[90m# precaution.\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382158346,"data":"            \u001b[94mreturn\u001b[39;49;00m \u001b[94mFalse\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382162299,"data":"    \u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.38216582,"data":"        \u001b[94mif\u001b[39;49;00m torchao_version \u003c TORCHAO_MINIMUM_VERSION:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382169759,"data":"\u003e           \u001b[94mraise\u001b[39;49;00m \u001b[96mImportError\u001b[39;49;00m(\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382173757,"data":"                \u001b[33mf\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[33mFound an incompatible version of torchao. Found version \u001b[39;49;00m\u001b[33m{\u001b[39;49;00mtorchao_version\u001b[33m}\u001b[39;49;00m\u001b[33m, \u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382178868,"data":"                \u001b[33mf\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[33mbut only versions above \u001b[39;49;00m\u001b[33m{\u001b[39;49;00mTORCHAO_MINIMUM_VERSION\u001b[33m}\u001b[39;49;00m\u001b[33m are supported\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382183684,"data":"            )\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382187309,"data":"\u001b[1m\u001b[31mE           ImportError: Found an incompatible version of torchao. Found version 0.10.0, but only versions above 0.16.0 are supported\u001b[0m\r\n"}
+,{"stream_name":"stdout","time":99.382194145,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.382197564,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/import_utils.py\u001b[0m:147: ImportError\r\n"}
+,{"stream_name":"stdout","time":99.382201467,"data":"\u001b[31m\u001b[1m_ test_supported_peft_path_keeps_normalization_metrics_and_rewind[prepared-fp16-amp] _\u001b[0m\r\n"}
+,{"stream_name":"stdout","time":99.382205301,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.382209682,"data":"tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_supported_peft_path_keeps1')\r\n"}
+,{"stream_name":"stdout","time":99.382213375,"data":"installed = \u003cfunction SFTTrainer.compute_loss at 0x7c2580ff2980\u003e\r\n"}
+,{"stream_name":"stdout","time":99.382217121,"data":"monkeypatch = \u003c_pytest.monkeypatch.MonkeyPatch object at 0x7c257fa8f0e0\u003e\r\n"}
+,{"stream_name":"stdout","time":99.382220812,"data":"prepared_amp = True\r\n"}
+,{"stream_name":"stdout","time":99.382224308,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.382227732,"data":"    \u001b[0m\u001b[37m@pytest\u001b[39;49;00m.mark.parametrize(\u001b[33m\"\u001b[39;49;00m\u001b[33mprepared_amp\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, [\u001b[94mFalse\u001b[39;49;00m, \u001b[94mTrue\u001b[39;49;00m], ids=[\u001b[33m\"\u001b[39;49;00m\u001b[33mfp16-storage\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, \u001b[33m\"\u001b[39;49;00m\u001b[33mprepared-fp16-amp\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m])\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382233317,"data":"    \u001b[94mdef\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[92mtest_supported_peft_path_keeps_normalization_metrics_and_rewind\u001b[39;49;00m(tmp_path, installed, monkeypatch, prepared_amp):\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382237804,"data":"\u003e       model = get_peft_model(tiny_model(torch.float32 \u001b[94mif\u001b[39;49;00m prepared_amp \u001b[94melse\u001b[39;49;00m torch.float16), LoraConfig(\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382242093,"data":"            task_type=\u001b[33m\"\u001b[39;49;00m\u001b[33mCAUSAL_LM\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, target_modules=[\u001b[33m\"\u001b[39;49;00m\u001b[33mq_proj\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m], r=\u001b[94m2\u001b[39;49;00m, lora_alpha=\u001b[94m4\u001b[39;49;00m,\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382247324,"data":"        ))\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382250823,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.382254156,"data":"\u001b[1m\u001b[31msolution/test_head_fallback.py\u001b[0m:298: \r\n"}
+,{"stream_name":"stdout","time":99.382257811,"data":"_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n"}
+,{"stream_name":"stdout","time":99.382261412,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/mapping_func.py\u001b[0m:122: in get_peft_model\r\n"}
+,{"stream_name":"stdout","time":99.382265256,"data":"    \u001b[0m\u001b[94mreturn\u001b[39;49;00m MODEL_TYPE_TO_PEFT_MODEL_MAPPING[peft_config.task_type](\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382269341,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/peft_model.py\u001b[0m:2063: in __init__\r\n"}
+,{"stream_name":"stdout","time":99.382273111,"data":"    \u001b[0m\u001b[96msuper\u001b[39;49;00m().\u001b[92m__init__\u001b[39;49;00m(model, peft_config, adapter_name, **kwargs)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382277194,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/peft_model.py\u001b[0m:164: in __init__\r\n"}
+,{"stream_name":"stdout","time":99.382283731,"data":"    \u001b[0m\u001b[96mself\u001b[39;49;00m.base_model = \u001b[96mcls\u001b[39;49;00m(model, {adapter_name: peft_config}, adapter_name)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382287987,"data":"                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382292072,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/tuners_utils.py\u001b[0m:318: in __init__\r\n"}
+,{"stream_name":"stdout","time":99.38229611,"data":"    \u001b[0m\u001b[96mself\u001b[39;49;00m.inject_adapter(\u001b[96mself\u001b[39;49;00m.model, adapter_name, low_cpu_mem_usage=low_cpu_mem_usage, state_dict=state_dict)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.38230049,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/tuners_utils.py\u001b[0m:917: in inject_adapter\r\n"}
+,{"stream_name":"stdout","time":99.382304449,"data":"    \u001b[0m\u001b[96mself\u001b[39;49;00m._create_and_replace(\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382308334,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/lora/model.py\u001b[0m:281: in _create_and_replace\r\n"}
+,{"stream_name":"stdout","time":99.382312189,"data":"    \u001b[0mnew_module = \u001b[96mself\u001b[39;49;00m._create_new_module(lora_config, adapter_name, target, device_map=device_map, **kwargs)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382316412,"data":"                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.38232025,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/lora/model.py\u001b[0m:430: in _create_new_module\r\n"}
+,{"stream_name":"stdout","time":99.38232416,"data":"    \u001b[0mnew_module = dispatcher(target, adapter_name, config=lora_config, **kwargs)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382328067,"data":"                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382331815,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/lora/torchao.py\u001b[0m:160: in dispatch_torchao\r\n"}
+,{"stream_name":"stdout","time":99.382335709,"data":"    \u001b[0m\u001b[94mif\u001b[39;49;00m \u001b[95mnot\u001b[39;49;00m is_torchao_available():\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382339739,"data":"           ^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382343386,"data":"_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n"}
+,{"stream_name":"stdout","time":99.382347066,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.382350328,"data":"    \u001b[0m\u001b[37m@lru_cache\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382354141,"data":"    \u001b[94mdef\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[92mis_torchao_available\u001b[39;49;00m() -\u003e \u001b[96mbool\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382358476,"data":"        \u001b[94mif\u001b[39;49;00m importlib.util.find_spec(\u001b[33m\"\u001b[39;49;00m\u001b[33mtorchao\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m) \u001b[95mis\u001b[39;49;00m \u001b[94mNone\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382363154,"data":"            \u001b[94mreturn\u001b[39;49;00m \u001b[94mFalse\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382369565,"data":"    \u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382373192,"data":"        TORCHAO_MINIMUM_VERSION = packaging.version.parse(\u001b[33m\"\u001b[39;49;00m\u001b[33m0.16.0\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382377396,"data":"        \u001b[94mtry\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382381435,"data":"            torchao_version = packaging.version.parse(importlib_metadata.version(\u001b[33m\"\u001b[39;49;00m\u001b[33mtorchao\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m))\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382385862,"data":"        \u001b[94mexcept\u001b[39;49;00m importlib_metadata.PackageNotFoundError:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382389671,"data":"            \u001b[90m# Same idea as in diffusers:\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382393605,"data":"            \u001b[90m# https://github.com/huggingface/diffusers/blob/9f06a0d1a4a998ac6a463c5be728c892f95320a8/src/diffusers/utils/import_utils.py#L351-L357\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382397817,"data":"            \u001b[90m# It's not clear under what circumstances `importlib_metadata.version(\"torchao\")` can raise an error even\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382401859,"data":"            \u001b[90m# though `importlib.util.find_spec(\"torchao\") is not None` but it has been observed, so adding this for\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382405964,"data":"            \u001b[90m# precaution.\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382409771,"data":"            \u001b[94mreturn\u001b[39;49;00m \u001b[94mFalse\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382413665,"data":"    \u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382417257,"data":"        \u001b[94mif\u001b[39;49;00m torchao_version \u003c TORCHAO_MINIMUM_VERSION:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382421223,"data":"\u003e           \u001b[94mraise\u001b[39;49;00m \u001b[96mImportError\u001b[39;49;00m(\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382425261,"data":"                \u001b[33mf\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[33mFound an incompatible version of torchao. Found version \u001b[39;49;00m\u001b[33m{\u001b[39;49;00mtorchao_version\u001b[33m}\u001b[39;49;00m\u001b[33m, \u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382430259,"data":"                \u001b[33mf\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[33mbut only versions above \u001b[39;49;00m\u001b[33m{\u001b[39;49;00mTORCHAO_MINIMUM_VERSION\u001b[33m}\u001b[39;49;00m\u001b[33m are supported\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382435033,"data":"            )\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382438597,"data":"\u001b[1m\u001b[31mE           ImportError: Found an incompatible version of torchao. Found version 0.10.0, but only versions above 0.16.0 are supported\u001b[0m\r\n"}
+,{"stream_name":"stdout","time":99.382442792,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.382446169,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/import_utils.py\u001b[0m:147: ImportError\r\n"}
+,{"stream_name":"stdout","time":99.382449979,"data":"\u001b[31m\u001b[1m_______________ test_cuda_qwen_peft_sdpa_autocast_gradscaler[1] ________________\u001b[0m\r\n"}
+,{"stream_name":"stdout","time":99.382456571,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.382460028,"data":"patched = None\r\n"}
+,{"stream_name":"stdout","time":99.382463453,"data":"monkeypatch = \u003c_pytest.monkeypatch.MonkeyPatch object at 0x7c258115def0\u003e\r\n"}
+,{"stream_name":"stdout","time":99.382467303,"data":"scale = 1\r\n"}
+,{"stream_name":"stdout","time":99.382470591,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.382473903,"data":"    \u001b[0m\u001b[37m@CUDA\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382478083,"data":"    \u001b[37m@pytest\u001b[39;49;00m.mark.parametrize(\u001b[33m\"\u001b[39;49;00m\u001b[33mscale\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, [\u001b[94m1\u001b[39;49;00m, \u001b[94m65536\u001b[39;49;00m])\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382482827,"data":"    \u001b[94mdef\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[92mtest_cuda_qwen_peft_sdpa_autocast_gradscaler\u001b[39;49;00m(patched, monkeypatch, scale):\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382487086,"data":"        \u001b[94mfrom\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[04m\u001b[96mpeft\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[94mimport\u001b[39;49;00m LoraConfig, get_peft_model\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382491727,"data":"        \u001b[94mfrom\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[04m\u001b[96mtransformers\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[94mimport\u001b[39;49;00m Qwen2Config, Qwen2Model\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382496301,"data":"    \u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382499886,"data":"        \u001b[90m# The patched fixture explicitly calls raw rn.patch(), irrespective of ENABLED.\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382503943,"data":"        \u001b[94mwith\u001b[39;49;00m torch.random.fork_rng(devices=[torch.cuda.current_device()]):\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382507888,"data":"            torch.manual_seed(\u001b[94m41\u001b[39;49;00m)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382511698,"data":"            config = Qwen2Config(vocab_size=\u001b[94m64\u001b[39;49;00m, hidden_size=\u001b[94m128\u001b[39;49;00m, intermediate_size=\u001b[94m256\u001b[39;49;00m,\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382516089,"data":"                                 num_attention_heads=\u001b[94m4\u001b[39;49;00m, num_key_value_heads=\u001b[94m2\u001b[39;49;00m, num_hidden_layers=\u001b[94m2\u001b[39;49;00m,\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382520427,"data":"                                 attention_dropout=\u001b[94m.1\u001b[39;49;00m, use_cache=\u001b[94mFalse\u001b[39;49;00m)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382524517,"data":"            config._attn_implementation = \u001b[33m\"\u001b[39;49;00m\u001b[33msdpa\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382528671,"data":"\u003e           candidate = get_peft_model(Qwen2Model(config), LoraConfig(\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382532476,"data":"                task_type=\u001b[33m\"\u001b[39;49;00m\u001b[33mFEATURE_EXTRACTION\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, r=\u001b[94m4\u001b[39;49;00m, lora_alpha=\u001b[94m8\u001b[39;49;00m, lora_dropout=\u001b[94m.1\u001b[39;49;00m,\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382538115,"data":"                target_modules=[\u001b[33m\"\u001b[39;49;00m\u001b[33mq_proj\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, \u001b[33m\"\u001b[39;49;00m\u001b[33mv_proj\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, \u001b[33m\"\u001b[39;49;00m\u001b[33mo_proj\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, \u001b[33m\"\u001b[39;49;00m\u001b[33mgate_proj\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, \u001b[33m\"\u001b[39;49;00m\u001b[33mup_proj\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, \u001b[33m\"\u001b[39;49;00m\u001b[33mdown_proj\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m]\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382547179,"data":"            )).cuda().train()\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382550906,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.382554271,"data":"\u001b[1m\u001b[31msolution/test_residual_norm.py\u001b[0m:588: \r\n"}
+,{"stream_name":"stdout","time":99.382557993,"data":"_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n"}
+,{"stream_name":"stdout","time":99.382561737,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/mapping_func.py\u001b[0m:122: in get_peft_model\r\n"}
+,{"stream_name":"stdout","time":99.382565733,"data":"    \u001b[0m\u001b[94mreturn\u001b[39;49;00m MODEL_TYPE_TO_PEFT_MODEL_MAPPING[peft_config.task_type](\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382569687,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/peft_model.py\u001b[0m:3151: in __init__\r\n"}
+,{"stream_name":"stdout","time":99.382573535,"data":"    \u001b[0m\u001b[96msuper\u001b[39;49;00m().\u001b[92m__init__\u001b[39;49;00m(model, peft_config, adapter_name, **kwargs)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.38257782,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/peft_model.py\u001b[0m:164: in __init__\r\n"}
+,{"stream_name":"stdout","time":99.382581604,"data":"    \u001b[0m\u001b[96mself\u001b[39;49;00m.base_model = \u001b[96mcls\u001b[39;49;00m(model, {adapter_name: peft_config}, adapter_name)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382585826,"data":"                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382589719,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/tuners_utils.py\u001b[0m:318: in __init__\r\n"}
+,{"stream_name":"stdout","time":99.382593752,"data":"    \u001b[0m\u001b[96mself\u001b[39;49;00m.inject_adapter(\u001b[96mself\u001b[39;49;00m.model, adapter_name, low_cpu_mem_usage=low_cpu_mem_usage, state_dict=state_dict)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382598226,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/tuners_utils.py\u001b[0m:917: in inject_adapter\r\n"}
+,{"stream_name":"stdout","time":99.382602086,"data":"    \u001b[0m\u001b[96mself\u001b[39;49;00m._create_and_replace(\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382605979,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/lora/model.py\u001b[0m:281: in _create_and_replace\r\n"}
+,{"stream_name":"stdout","time":99.38260987,"data":"    \u001b[0mnew_module = \u001b[96mself\u001b[39;49;00m._create_new_module(lora_config, adapter_name, target, device_map=device_map, **kwargs)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382614046,"data":"                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382618182,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/lora/model.py\u001b[0m:430: in _create_new_module\r\n"}
+,{"stream_name":"stdout","time":99.382624681,"data":"    \u001b[0mnew_module = dispatcher(target, adapter_name, config=lora_config, **kwargs)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382628661,"data":"                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382632505,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/lora/torchao.py\u001b[0m:160: in dispatch_torchao\r\n"}
+,{"stream_name":"stdout","time":99.382636411,"data":"    \u001b[0m\u001b[94mif\u001b[39;49;00m \u001b[95mnot\u001b[39;49;00m is_torchao_available():\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382640467,"data":"           ^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382644073,"data":"_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n"}
+,{"stream_name":"stdout","time":99.382647686,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.382651009,"data":"    \u001b[0m\u001b[37m@lru_cache\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382655045,"data":"    \u001b[94mdef\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[92mis_torchao_available\u001b[39;49;00m() -\u003e \u001b[96mbool\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382659737,"data":"        \u001b[94mif\u001b[39;49;00m importlib.util.find_spec(\u001b[33m\"\u001b[39;49;00m\u001b[33mtorchao\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m) \u001b[95mis\u001b[39;49;00m \u001b[94mNone\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382664377,"data":"            \u001b[94mreturn\u001b[39;49;00m \u001b[94mFalse\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382668275,"data":"    \u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382671851,"data":"        TORCHAO_MINIMUM_VERSION = packaging.version.parse(\u001b[33m\"\u001b[39;49;00m\u001b[33m0.16.0\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382676125,"data":"        \u001b[94mtry\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382679858,"data":"            torchao_version = packaging.version.parse(importlib_metadata.version(\u001b[33m\"\u001b[39;49;00m\u001b[33mtorchao\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m))\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382684207,"data":"        \u001b[94mexcept\u001b[39;49;00m importlib_metadata.PackageNotFoundError:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382688144,"data":"            \u001b[90m# Same idea as in diffusers:\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382691993,"data":"            \u001b[90m# https://github.com/huggingface/diffusers/blob/9f06a0d1a4a998ac6a463c5be728c892f95320a8/src/diffusers/utils/import_utils.py#L351-L357\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382696278,"data":"            \u001b[90m# It's not clear under what circumstances `importlib_metadata.version(\"torchao\")` can raise an error even\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382700606,"data":"            \u001b[90m# though `importlib.util.find_spec(\"torchao\") is not None` but it has been observed, so adding this for\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382704755,"data":"            \u001b[90m# precaution.\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.38270858,"data":"            \u001b[94mreturn\u001b[39;49;00m \u001b[94mFalse\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.38271495,"data":"    \u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382719056,"data":"        \u001b[94mif\u001b[39;49;00m torchao_version \u003c TORCHAO_MINIMUM_VERSION:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382723058,"data":"\u003e           \u001b[94mraise\u001b[39;49;00m \u001b[96mImportError\u001b[39;49;00m(\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382726987,"data":"                \u001b[33mf\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[33mFound an incompatible version of torchao. Found version \u001b[39;49;00m\u001b[33m{\u001b[39;49;00mtorchao_version\u001b[33m}\u001b[39;49;00m\u001b[33m, \u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.38273198,"data":"                \u001b[33mf\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[33mbut only versions above \u001b[39;49;00m\u001b[33m{\u001b[39;49;00mTORCHAO_MINIMUM_VERSION\u001b[33m}\u001b[39;49;00m\u001b[33m are supported\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382736875,"data":"            )\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382740493,"data":"\u001b[1m\u001b[31mE           ImportError: Found an incompatible version of torchao. Found version 0.10.0, but only versions above 0.16.0 are supported\u001b[0m\r\n"}
+,{"stream_name":"stdout","time":99.382744489,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.382747829,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/import_utils.py\u001b[0m:147: ImportError\r\n"}
+,{"stream_name":"stdout","time":99.382751715,"data":"\u001b[31m\u001b[1m_____________ test_cuda_qwen_peft_sdpa_autocast_gradscaler[65536] ______________\u001b[0m\r\n"}
+,{"stream_name":"stdout","time":99.382755513,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.382758836,"data":"patched = None\r\n"}
+,{"stream_name":"stdout","time":99.38276227,"data":"monkeypatch = \u003c_pytest.monkeypatch.MonkeyPatch object at 0x7c257eee9ef0\u003e\r\n"}
+,{"stream_name":"stdout","time":99.382766036,"data":"scale = 65536\r\n"}
+,{"stream_name":"stdout","time":99.382769478,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.382772784,"data":"    \u001b[0m\u001b[37m@CUDA\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.382776545,"data":"    \u001b[37m@pytest\u001b[39;49;00m.mark.parametrize(\u001b[33m\"\u001b[39;49;00m\u001b[33mscale\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, [\u001b[94m1\u001b[39;49;00m, \u001b[94m65536\u001b[39;49;00m])\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.38278126,"data":"    \u001b[94mdef\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[92mtest_cuda_qwen_peft_sdpa_autocast_gradscaler\u001b[39;49;00m(patched, monkeypatch, scale):\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.38278555,"data":"        \u001b[94mfrom\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[04m\u001b[96mpeft\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[94mimport\u001b[39;49;00m LoraConfig, get_peft_model\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431235271,"data":"        \u001b[94mfrom\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[04m\u001b[96mtransformers\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[94mimport\u001b[39;49;00m Qwen2Config, Qwen2Model\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431256955,"data":"    \u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431261577,"data":"        \u001b[90m# The patched fixture explicitly calls raw rn.patch(), irrespective of ENABLED.\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431274283,"data":"        \u001b[94mwith\u001b[39;49;00m torch.random.fork_rng(devices=[torch.cuda.current_device()]):\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431278792,"data":"            torch.manual_seed(\u001b[94m41\u001b[39;49;00m)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431282955,"data":"            config = Qwen2Config(vocab_size=\u001b[94m64\u001b[39;49;00m, hidden_size=\u001b[94m128\u001b[39;49;00m, intermediate_size=\u001b[94m256\u001b[39;49;00m,\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431287859,"data":"                                 num_attention_heads=\u001b[94m4\u001b[39;49;00m, num_key_value_heads=\u001b[94m2\u001b[39;49;00m, num_hidden_layers=\u001b[94m2\u001b[39;49;00m,\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431292732,"data":"                                 attention_dropout=\u001b[94m.1\u001b[39;49;00m, use_cache=\u001b[94mFalse\u001b[39;49;00m)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431296995,"data":"            config._attn_implementation = \u001b[33m\"\u001b[39;49;00m\u001b[33msdpa\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.43130161,"data":"\u003e           candidate = get_peft_model(Qwen2Model(config), LoraConfig(\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431305674,"data":"                task_type=\u001b[33m\"\u001b[39;49;00m\u001b[33mFEATURE_EXTRACTION\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, r=\u001b[94m4\u001b[39;49;00m, lora_alpha=\u001b[94m8\u001b[39;49;00m, lora_dropout=\u001b[94m.1\u001b[39;49;00m,\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431311316,"data":"                target_modules=[\u001b[33m\"\u001b[39;49;00m\u001b[33mq_proj\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, \u001b[33m\"\u001b[39;49;00m\u001b[33mv_proj\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, \u001b[33m\"\u001b[39;49;00m\u001b[33mo_proj\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, \u001b[33m\"\u001b[39;49;00m\u001b[33mgate_proj\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, \u001b[33m\"\u001b[39;49;00m\u001b[33mup_proj\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m, \u001b[33m\"\u001b[39;49;00m\u001b[33mdown_proj\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m]\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431318675,"data":"            )).cuda().train()\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.43132236,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.431326055,"data":"\u001b[1m\u001b[31msolution/test_residual_norm.py\u001b[0m:588: \r\n"}
+,{"stream_name":"stdout","time":99.431329886,"data":"_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n"}
+,{"stream_name":"stdout","time":99.431333855,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/mapping_func.py\u001b[0m:122: in get_peft_model\r\n"}
+,{"stream_name":"stdout","time":99.431339269,"data":"    \u001b[0m\u001b[94mreturn\u001b[39;49;00m MODEL_TYPE_TO_PEFT_MODEL_MAPPING[peft_config.task_type](\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431343472,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/peft_model.py\u001b[0m:3151: in __init__\r\n"}
+,{"stream_name":"stdout","time":99.43134766,"data":"    \u001b[0m\u001b[96msuper\u001b[39;49;00m().\u001b[92m__init__\u001b[39;49;00m(model, peft_config, adapter_name, **kwargs)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431352047,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/peft_model.py\u001b[0m:164: in __init__\r\n"}
+,{"stream_name":"stdout","time":99.431356376,"data":"    \u001b[0m\u001b[96mself\u001b[39;49;00m.base_model = \u001b[96mcls\u001b[39;49;00m(model, {adapter_name: peft_config}, adapter_name)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431364007,"data":"                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431368209,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/tuners_utils.py\u001b[0m:318: in __init__\r\n"}
+,{"stream_name":"stdout","time":99.43137291,"data":"    \u001b[0m\u001b[96mself\u001b[39;49;00m.inject_adapter(\u001b[96mself\u001b[39;49;00m.model, adapter_name, low_cpu_mem_usage=low_cpu_mem_usage, state_dict=state_dict)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431377757,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/tuners_utils.py\u001b[0m:917: in inject_adapter\r\n"}
+,{"stream_name":"stdout","time":99.431381667,"data":"    \u001b[0m\u001b[96mself\u001b[39;49;00m._create_and_replace(\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431386169,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/lora/model.py\u001b[0m:281: in _create_and_replace\r\n"}
+,{"stream_name":"stdout","time":99.431390121,"data":"    \u001b[0mnew_module = \u001b[96mself\u001b[39;49;00m._create_new_module(lora_config, adapter_name, target, device_map=device_map, **kwargs)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431399418,"data":"                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431402878,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/lora/model.py\u001b[0m:430: in _create_new_module\r\n"}
+,{"stream_name":"stdout","time":99.431406995,"data":"    \u001b[0mnew_module = dispatcher(target, adapter_name, config=lora_config, **kwargs)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431411099,"data":"                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431415445,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/tuners/lora/torchao.py\u001b[0m:160: in dispatch_torchao\r\n"}
+,{"stream_name":"stdout","time":99.431419469,"data":"    \u001b[0m\u001b[94mif\u001b[39;49;00m \u001b[95mnot\u001b[39;49;00m is_torchao_available():\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.43142354,"data":"           ^^^^^^^^^^^^^^^^^^^^^^\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.43142753,"data":"_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \r\n"}
+,{"stream_name":"stdout","time":99.431431307,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.431435515,"data":"    \u001b[0m\u001b[37m@lru_cache\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431439585,"data":"    \u001b[94mdef\u001b[39;49;00m\u001b[90m \u001b[39;49;00m\u001b[92mis_torchao_available\u001b[39;49;00m() -\u003e \u001b[96mbool\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431444257,"data":"        \u001b[94mif\u001b[39;49;00m importlib.util.find_spec(\u001b[33m\"\u001b[39;49;00m\u001b[33mtorchao\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m) \u001b[95mis\u001b[39;49;00m \u001b[94mNone\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431449385,"data":"            \u001b[94mreturn\u001b[39;49;00m \u001b[94mFalse\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431453514,"data":"    \u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431460185,"data":"        TORCHAO_MINIMUM_VERSION = packaging.version.parse(\u001b[33m\"\u001b[39;49;00m\u001b[33m0.16.0\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m)\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431465019,"data":"        \u001b[94mtry\u001b[39;49;00m:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431469412,"data":"            torchao_version = packaging.version.parse(importlib_metadata.version(\u001b[33m\"\u001b[39;49;00m\u001b[33mtorchao\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m))\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.43147425,"data":"        \u001b[94mexcept\u001b[39;49;00m importlib_metadata.PackageNotFoundError:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431478588,"data":"            \u001b[90m# Same idea as in diffusers:\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431482772,"data":"            \u001b[90m# https://github.com/huggingface/diffusers/blob/9f06a0d1a4a998ac6a463c5be728c892f95320a8/src/diffusers/utils/import_utils.py#L351-L357\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431487255,"data":"            \u001b[90m# It's not clear under what circumstances `importlib_metadata.version(\"torchao\")` can raise an error even\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431491535,"data":"            \u001b[90m# though `importlib.util.find_spec(\"torchao\") is not None` but it has been observed, so adding this for\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431496299,"data":"            \u001b[90m# precaution.\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431500423,"data":"            \u001b[94mreturn\u001b[39;49;00m \u001b[94mFalse\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431504647,"data":"    \u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.43150844,"data":"        \u001b[94mif\u001b[39;49;00m torchao_version \u003c TORCHAO_MINIMUM_VERSION:\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431512782,"data":"\u003e           \u001b[94mraise\u001b[39;49;00m \u001b[96mImportError\u001b[39;49;00m(\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.43151726,"data":"                \u001b[33mf\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[33mFound an incompatible version of torchao. Found version \u001b[39;49;00m\u001b[33m{\u001b[39;49;00mtorchao_version\u001b[33m}\u001b[39;49;00m\u001b[33m, \u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431523116,"data":"                \u001b[33mf\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[33mbut only versions above \u001b[39;49;00m\u001b[33m{\u001b[39;49;00mTORCHAO_MINIMUM_VERSION\u001b[33m}\u001b[39;49;00m\u001b[33m are supported\u001b[39;49;00m\u001b[33m\"\u001b[39;49;00m\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.431528545,"data":"            )\u001b[90m\u001b[39;49;00m\r\n"}
+,{"stream_name":"stdout","time":99.43153257,"data":"\u001b[1m\u001b[31mE           ImportError: Found an incompatible version of torchao. Found version 0.10.0, but only versions above 0.16.0 are supported\u001b[0m\r\n"}
+,{"stream_name":"stdout","time":99.431536952,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.43154048,"data":"\u001b[1m\u001b[31m/usr/local/lib/python3.13/dist-packages/peft/import_utils.py\u001b[0m:147: ImportError\r\n"}
+,{"stream_name":"stdout","time":99.431544733,"data":"\u001b[33m=============================== warnings summary ===============================\u001b[0m\r\n"}
+,{"stream_name":"stdout","time":99.431551494,"data":"../../../usr/local/lib/python3.13/dist-packages/torch/jit/_script.py:365: 14 warnings\r\n"}
+,{"stream_name":"stdout","time":99.431555954,"data":"  /usr/local/lib/python3.13/dist-packages/torch/jit/_script.py:365: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.\r\n"}
+,{"stream_name":"stdout","time":99.431560152,"data":"    warnings.warn(\r\n"}
+,{"stream_name":"stdout","time":99.431563833,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.431567667,"data":"solution/test_head_fallback.py::test_global_head_hooks_preserve_outputs_and_gradients[backward-pre]\r\n"}
+,{"stream_name":"stdout","time":99.431571532,"data":"solution/test_head_fallback.py::test_global_head_hooks_preserve_outputs_and_gradients[backward]\r\n"}
+,{"stream_name":"stdout","time":99.431576041,"data":"  /usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py:1885: UserWarning: For backward hooks to be called, module output should be a Tensor or a tuple of Tensors but received \u003cclass 'transformers.modeling_outputs.BaseModelOutputWithPast'\u003e\r\n"}
+,{"stream_name":"stdout","time":99.431580606,"data":"    return inner()\r\n"}
+,{"stream_name":"stdout","time":99.431584233,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.431588006,"data":"solution/test_head_fallback.py::test_global_head_hooks_preserve_outputs_and_gradients[backward-pre]\r\n"}
+,{"stream_name":"stdout","time":99.431592107,"data":"solution/test_head_fallback.py::test_global_head_hooks_preserve_outputs_and_gradients[backward]\r\n"}
+,{"stream_name":"stdout","time":99.431596571,"data":"  /usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py:1885: UserWarning: For backward hooks to be called, module output should be a Tensor or a tuple of Tensors but received \u003cclass 'transformers.modeling_outputs.CausalLMOutputWithPast'\u003e\r\n"}
+,{"stream_name":"stdout","time":99.431601259,"data":"    return inner()\r\n"}
+,{"stream_name":"stdout","time":99.43160508,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.431608812,"data":"solution/test_head_fallback.py::test_global_head_hooks_preserve_outputs_and_gradients[backward-pre]\r\n"}
+,{"stream_name":"stdout","time":99.431612928,"data":"solution/test_head_fallback.py::test_global_head_hooks_preserve_outputs_and_gradients[backward]\r\n"}
+,{"stream_name":"stdout","time":99.431617028,"data":"  /kaggle/working/repo/solution/test_head_fallback.py:126: UserWarning: Full backward hook is firing when gradients are computed with respect to module outputs since no inputs require gradients. See https://docs.pytorch.org/docs/main/generated/torch.nn.Module.html#torch.nn.Module.register_full_backward_hook for more details.\r\n"}
+,{"stream_name":"stdout","time":99.431621893,"data":"    loss.backward()\r\n"}
+,{"stream_name":"stdout","time":99.431625414,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.431628877,"data":"solution/test_rotary.py: 18 warnings\r\n"}
+,{"stream_name":"stdout","time":99.431632824,"data":"  /usr/local/lib/python3.13/dist-packages/torch/jit/_script.py:1488: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.\r\n"}
+,{"stream_name":"stdout","time":99.431636899,"data":"    warnings.warn(\r\n"}
+,{"stream_name":"stdout","time":99.431640772,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.431644463,"data":"solution/test_rotary.py::test_jit_trace_uses_serializable_eager_graph\r\n"}
+,{"stream_name":"stdout","time":99.431648495,"data":"  /usr/local/lib/python3.13/dist-packages/torch/jit/_trace.py:1006: DeprecationWarning: `torch.jit.trace` is deprecated. Please switch to `torch.compile` or `torch.export`.\r\n"}
+,{"stream_name":"stdout","time":99.43165292,"data":"    warnings.warn(\r\n"}
+,{"stream_name":"stdout","time":99.431659447,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.431663215,"data":"solution/test_rotary.py::test_jit_trace_uses_serializable_eager_graph\r\n"}
+,{"stream_name":"stdout","time":99.431667638,"data":"  /usr/local/lib/python3.13/dist-packages/torch/jit/_serialization.py:89: DeprecationWarning: `torch.jit.save` is deprecated. Please switch to `torch.export`.\r\n"}
+,{"stream_name":"stdout","time":99.431672077,"data":"    warnings.warn(\r\n"}
+,{"stream_name":"stdout","time":99.431675798,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.431679324,"data":"solution/test_rotary.py::test_jit_trace_uses_serializable_eager_graph\r\n"}
+,{"stream_name":"stdout","time":99.431683437,"data":"  /usr/local/lib/python3.13/dist-packages/torch/jit/_serialization.py:176: DeprecationWarning: `torch.jit.load` is deprecated. Please switch to `torch.export`.\r\n"}
+,{"stream_name":"stdout","time":99.431687465,"data":"    warnings.warn(\r\n"}
+,{"stream_name":"stdout","time":99.431691001,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.431694524,"data":"solution/test_rotary.py::test_named_inputs_keep_names_on_eager_fallback[cpu]\r\n"}
+,{"stream_name":"stdout","time":99.431698634,"data":"  /usr/local/lib/python3.13/dist-packages/torch/_tensor.py:1393: UserWarning: Named tensors and all their associated APIs are an experimental feature and subject to change. Please do not use them for anything important until they are released as stable. (Triggered internally at /pytorch/c10/core/TensorImpl.h:1973.)\r\n"}
+,{"stream_name":"stdout","time":99.431703356,"data":"    return super().refine_names(names)\r\n"}
+,{"stream_name":"stdout","time":99.431707165,"data":"\r\n"}
+,{"stream_name":"stdout","time":99.431710669,"data":"-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\r\n"}
+,{"stream_name":"stdout","time":99.431714849,"data":"\u001b[36m\u001b[1m=========================== short test summary info ============================\u001b[0m\r\n"}
+,{"stream_name":"stdout","time":99.431719338,"data":"\u001b[31mFAILED\u001b[0m solution/test_head_fallback.py::\u001b[1mtest_custom_head_behavior_and_gradients_are_preserved[lora]\u001b[0m - ImportError: Found an incompatible version of torchao. Found version 0.10.0...\r\n"}
+,{"stream_name":"stdout","time":99.431724954,"data":"\u001b[31mFAILED\u001b[0m solution/test_head_fallback.py::\u001b[1mtest_supported_peft_path_keeps_normalization_metrics_and_rewind[fp16-storage]\u001b[0m - ImportError: Found an incompatible version of torchao. Found version 0.10.0...\r\n"}
+,{"stream_name":"stdout","time":99.43172993,"data":"\u001b[31mFAILED\u001b[0m solution/test_head_fallback.py::\u001b[1mtest_supported_peft_path_keeps_normalization_metrics_and_rewind[prepared-fp16-amp]\u001b[0m - ImportError: Found an incompatible version of torchao. Found version 0.10.0...\r\n"}
+,{"stream_name":"stdout","time":99.431734932,"data":"\u001b[31mFAILED\u001b[0m solution/test_residual_norm.py::\u001b[1mtest_cuda_qwen_peft_sdpa_autocast_gradscaler[1]\u001b[0m - ImportError: Found an incompatible version of torchao. Found version 0.10.0...\r\n"}
+,{"stream_name":"stdout","time":99.431739565,"data":"\u001b[31mFAILED\u001b[0m solution/test_residual_norm.py::\u001b[1mtest_cuda_qwen_peft_sdpa_autocast_gradscaler[65536]\u001b[0m - ImportError: Found an incompatible version of torchao. Found version 0.10.0...\r\n"}
+,{"stream_name":"stdout","time":99.43174389,"data":"\u001b[31m\u001b[31m\u001b[1m5 failed\u001b[0m, \u001b[32m298 passed\u001b[0m, \u001b[33m126 skipped\u001b[0m, \u001b[33m42 warnings\u001b[0m\u001b[31m in 67.21s (0:01:07)\u001b[0m\u001b[0m\r\n"}
+,{"stream_name":"stdout","time":131.317088157,"data":"[run_task] warm-up done in 24.68 s\r\n"}
+,{"stream_name":"stdout","time":131.317140702,"data":"[run_task] base_1: training ...\r\n"}
+,{"stream_name":"stdout","time":216.598095092,"data":"[run_task] base_1: ok, 85.13 s, peak 14345 MiB\r\n"}
+,{"stream_name":"stdout","time":216.598143267,"data":"[run_task] solution_1: training ...\r\n"}
+,{"stream_name":"stdout","time":276.052038276,"data":"[run_task] solution_1: ok, 59.36 s, peak 4421 MiB\r\n"}
+,{"stream_name":"stdout","time":276.05208432,"data":"[run_task] solution_2: training ...\r\n"}
+,{"stream_name":"stdout","time":336.097785192,"data":"[run_task] solution_2: ok, 59.97 s, peak 4421 MiB\r\n"}
+,{"stream_name":"stdout","time":336.097827463,"data":"[run_task] base_2: training ...\r\n"}
+,{"stream_name":"stdout","time":417.567643859,"data":"[run_task] base_2: ok, 81.36 s, peak 14345 MiB\r\n"}
+,{"stream_name":"stdout","time":417.567680468,"data":"[run_task] eval base ...\r\n"}
+,{"stream_name":"stdout","time":459.398932143,"data":"[run_task] eval solution ...\r\n"}
+,{"stream_name":"stdout","time":502.383062864,"data":"\r\n"}
+,{"stream_name":"stdout","time":502.383099345,"data":"=== result ===\r\n"}
+,{"stream_name":"stdout","time":502.383105521,"data":"base      time     83.2 s   peak  14345 MiB   eval loss 2.04966\r\n"}
+,{"stream_name":"stdout","time":502.383110938,"data":"solution  time     59.7 s   peak   4421 MiB   eval loss 2.04942\r\n"}
+,{"stream_name":"stdout","time":502.383116361,"data":"speedup 1.395x   memory base/solution 3.245x   eval loss vs base -0.012 %\r\n"}
+,{"stream_name":"stdout","time":502.383121704,"data":"written: /kaggle/working/repo/runs/result.json\r\n"}
+,{"stream_name":"stdout","time":520.355503022,"data":"PASS  1. every base and solution run finished                                            2 base and 2 solution runs of 2 each\r\n"}
+,{"stream_name":"stdout","time":520.355534802,"data":"PASS  2. no ready-made kernel libraries                                                  loaded: none; imported in solution/: none; packages changed during the run: none\r\n"}
+,{"stream_name":"stdout","time":520.355543282,"data":"PASS  3. own @triton.jit kernels in solution/ run in training                            ember_rope_joint (solution/rotary.py), head_loss_kernel (solution/head_loss.py), nf4_dequant_kernel (solution/nf4.py), rmsnorm_bwd_kernel (solution/rmsnorm.py), rmsnorm_fwd_kernel (solution/rmsnorm.py); not launched in every solution run: _rope_rotate_block, residual_norm_bwd_kernel, residual_norm_fwd_kernel; the example's kernels do not count, under any name: example_swiglu_fwd_kernel, example_swiglu_bwd_kernel\r\n"}
+,{"stream_name":"stdout","time":520.355552624,"data":"PASS  4. own kernels together take \u003e= 5% of the training time                            10.0% of the training time (lowest of 2 runs, steps 3+)\r\n"}
+,{"stream_name":"stdout","time":520.355558926,"data":"PASS  5. same task and Soup outputs (steps, adapter, settings, tokens, metrics, rewind)  identical within tolerance\r\n"}
+,{"stream_name":"stdout","time":520.355564891,"data":"PASS  6. loss curve follows the base                                                     base_2: first step 0.00%, mean of all steps 0.01%; solution_1: first step 0.03%, mean of all steps 0.05%; solution_2: first step 0.03%, mean of all steps 0.05% (max 1% and 3%)\r\n"}
+,{"stream_name":"stdout","time":520.355571111,"data":"PASS  7. quality: eval loss at most 0.5% above the base                                  -0.012%\r\n"}
+,{"stream_name":"stdout","time":520.355576888,"data":"PASS  8. not worse than the base on time or memory (10% margin)                          time x0.717, memory x0.308 of the base\r\n"}
+,{"stream_name":"stdout","time":520.355582716,"data":"PASS  9. clean measurement (a T4, idle GPUs, one GPU, harness allocator, peaks agree)    clean\r\n"}
+,{"stream_name":"stdout","time":520.355588646,"data":"PASS  10. Soup regression tests with your patches                                        79 passed, 14 warnings in 0.38s\r\n"}
+,{"stream_name":"stdout","time":520.355605896,"data":"\r\n"}
+,{"stream_name":"stdout","time":520.355610176,"data":"ALL CHECKS PASSED\r\n"}
+,{"stream_name":"stdout","time":520.581020988,"data":"speedup 1.395x (counts as 1.395), memory base/solution 3.245x (counts as 3.245), eval loss vs base -0.012 %, all checks passed on this result: True\r\n"}
+,{"stream_name":"stdout","time":520.581050402,"data":"Speed and memory points depend on the best admitted team: 35 * ln(s) / ln(best s) and 30 * ln(m) / ln(best m).\r\n"}
+,{"stream_name":"stderr","time":523.1333564,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":523.133384916,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":523.29687155,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":523.296897233,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":524.066150364,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":524.172249713,"data":"[NbConvertApp] Writing 76329 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":526.631150239,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":527.171255319,"data":"[NbConvertApp] Writing 358282 bytes to __results__.html\n"}
+]
