@@ -1,0 +1,8 @@
+{
+  "decision": "NO_GO",
+  "reason": "largest shape allocation peak increases by 4194304 bytes",
+  "baseline_peak_bytes": 379584512,
+  "candidate_peak_bytes": 383778816,
+  "prepared_gate": "not run after component rejection",
+  "raw_archive_sha256": "7a57b8b0439de5cfb3ed08c9dd8e54cdac1b281c418267559403fe4603fc46d6"
+}

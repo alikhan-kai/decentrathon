@@ -150,3 +150,13 @@ pending. The gate archive SHA256 is
 The separate rematerialization prototype passed isolated T4 numerical checks and
 reduced component latency, but increased temporary allocation. It remains rejected
 pending one bounded repair; no such runtime is installed in this branch.
+
+## Final map-only comparison
+
+Fresh compiler-cache order control/map/map/control: 63.11 / 63.76 / 63.96 / 66.16 seconds, all 4421 MiB. The 0.775-second median difference is smaller than the 3.05-second control range; no repeatable whole-command benefit is established. Keep map disabled. Dataset construction itself improved 2.72 to 0.55 seconds, but that isolated finding is insufficient for promotion. Raw export SHA256 `6a67d5493829a9c94f38402228b7bf89683dcf2e731b3bb87940d89e2edf3da8`; raw logs, adapters and completed notebook retained locally in the round-two ledger.
+
+## Final rematerialization decision
+
+The r3 helper passed actual T4 bitwise forward/input-gradient, fan-out topology, RNG and fallback checks. Large-shape median paired device savings were 2.27 / 2.80 / 3.08 ms at N1025/1427/2048. At N2048, maximum component allocation increased from 379,584,512 to 383,778,816 bytes. The unchanged non-increasing-memory criterion rejected it, so the prepared trainer gate and full-task comparison were correctly skipped. No speed or memory improvement is claimed for a full training command. The candidate is excluded. Raw archive SHA256 `7a57b8b0439de5cfb3ed08c9dd8e54cdac1b281c418267559403fe4603fc46d6`.
+
+All four performance families are now closed without promotion. The only runtime delta selected for final qualification is the reviewed BNB provenance repair.
