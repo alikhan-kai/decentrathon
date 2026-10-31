@@ -1,0 +1,13 @@
+{
+  "runtime_commit": "2e32ef05b6487a2c58608e10a886a6f9a94fd1e5",
+  "base_commit": "47aede7e529db245b93d16597ef5cedb38211ace",
+  "files_sha256": {
+    "solution/head_loss.py": "6a60cce152f9c4422573b43b1dee5b5a413eec00ae93df21a46c757bdb13385c",
+    "solution/packed.py": "00f873585a06988d3793805ce33dafd0791fc50df0494cb44905c1b2cc5cd9f1",
+    "solution/varlen_attention.py": "e5fb7f1d5453e75450b0930196d3808728f6ff8e88a6619d9830bf9beeab55c2",
+    "solution/test_head_cache_probe.py": "f51fb8753a7a1b09d934d3391524fb0100903d4e689ecb4a13be134dc4a8093f",
+    "solution/test_varlen_attention.py": "86a868f80c18b1987f41787963b647fe3db9f1869dc20f1c0d4d17749e00d39f"
+  },
+  "payload_sha256": "c345663c38b169c6f9134962be6a213c898f84027e3c5b0b0685768ed3938e5a",
+  "archive_sha256": "afb56a28e00f57cbe2ced0f834c6a1d7d7350743074f13efb8502d83e825a62f"
+}
