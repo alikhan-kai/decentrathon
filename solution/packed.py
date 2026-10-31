@@ -28,6 +28,20 @@ _REQUEST = ContextVar("packed_head_request", default=None)
 _ACTIVE = ContextVar("packed_attention_rows", default=None)
 
 
+def _checkpoint_first_layer(layer, hidden, active, layer_kwargs):
+    """Recompute one fixed layer, preserving dropout RNG and packed-row context."""
+    from torch.utils.checkpoint import checkpoint
+
+    def run(value):
+        token = _ACTIVE.set(active)
+        try:
+            return layer(value, **layer_kwargs)
+        finally:
+            _ACTIVE.reset(token)
+
+    return checkpoint(run, hidden, use_reentrant=False, preserve_rng_state=True)
+
+
 @contextmanager
 def head_request(model, required):
     """Request exactly one decoder call; restore nested state even on failure."""
@@ -204,9 +218,13 @@ def _install():
         position_embeddings = self.rotary_emb(hidden_states, positions)
         token = _ACTIVE.set((frozenset(id(layer.self_attn) for layer in self.layers), lens))
         try:
-            for decoder_layer in self.layers[: self.config.num_hidden_layers]:
-                hidden_states = decoder_layer(hidden_states, attention_mask=None, position_embeddings=position_embeddings,
-                                              position_ids=positions, past_key_values=None, use_cache=False, **kwargs)
+            for layer_index, decoder_layer in enumerate(self.layers[: self.config.num_hidden_layers]):
+                layer_kwargs = dict(attention_mask=None, position_embeddings=position_embeddings,
+                                    position_ids=positions, past_key_values=None, use_cache=False, **kwargs)
+                if layer_index == 0 and hidden_states.device.type == "cuda":
+                    hidden_states = _checkpoint_first_layer(decoder_layer, hidden_states, _ACTIVE.get(), layer_kwargs)
+                else:
+                    hidden_states = decoder_layer(hidden_states, **layer_kwargs)
         finally:
             _ACTIVE.reset(token)
         output = BaseModelOutputWithPast(last_hidden_state=self.norm(hidden_states), past_key_values=None)
