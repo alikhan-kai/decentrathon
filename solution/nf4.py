@@ -119,25 +119,48 @@ def _eligible(A, absmax, blocksize, quant_type, dtype, out):
             and A.numel() * 2 >= out.numel() and absmax.numel() * BLOCKSIZE >= out.numel())
 
 
-def _eligible_nested(A, quant_state, out=None):
+def _get_offset_cuda(quant_state, device):
+    cached = getattr(quant_state, "_ember_off_dev", None)
+    if cached is not None and cached.device == device:
+        return cached
+    off = getattr(quant_state, "offset", None)
+    if isinstance(off, torch.Tensor) and off.numel() == 1:
+        if off.is_cuda and off.device == device and off.dtype == torch.float32:
+            cached = off
+        elif not off.is_cuda:
+            cached = torch.tensor(float(off.item()), dtype=torch.float32, device=device)
+        else:
+            cached = off.to(device=device, dtype=torch.float32)
+    elif isinstance(off, (int, float)):
+        cached = torch.tensor(float(off), dtype=torch.float32, device=device)
+    else:
+        return None
+    try:
+        quant_state._ember_off_dev = cached
+    except AttributeError:
+        pass
+    return cached
+
+
+def _eligible_nested(A, quant_state, out=None, require_fp16_state=True):
     if (quant_state is None or not getattr(quant_state, "nested", False)
-            or quant_state.quant_type != "nf4" or quant_state.blocksize != BLOCKSIZE
-            or quant_state.dtype != torch.float16):
+            or quant_state.quant_type != "nf4" or quant_state.blocksize != BLOCKSIZE):
+        return False
+    if require_fp16_state and quant_state.dtype != torch.float16:
         return False
     s2 = getattr(quant_state, "state2", None)
     off = getattr(quant_state, "offset", None)
     qabs = getattr(quant_state, "absmax", None)
     shape = getattr(quant_state, "shape", None)
-    if (s2 is None or s2.blocksize != BLOCKSIZE2 or shape is None
+    off_ok = isinstance(off, (int, float)) or (isinstance(off, torch.Tensor) and off.numel() == 1)
+    if (s2 is None or s2.blocksize != BLOCKSIZE2 or shape is None or not off_ok
             or not isinstance(A, torch.Tensor) or not A.is_cuda or A.dtype != torch.uint8
             or not isinstance(qabs, torch.Tensor) or not qabs.is_cuda
             or qabs.dtype != torch.uint8 or not qabs.is_contiguous()
             or not isinstance(s2.code, torch.Tensor) or not s2.code.is_cuda
             or s2.code.dtype != torch.float32 or not s2.code.is_contiguous() or s2.code.numel() != 256
             or not isinstance(s2.absmax, torch.Tensor) or not s2.absmax.is_cuda
-            or s2.absmax.dtype != torch.float32 or not s2.absmax.is_contiguous()
-            or not isinstance(off, torch.Tensor) or not off.is_cuda
-            or off.dtype != torch.float32 or off.numel() != 1):
+            or s2.absmax.dtype != torch.float32 or not s2.absmax.is_contiguous()):
         return False
     shape_t = tuple(shape)
     n = math.prod(shape_t)
@@ -153,14 +176,15 @@ def _eligible_nested(A, quant_state, out=None):
 
 class _FastNF4MatMul(torch.autograd.Function):
     @staticmethod
-    def forward(ctx, x, B, bias, quant_state):
+    def forward(ctx, x, B, bias, quant_state, off_dev):
         ctx.B = B
         ctx.quant_state = quant_state
+        ctx.off_dev = off_dev
         ctx.x_shape = x.shape
         ctx.x_dtype = x.dtype
         s2 = quant_state.state2
         w = torch.empty(quant_state.shape, dtype=torch.float16, device=x.device)
-        dequantize_nf4_nested(B, quant_state.absmax, s2.code, s2.absmax, quant_state.offset, w)
+        dequantize_nf4_nested(B, quant_state.absmax, s2.code, s2.absmax, off_dev, w)
         return torch._C._nn.linear(x, w, bias)
 
     @staticmethod
@@ -170,11 +194,11 @@ class _FastNF4MatMul(torch.autograd.Function):
             qs = ctx.quant_state
             s2 = qs.state2
             w = torch.empty(qs.shape, dtype=torch.float16, device=grad_output.device)
-            dequantize_nf4_nested(ctx.B, qs.absmax, s2.code, s2.absmax, qs.offset, w)
+            dequantize_nf4_nested(ctx.B, qs.absmax, s2.code, s2.absmax, ctx.off_dev, w)
             if grad_output.dtype != torch.float16:
                 w = w.to(grad_output.dtype)
             grad_A = torch.matmul(grad_output, w).view(ctx.x_shape).to(ctx.x_dtype)
-        return grad_A, None, None, None
+        return grad_A, None, None, None, None
 
 
 def patch():
@@ -208,35 +232,40 @@ def patch():
         dequantize_nf4(A, absmax, out)
 
     def _fast_dequantize_4bit(A, quant_state=None, absmax=None, out=None, blocksize=64, quant_type="fp4"):
-        if absmax is None and _eligible_nested(A, quant_state, out):
-            if not A.is_contiguous():
-                A = A.contiguous()
-            if out is None:
-                out = torch.empty(quant_state.shape, dtype=torch.float16, device=A.device)
-            s2 = quant_state.state2
-            return dequantize_nf4_nested(A, quant_state.absmax, s2.code, s2.absmax, quant_state.offset, out)
+        if absmax is None and _eligible_nested(A, quant_state, out, require_fp16_state=True):
+            off_dev = _get_offset_cuda(quant_state, A.device)
+            if off_dev is not None:
+                if not A.is_contiguous():
+                    A = A.contiguous()
+                if out is None:
+                    out = torch.empty(quant_state.shape, dtype=torch.float16, device=A.device)
+                s2 = quant_state.state2
+                return dequantize_nf4_nested(A, quant_state.absmax, s2.code, s2.absmax, off_dev, out)
         return _orig_dequantize_4bit(A, quant_state=quant_state, absmax=absmax, out=out,
                                      blocksize=blocksize, quant_type=quant_type)
 
     def _fast_matmul_4bit(A, B, out=None, bias=None, quant_state=None):
-        if (out is None and type(A) is torch.Tensor and A.is_cuda and A.dtype == torch.float16
-                and A.ndim >= 2 and isinstance(B, torch.Tensor) and B.ndim == 2
-                and (B.shape[0] == 1 or B.shape[1] == 1) and B.is_contiguous() and not B.requires_grad
-                and (bias is None or (type(bias) is torch.Tensor and bias.is_cuda
+        if (out is None and isinstance(A, torch.Tensor) and A.is_cuda and A.dtype == torch.float16
+                and A.ndim >= 2 and isinstance(B, torch.Tensor)
+                and (B.ndim == 1 or (B.ndim == 2 and (B.shape[0] == 1 or B.shape[1] == 1)))
+                and B.is_contiguous() and not B.requires_grad
+                and (bias is None or (isinstance(bias, torch.Tensor) and bias.is_cuda
                                       and bias.dtype == torch.float16 and not bias.requires_grad))
-                and _eligible_nested(B, quant_state, None)
+                and _eligible_nested(B, quant_state, None, require_fp16_state=False)
                 and A.shape[-1] == quant_state.shape[1] and A.shape[-1] > 0
                 and not torch.compiler.is_compiling()
                 and not torch._C._are_functorch_transforms_active()):
             m = A.numel() // A.shape[-1]
             min_m = 64 if _get_sm(A.device) < (8, 0) else 1537
             if m >= min_m:
-                if not torch.is_grad_enabled() or not A.requires_grad:
-                    s2 = quant_state.state2
-                    w = torch.empty(quant_state.shape, dtype=torch.float16, device=A.device)
-                    dequantize_nf4_nested(B, quant_state.absmax, s2.code, s2.absmax, quant_state.offset, w)
-                    return torch._C._nn.linear(A, w, bias)
-                return _FastNF4MatMul.apply(A, B, bias, quant_state)
+                off_dev = _get_offset_cuda(quant_state, A.device)
+                if off_dev is not None:
+                    if not torch.is_grad_enabled() or not A.requires_grad:
+                        s2 = quant_state.state2
+                        w = torch.empty(quant_state.shape, dtype=torch.float16, device=A.device)
+                        dequantize_nf4_nested(B, quant_state.absmax, s2.code, s2.absmax, off_dev, w)
+                        return torch._C._nn.linear(A, w, bias)
+                    return _FastNF4MatMul.apply(A, B, bias, quant_state, off_dev)
         return _orig_matmul_4bit(A, B, out=out, bias=bias, quant_state=quant_state)
 
     ops._dequantize_4bit_impl = _dequantize_4bit_impl
