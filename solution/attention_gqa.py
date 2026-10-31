@@ -67,7 +67,7 @@ def try_t4_packed_attention(
     if any(x.device != query.device or x.dtype != query.dtype or x.stride(-1) != 1
            for x in (query, key, value)):
         return None
-    if query.device.type != 'cuda' or not all(x.requires_grad for x in (query, key, value)):
+    if query.device.type != 'cuda' or not (query.requires_grad and value.requires_grad):
         return None
     if query.dtype == torch.float32:
         if not (torch.is_autocast_enabled('cuda') and torch.get_autocast_dtype('cuda') == torch.float16):
