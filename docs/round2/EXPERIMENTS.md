@@ -1,6 +1,8 @@
 # Round 2 optimization ledger
 
-Status: experiments in progress; no new runtime default selected. The user selected
+Status: all four performance families closed without promotion. The loaded-code BNB provenance repair is the sole runtime change; [final full qualification](FINAL_VALIDATION.md) passed all ten checks at 66.64 seconds / 4421 MiB. The requested time target was not met.
+
+The sections below preserve chronological checkpoints, including earlier pending labels. Final decisions: repeat-once and startup mapping showed no repeatable command-time gain; tied storage retained compatibility hazards; rematerialization failed its allocation gate. Later measurements supersede earlier checkpoint status. The user selected
 2026-10-31 06:38–08:38 UTC, at most two hours of owned T4 session time.
 Target: at most 54.8 seconds and 4693 MiB under the unchanged official harness.
 The opponent result is user-reported; its raw baseline is unavailable here.
@@ -159,4 +161,4 @@ Fresh compiler-cache order control/map/map/control: 63.11 / 63.76 / 63.96 / 66.1
 
 The r3 helper passed actual T4 bitwise forward/input-gradient, fan-out topology, RNG and fallback checks. Large-shape median paired device savings were 2.27 / 2.80 / 3.08 ms at N1025/1427/2048. At N2048, maximum component allocation increased from 379,584,512 to 383,778,816 bytes. The unchanged non-increasing-memory criterion rejected it, so the prepared trainer gate and full-task comparison were correctly skipped. No speed or memory improvement is claimed for a full training command. The candidate is excluded. Raw archive SHA256 `7a57b8b0439de5cfb3ed08c9dd8e54cdac1b281c418267559403fe4603fc46d6`.
 
-All four performance families are now closed without promotion. The only runtime delta selected for final qualification is the reviewed BNB provenance repair.
+All four performance families are now closed without promotion. The only selected runtime delta is the reviewed BNB provenance repair; final qualification passed.

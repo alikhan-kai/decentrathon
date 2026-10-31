@@ -1,0 +1,755 @@
+{
+  "generated_utc": "2026-10-31T08:02:23.043104+00:00",
+  "scope": {
+    "repositories_read_only": true,
+    "output_directory": "/tmp/decentrathon-round2-handoff-r1",
+    "completed_evidence_groups": [
+      "control",
+      "profile",
+      "map-abba",
+      "repeat-abba",
+      "repeat-once",
+      "repeat-gate",
+      "startup-gate",
+      "startup-r4",
+      "startup-r5",
+      "remat-gate",
+      "remat-r2"
+    ],
+    "gpu_browser_network_install_children": false,
+    "r3": "Pending per parent; intentionally unread, not awaited; no result asserted"
+  },
+  "publication": {
+    "pr_url": "https://github.com/alikhan-kai/decentrathon/pull/9",
+    "published_head_per_parent": "0718eadb07ba36a55e6d569135a1040e71863f53",
+    "local_head": "d1fd86944388da74ac6e5794bed3869e80f93ce4",
+    "published_commit_tree_from_local_object": "6de497cffc5afeade8e5ed5853c60c976efaded3",
+    "local_tree": "6de497cffc5afeade8e5ed5853c60c976efaded3",
+    "live_remote_verified": false,
+    "runtime_delta": "Loaded-code BNB provenance repair only; map/repeat/remat not promoted",
+    "current_full_admission": "PENDING_PARENT_FINAL_RESULTS",
+    "current_all_ten_checks_pass": null,
+    "changed_solution_files_from_PR7": [
+      "solution/bnb_provenance.py",
+      "solution/native_half.py",
+      "solution/swiglu_pack.py",
+      "solution/test_bnb_provenance.py"
+    ]
+  },
+  "historical_PR7": {
+    "runtime_commit": "59755b01e594b65ccb5830b97637417b687e50ea",
+    "summary": {
+      "base": {
+        "ok": true,
+        "runs": 2,
+        "wall_s": 76.64,
+        "gpu_peak_mib": 14345,
+        "train_loop_s": 55.34,
+        "eval_loss": 2.04969
+      },
+      "solution": {
+        "ok": true,
+        "runs": 2,
+        "wall_s": 59.52,
+        "gpu_peak_mib": 4421,
+        "train_loop_s": 38.1,
+        "eval_loss": 2.04944
+      },
+      "ratios": {
+        "speedup": 1.2876,
+        "memory_ratio": 3.2447,
+        "quality_delta_pct": -0.012
+      }
+    },
+    "checks_recorded_pass": 10,
+    "check_count": 10,
+    "evidence_kind": "Retained completed notebook plus extracted outputs; final raw result/zip unavailable",
+    "notebook_sha256": "e290a582d7ca83749dd518fb643fe4aa970f4990d14818904796b8fe91abfd70",
+    "checks_result_sha256_recorded_not_recomputed": "5379fe6a891228b9bf86b1a10d4d4838caf07c606a4dacb440bf63d5ce25d41a",
+    "notebook_contains_recorded_result_hash": true,
+    "minimum_share_printed_pct": 10.2,
+    "exact_share_pct": null,
+    "not_current_PR9_admission": true
+  },
+  "opponent": {
+    "wall_s": 54.8,
+    "peak_mib": 4693,
+    "evidence_kind": "User report only",
+    "independently_verified": false,
+    "matched_comparison": false,
+    "historical_PR7_minus_reported_wall_s": 4.720000000000006,
+    "historical_PR7_minus_reported_peak_mib": -272
+  },
+  "comparisons": {
+    "map-abba": {
+      "order": [
+        "control",
+        "map",
+        "map",
+        "control"
+      ],
+      "control_wall_s": [
+        63.11,
+        66.16
+      ],
+      "candidate_wall_s": [
+        63.76,
+        63.96
+      ],
+      "control_median_s": 64.63499999999999,
+      "candidate_median_s": 63.86,
+      "median_saving_s": 0.7749999999999915,
+      "control_range_s": 3.049999999999997,
+      "candidate_range_s": 0.20000000000000284,
+      "control_timed_loop_median_s": 34.9515,
+      "candidate_timed_loop_median_s": 36.3515,
+      "minimum_eligible_share_pct": 9.176878770507466,
+      "decision": "REJECT PERFORMANCE PROMOTION",
+      "reason": "Two samples per variant; small median gap does not establish repeatable whole-command benefit."
+    },
+    "repeat-abba": {
+      "order": [
+        "control",
+        "repeat",
+        "repeat",
+        "control"
+      ],
+      "control_wall_s": [
+        68.49,
+        68.19
+      ],
+      "candidate_wall_s": [
+        69.13,
+        66.67
+      ],
+      "control_median_s": 68.34,
+      "candidate_median_s": 67.9,
+      "median_saving_s": 0.4399999999999977,
+      "control_range_s": 0.29999999999999716,
+      "candidate_range_s": 2.4599999999999937,
+      "control_timed_loop_median_s": 35.7345,
+      "candidate_timed_loop_median_s": 36.986999999999995,
+      "minimum_eligible_share_pct": 9.186394375985673,
+      "decision": "REJECT PERFORMANCE PROMOTION",
+      "reason": "Two samples per variant; small median gap does not establish repeatable whole-command benefit."
+    }
+  },
+  "runs": [
+    {
+      "group": "initial-control",
+      "variant": "control",
+      "index": 0,
+      "raw_result": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/control/runs-round2-control/result.json",
+      "raw_result_sha256": "cbcebca59191b06c909854b8de795577a29af4f73bc83c141107742749c48983",
+      "docs_copy": "/home/homelab/.t3/worktrees/decentrathon/round2-performance/docs/round2/evidence/initial-control-result.json",
+      "docs_copy_matches_raw": true,
+      "wall_s": 73.45,
+      "peak_mib": 4421,
+      "train_loop_s": 43.46,
+      "timed_loop_s": 32.868,
+      "timed_steps": 62,
+      "global_step": 64,
+      "eval_loss": 2.04941,
+      "eligible_kernel_ms": 3380.674,
+      "excluded_starter_swiglu_ms": 2147.823,
+      "eligible_share_pct": 10.285609103078983,
+      "eligible_kernel_ms_by_name": {
+        "ember_rope_joint": 310.832,
+        "head_loss_kernel": 194.983,
+        "nf4_dequant_kernel": 2415.738,
+        "rmsnorm_bwd_kernel": 234.501,
+        "rmsnorm_fwd_kernel": 224.62
+      },
+      "exit_code": 0,
+      "task": {
+        "train_file": "/kaggle/working/decentrathon-round2-probe-ixb6ucqo/baseline/data/train.jsonl",
+        "eval_file": "/kaggle/working/decentrathon-round2-probe-ixb6ucqo/baseline/data/eval_public.jsonl",
+        "seed": 1,
+        "repeats": 1,
+        "only": "solution"
+      },
+      "measurement_kind": "solution-only; not all-ten-check admission"
+    },
+    {
+      "group": "second-control",
+      "variant": "control",
+      "index": 0,
+      "raw_result": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/profile/runs-round2-profile/result.json",
+      "raw_result_sha256": "6ad328bf3977cdf84cd8a86c5c706a989d57581d077e5e3a46215f2286ef47ce",
+      "docs_copy": "/home/homelab/.t3/worktrees/decentrathon/round2-performance/docs/round2/evidence/second-control-result.json",
+      "docs_copy_matches_raw": true,
+      "wall_s": 68.39,
+      "peak_mib": 4421,
+      "train_loop_s": 40.1,
+      "timed_loop_s": 33.327,
+      "timed_steps": 62,
+      "global_step": 64,
+      "eval_loss": 2.04948,
+      "eligible_kernel_ms": 3335.0020000000004,
+      "excluded_starter_swiglu_ms": 2120.9939999999997,
+      "eligible_share_pct": 10.006907312389355,
+      "eligible_kernel_ms_by_name": {
+        "ember_rope_joint": 305.384,
+        "head_loss_kernel": 197.216,
+        "nf4_dequant_kernel": 2377.329,
+        "rmsnorm_bwd_kernel": 233.013,
+        "rmsnorm_fwd_kernel": 222.06
+      },
+      "exit_code": 0,
+      "task": {
+        "train_file": "/kaggle/working/decentrathon-round2-probe-ixb6ucqo/baseline/data/train.jsonl",
+        "eval_file": "/kaggle/working/decentrathon-round2-probe-ixb6ucqo/baseline/data/eval_public.jsonl",
+        "seed": 1,
+        "repeats": 1,
+        "only": "solution"
+      },
+      "measurement_kind": "solution-only; not all-ten-check admission"
+    },
+    {
+      "group": "map-abba",
+      "variant": "control",
+      "index": 0,
+      "raw_result": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/map-abba/raw/control/runs-0/result.json",
+      "raw_result_sha256": "5dd9437d8974da43e1fb2f8e64eb7f0acdd0e043c1f981f12e004c4050c9f90e",
+      "docs_copy": "/home/homelab/.t3/worktrees/decentrathon/round2-performance/docs/round2/evidence/map-abba/0-control-result.json",
+      "docs_copy_matches_raw": true,
+      "wall_s": 63.11,
+      "peak_mib": 4421,
+      "train_loop_s": 40.17,
+      "timed_loop_s": 33.27,
+      "timed_steps": 62,
+      "global_step": 64,
+      "eval_loss": 2.04947,
+      "eligible_kernel_ms": 3403.735,
+      "excluded_starter_swiglu_ms": 2124.549,
+      "eligible_share_pct": 10.230643222122032,
+      "eligible_kernel_ms_by_name": {
+        "ember_rope_joint": 318.93,
+        "head_loss_kernel": 195.641,
+        "nf4_dequant_kernel": 2427.275,
+        "rmsnorm_bwd_kernel": 235.549,
+        "rmsnorm_fwd_kernel": 226.34
+      },
+      "exit_code": 0,
+      "task": {
+        "train_file": "/kaggle/working/round2-map-abba-5pj8gro5/control/data/train.jsonl",
+        "eval_file": "/kaggle/working/round2-map-abba-5pj8gro5/control/data/eval_public.jsonl",
+        "seed": 1,
+        "repeats": 1,
+        "only": "solution"
+      },
+      "measurement_kind": "solution-only; not all-ten-check admission"
+    },
+    {
+      "group": "map-abba",
+      "variant": "map",
+      "index": 1,
+      "raw_result": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/map-abba/raw/map/runs-1/result.json",
+      "raw_result_sha256": "a393c981e719ae308eab76e2d37a5e221f3fab91b416f04d330fcf8f2b16cf2d",
+      "docs_copy": "/home/homelab/.t3/worktrees/decentrathon/round2-performance/docs/round2/evidence/map-abba/1-map-result.json",
+      "docs_copy_matches_raw": true,
+      "wall_s": 63.76,
+      "peak_mib": 4421,
+      "train_loop_s": 43.01,
+      "timed_loop_s": 36.241,
+      "timed_steps": 62,
+      "global_step": 64,
+      "eval_loss": 2.04947,
+      "eligible_kernel_ms": 3369.518,
+      "excluded_starter_swiglu_ms": 2137.051,
+      "eligible_share_pct": 9.29753042134599,
+      "eligible_kernel_ms_by_name": {
+        "ember_rope_joint": 304.963,
+        "head_loss_kernel": 210.95,
+        "nf4_dequant_kernel": 2402.185,
+        "rmsnorm_bwd_kernel": 232.498,
+        "rmsnorm_fwd_kernel": 218.922
+      },
+      "exit_code": 0,
+      "task": {
+        "train_file": "/kaggle/working/round2-map-abba-5pj8gro5/map/data/train.jsonl",
+        "eval_file": "/kaggle/working/round2-map-abba-5pj8gro5/map/data/eval_public.jsonl",
+        "seed": 1,
+        "repeats": 1,
+        "only": "solution"
+      },
+      "measurement_kind": "solution-only; not all-ten-check admission"
+    },
+    {
+      "group": "map-abba",
+      "variant": "map",
+      "index": 2,
+      "raw_result": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/map-abba/raw/map/runs-2/result.json",
+      "raw_result_sha256": "9eb5432cb44782cae3cf6ab72e7d666f9d0c87c411115b55167c099984d27fcb",
+      "docs_copy": "/home/homelab/.t3/worktrees/decentrathon/round2-performance/docs/round2/evidence/map-abba/2-map-result.json",
+      "docs_copy_matches_raw": true,
+      "wall_s": 63.96,
+      "peak_mib": 4421,
+      "train_loop_s": 43.16,
+      "timed_loop_s": 36.462,
+      "timed_steps": 62,
+      "global_step": 64,
+      "eval_loss": 2.04942,
+      "eligible_kernel_ms": 3356.648,
+      "excluded_starter_swiglu_ms": 2138.672,
+      "eligible_share_pct": 9.205880094344797,
+      "eligible_kernel_ms_by_name": {
+        "ember_rope_joint": 303.029,
+        "head_loss_kernel": 213.108,
+        "nf4_dequant_kernel": 2393.259,
+        "rmsnorm_bwd_kernel": 231.685,
+        "rmsnorm_fwd_kernel": 215.567
+      },
+      "exit_code": 0,
+      "task": {
+        "train_file": "/kaggle/working/round2-map-abba-5pj8gro5/map/data/train.jsonl",
+        "eval_file": "/kaggle/working/round2-map-abba-5pj8gro5/map/data/eval_public.jsonl",
+        "seed": 1,
+        "repeats": 1,
+        "only": "solution"
+      },
+      "measurement_kind": "solution-only; not all-ten-check admission"
+    },
+    {
+      "group": "map-abba",
+      "variant": "control",
+      "index": 3,
+      "raw_result": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/map-abba/raw/control/runs-3/result.json",
+      "raw_result_sha256": "a8d913dc983a3824731f65ac60cbbc9eece0007417b647e83c1ad99f6a35db07",
+      "docs_copy": "/home/homelab/.t3/worktrees/decentrathon/round2-performance/docs/round2/evidence/map-abba/3-control-result.json",
+      "docs_copy_matches_raw": true,
+      "wall_s": 66.16,
+      "peak_mib": 4421,
+      "train_loop_s": 43.32,
+      "timed_loop_s": 36.633,
+      "timed_steps": 62,
+      "global_step": 64,
+      "eval_loss": 2.04948,
+      "eligible_kernel_ms": 3361.766,
+      "excluded_starter_swiglu_ms": 2131.9269999999997,
+      "eligible_share_pct": 9.176878770507466,
+      "eligible_kernel_ms_by_name": {
+        "ember_rope_joint": 304.499,
+        "head_loss_kernel": 214.073,
+        "nf4_dequant_kernel": 2396.317,
+        "rmsnorm_bwd_kernel": 230.673,
+        "rmsnorm_fwd_kernel": 216.204
+      },
+      "exit_code": 0,
+      "task": {
+        "train_file": "/kaggle/working/round2-map-abba-5pj8gro5/control/data/train.jsonl",
+        "eval_file": "/kaggle/working/round2-map-abba-5pj8gro5/control/data/eval_public.jsonl",
+        "seed": 1,
+        "repeats": 1,
+        "only": "solution"
+      },
+      "measurement_kind": "solution-only; not all-ten-check admission"
+    },
+    {
+      "group": "repeat-abba",
+      "variant": "control",
+      "index": 0,
+      "raw_result": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/repeat-abba/raw/control/runs-0/result.json",
+      "raw_result_sha256": "f9a0fa6f40efcd2abcb394c75c5d3514455c07897604903760b103814dda6fcc",
+      "docs_copy": "/home/homelab/.t3/worktrees/decentrathon/round2-performance/docs/round2/evidence/repeat-abba/control-runs-0-result.json",
+      "docs_copy_matches_raw": true,
+      "wall_s": 68.49,
+      "peak_mib": 4421,
+      "train_loop_s": 41.53,
+      "timed_loop_s": 34.058,
+      "timed_steps": 62,
+      "global_step": 64,
+      "eval_loss": 2.04948,
+      "eligible_kernel_ms": 3458.9030000000002,
+      "excluded_starter_swiglu_ms": 2146.3070000000002,
+      "eligible_share_pct": 10.155919314111223,
+      "eligible_kernel_ms_by_name": {
+        "ember_rope_joint": 325.552,
+        "head_loss_kernel": 196.181,
+        "nf4_dequant_kernel": 2465.628,
+        "rmsnorm_bwd_kernel": 237.755,
+        "rmsnorm_fwd_kernel": 233.787
+      },
+      "exit_code": 0,
+      "task": {
+        "train_file": "/kaggle/working/round2-repeat-abba-vv2ifbx1/control/data/train.jsonl",
+        "eval_file": "/kaggle/working/round2-repeat-abba-vv2ifbx1/control/data/eval_public.jsonl",
+        "seed": 1,
+        "repeats": 1,
+        "only": "solution"
+      },
+      "measurement_kind": "solution-only; not all-ten-check admission"
+    },
+    {
+      "group": "repeat-abba",
+      "variant": "repeat",
+      "index": 1,
+      "raw_result": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/repeat-abba/raw/repeat/runs-1/result.json",
+      "raw_result_sha256": "01a67f21891b9afa1e75b9e3c5c18232c7ebc2d9c521617c0b2511c1c3863e22",
+      "docs_copy": "/home/homelab/.t3/worktrees/decentrathon/round2-performance/docs/round2/evidence/repeat-abba/repeat-runs-1-result.json",
+      "docs_copy_matches_raw": true,
+      "wall_s": 69.13,
+      "peak_mib": 4419,
+      "train_loop_s": 44.5,
+      "timed_loop_s": 37.18,
+      "timed_steps": 62,
+      "global_step": 64,
+      "eval_loss": 2.04948,
+      "eligible_kernel_ms": 3434.658,
+      "excluded_starter_swiglu_ms": 2155.634,
+      "eligible_share_pct": 9.237918235610543,
+      "eligible_kernel_ms_by_name": {
+        "ember_rope_joint": 313.503,
+        "head_loss_kernel": 212.134,
+        "nf4_dequant_kernel": 2446.959,
+        "rmsnorm_bwd_kernel": 233.576,
+        "rmsnorm_fwd_kernel": 228.486
+      },
+      "exit_code": 0,
+      "task": {
+        "train_file": "/kaggle/working/round2-repeat-abba-vv2ifbx1/repeat/data/train.jsonl",
+        "eval_file": "/kaggle/working/round2-repeat-abba-vv2ifbx1/repeat/data/eval_public.jsonl",
+        "seed": 1,
+        "repeats": 1,
+        "only": "solution"
+      },
+      "measurement_kind": "solution-only; not all-ten-check admission"
+    },
+    {
+      "group": "repeat-abba",
+      "variant": "repeat",
+      "index": 2,
+      "raw_result": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/repeat-abba/raw/repeat/runs-2/result.json",
+      "raw_result_sha256": "7c015e5724f30566b7f25bbbdba5a44994ab8003f37cdff7ddcc0f39c103db78",
+      "docs_copy": "/home/homelab/.t3/worktrees/decentrathon/round2-performance/docs/round2/evidence/repeat-abba/repeat-runs-2-result.json",
+      "docs_copy_matches_raw": true,
+      "wall_s": 66.67,
+      "peak_mib": 4419,
+      "train_loop_s": 43.7,
+      "timed_loop_s": 36.794,
+      "timed_steps": 62,
+      "global_step": 64,
+      "eval_loss": 2.0494,
+      "eligible_kernel_ms": 3380.856,
+      "excluded_starter_swiglu_ms": 2140.057,
+      "eligible_share_pct": 9.188606838071426,
+      "eligible_kernel_ms_by_name": {
+        "ember_rope_joint": 302.311,
+        "head_loss_kernel": 213.55,
+        "nf4_dequant_kernel": 2412.726,
+        "rmsnorm_bwd_kernel": 232.425,
+        "rmsnorm_fwd_kernel": 219.844
+      },
+      "exit_code": 0,
+      "task": {
+        "train_file": "/kaggle/working/round2-repeat-abba-vv2ifbx1/repeat/data/train.jsonl",
+        "eval_file": "/kaggle/working/round2-repeat-abba-vv2ifbx1/repeat/data/eval_public.jsonl",
+        "seed": 1,
+        "repeats": 1,
+        "only": "solution"
+      },
+      "measurement_kind": "solution-only; not all-ten-check admission"
+    },
+    {
+      "group": "repeat-abba",
+      "variant": "control",
+      "index": 3,
+      "raw_result": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/repeat-abba/raw/control/runs-3/result.json",
+      "raw_result_sha256": "8c71a87259ede17c56850dac7e094a523632f6eee6d7eec011b42e90072c44e9",
+      "docs_copy": "/home/homelab/.t3/worktrees/decentrathon/round2-performance/docs/round2/evidence/repeat-abba/control-runs-3-result.json",
+      "docs_copy_matches_raw": true,
+      "wall_s": 68.19,
+      "peak_mib": 4421,
+      "train_loop_s": 44.41,
+      "timed_loop_s": 37.411,
+      "timed_steps": 62,
+      "global_step": 64,
+      "eval_loss": 2.04946,
+      "eligible_kernel_ms": 3436.722,
+      "excluded_starter_swiglu_ms": 2135.988,
+      "eligible_share_pct": 9.186394375985673,
+      "eligible_kernel_ms_by_name": {
+        "ember_rope_joint": 316.315,
+        "head_loss_kernel": 213.162,
+        "nf4_dequant_kernel": 2449.21,
+        "rmsnorm_bwd_kernel": 233.866,
+        "rmsnorm_fwd_kernel": 224.169
+      },
+      "exit_code": 0,
+      "task": {
+        "train_file": "/kaggle/working/round2-repeat-abba-vv2ifbx1/control/data/train.jsonl",
+        "eval_file": "/kaggle/working/round2-repeat-abba-vv2ifbx1/control/data/eval_public.jsonl",
+        "seed": 1,
+        "repeats": 1,
+        "only": "solution"
+      },
+      "measurement_kind": "solution-only; not all-ten-check admission"
+    }
+  ],
+  "share_method": {
+    "formula": "100 * sum(eligible own_kernel_ms) / (1000 * timed_loop_s)",
+    "eligible_kernels": [
+      "ember_rope_joint",
+      "head_loss_kernel",
+      "nf4_dequant_kernel",
+      "rmsnorm_bwd_kernel",
+      "rmsnorm_fwd_kernel"
+    ],
+    "excluded_kernels": [
+      "example_swiglu_bwd_kernel",
+      "example_swiglu_fwd_kernel"
+    ],
+    "denominator": "Harness timed_loop_s (steps 3+), not whole-command time or total profiler GPU time",
+    "scope": "Recomputed arithmetic for archived runs only; not full admission or novel-source adjudication"
+  },
+  "archive_checks": {
+    "map-abba": {
+      "archive_members": 203,
+      "missing": [],
+      "archive_extraction_mismatches": [],
+      "source_manifest_entries": 55,
+      "source_manifest_mismatches": []
+    },
+    "repeat-abba": {
+      "archive_members": 201,
+      "missing": [],
+      "archive_extraction_mismatches": [],
+      "source_manifest_entries": 53,
+      "source_manifest_mismatches": []
+    }
+  },
+  "control_source_vs_current": {
+    "map-abba": {
+      "current_runtime_file_count": 18,
+      "matching": [
+        "__init__.py",
+        "attention_adapter.py",
+        "attention_gqa.py",
+        "bnb_provenance.py",
+        "head_loss.py",
+        "hybrid_mlp.py",
+        "kcheck.py",
+        "lora.py",
+        "native_half.py",
+        "nf4.py",
+        "packed.py",
+        "residual_norm.py",
+        "rmsnorm.py",
+        "rotary.py",
+        "stage_adapter.py",
+        "stage_options.py",
+        "swiglu.py",
+        "swiglu_pack.py"
+      ],
+      "different": [],
+      "missing": []
+    },
+    "repeat-abba": {
+      "current_runtime_file_count": 18,
+      "matching": [
+        "__init__.py",
+        "attention_adapter.py",
+        "attention_gqa.py",
+        "head_loss.py",
+        "hybrid_mlp.py",
+        "kcheck.py",
+        "lora.py",
+        "nf4.py",
+        "packed.py",
+        "residual_norm.py",
+        "rmsnorm.py",
+        "rotary.py",
+        "stage_adapter.py",
+        "stage_options.py",
+        "swiglu.py"
+      ],
+      "different": [
+        "native_half.py",
+        "swiglu_pack.py"
+      ],
+      "missing": [
+        "bnb_provenance.py"
+      ]
+    }
+  },
+  "remat": {
+    "r1": {
+      "source": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/remat-gate/raw/remat/decentrathon-round2-remat-r1/gpu-results.json",
+      "status": "NO_GO_COMPONENT",
+      "correctness_cases": 10,
+      "all_recorded_output_input_gradient_rng_cases_pass": true,
+      "memory_peak_nonincreasing": false,
+      "large_rows_measurably_faster": true,
+      "rows": [
+        {
+          "rows": 1024,
+          "max_baseline_peak_bytes": 175636480,
+          "max_candidate_peak_bytes": 175636480,
+          "peak_delta_mib": 0.0,
+          "median_gpu_saving_ms": -0.00099945068359375
+        },
+        {
+          "rows": 1025,
+          "max_baseline_peak_bytes": 195041280,
+          "max_candidate_peak_bytes": 230493696,
+          "peak_delta_mib": 33.81005859375,
+          "median_gpu_saving_ms": 1.3626880645751953
+        },
+        {
+          "rows": 1427,
+          "max_baseline_peak_bytes": 264485888,
+          "max_candidate_peak_bytes": 305162240,
+          "peak_delta_mib": 38.7919921875,
+          "median_gpu_saving_ms": 1.9945611953735352
+        },
+        {
+          "rows": 2048,
+          "max_baseline_peak_bytes": 379584512,
+          "max_candidate_peak_bytes": 430178304,
+          "peak_delta_mib": 48.25,
+          "median_gpu_saving_ms": 3.261624336242676
+        }
+      ],
+      "promoted": false,
+      "stale_metadata": "assessment.json says GPU untested; completed gpu-results.json supersedes that status"
+    },
+    "r2": {
+      "source": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/remat-r2/raw/remat/decentrathon-round2-remat-r2/gpu-results.json",
+      "status": "NO_GO_COMPONENT",
+      "correctness_cases": 22,
+      "all_recorded_output_input_gradient_rng_cases_pass": true,
+      "memory_peak_nonincreasing": false,
+      "large_rows_measurably_faster": true,
+      "rows": [
+        {
+          "rows": 1024,
+          "max_baseline_peak_bytes": 175636480,
+          "max_candidate_peak_bytes": 175636480,
+          "peak_delta_mib": 0.0,
+          "median_gpu_saving_ms": 0.003967761993408203
+        },
+        {
+          "rows": 1025,
+          "max_baseline_peak_bytes": 195041280,
+          "max_candidate_peak_bytes": 193522176,
+          "peak_delta_mib": -1.44873046875,
+          "median_gpu_saving_ms": 1.4497995376586914
+        },
+        {
+          "rows": 1427,
+          "max_baseline_peak_bytes": 264485888,
+          "max_candidate_peak_bytes": 264485888,
+          "peak_delta_mib": 0.0,
+          "median_gpu_saving_ms": 2.454711437225342
+        },
+        {
+          "rows": 2048,
+          "max_baseline_peak_bytes": 379584512,
+          "max_candidate_peak_bytes": 383778816,
+          "peak_delta_mib": 4.0,
+          "median_gpu_saving_ms": 2.665904998779297
+        }
+      ],
+      "promoted": false,
+      "stale_metadata": "assessment.json says GPU untested; completed gpu-results.json supersedes that status"
+    }
+  },
+  "credits": {
+    "packed_decoder": "Ansar / iencislennon, 3e48f6a685fe6604d9d432e3753e35b7273999b8",
+    "repeat_once_idea": "iencislennon / Ansar A2, 375a0a4e8f61d8d0b155cac25ddf70b8883a5adb",
+    "head_loss_nf4_rmsnorm": "iencislennon",
+    "corrected_head_gradients": "stritphatographir",
+    "joint_qk_rotary": "team/Codex",
+    "head_chunking_idea": "Soup stream_loss_chunk",
+    "starter": "Soup starter SwiGLU excluded, including wrappers, saves, recomputation, and decorators",
+    "new_kernel_credit_for_round2_candidates": false,
+    "source": "docs/overnight/CANDIDATE.md; docs/round2/EXPERIMENTS.md; LICENSE; NOTICE"
+  },
+  "limits": [
+    "No current all-ten-check certification until parent final results.",
+    "Historical PR7 final raw result, logs, adapters and zip are an export gap; printed digests are not verified file hashes.",
+    "Do not transfer historical timing/checks to changed PR9 admission code.",
+    "ABBA runs compare candidate against solution control, not organizer base; no full official base/solution check result is produced here.",
+    "Small samples and substantial timing variation do not support performance promotion or pooling cross-session scores.",
+    "Opponent data are user-reported and unmatched; no winning claim.",
+    "Remat r1/r2 component latency does not establish full-task benefit; memory gates fail.",
+    "r3 evidence was not read; parent supplies final pending results.",
+    "Current remote publication state was supplied by parent; only local Git objects were checked."
+  ],
+  "archive_inventory": [
+    {
+      "path": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/control/evidence.zip",
+      "bytes": 36733228,
+      "sha256": "79c1c0a0af5d2bad2ebe2c8c37b70c6f0b3e8ea155b3b9df5488004ebeb38d26"
+    },
+    {
+      "path": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/profile/evidence.zip",
+      "bytes": 83497812,
+      "sha256": "758a261d1a467b0b897468de7b70df761ef643e001e120cbac9f64709f02371c"
+    },
+    {
+      "path": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/map-abba/raw.zip",
+      "bytes": 146547966,
+      "sha256": "6a67d5493829a9c94f38402228b7bf89683dcf2e731b3bb87940d89e2edf3da8"
+    },
+    {
+      "path": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/repeat-abba/raw.zip",
+      "bytes": 146543068,
+      "sha256": "e9256d844ed8d9f84f882294619d3f87a3554759ce3b43df02b4f710c4f488af"
+    },
+    {
+      "path": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/repeat-once/evidence.zip",
+      "bytes": 355502,
+      "sha256": "36d8f3a54427ecbc88254295e16670312fe99ba24506204aa882c309b344ed79"
+    },
+    {
+      "path": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/repeat-gate/evidence.zip",
+      "bytes": 264814,
+      "sha256": "e76790c50bc735e0300743f70d2a3a5f74b085868d367cddd0c4cf2685bdce7d"
+    },
+    {
+      "path": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/startup-gate/evidence.zip",
+      "bytes": 110222300,
+      "sha256": "1ecf9626fd5b0c253e3240d526b6c59ea915dc9b3c40917b03fadf242fb881b7"
+    },
+    {
+      "path": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/startup-r4/raw.zip",
+      "bytes": 287729,
+      "sha256": "cc1b279db7f8e0971e678f6d2845f7a0dda598f20462bc100a5435bc2e10cfd6"
+    },
+    {
+      "path": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/startup-r5/raw.zip",
+      "bytes": 73536556,
+      "sha256": "957dee7af1a9026de8062368b4ee55f2f44f7096ae8030172a7b5497a562d18e"
+    },
+    {
+      "path": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/remat-gate/raw.zip",
+      "bytes": 275646,
+      "sha256": "550ff11a8bd03552682ed099448b9a56e97eb093b5c4a1d190186b03f8155852"
+    },
+    {
+      "path": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/remat-r2/raw.zip",
+      "bytes": 337449,
+      "sha256": "57506e12ddf821645a24ea443b6c2de6968469968fd3d538c28005f79af5d3be"
+    }
+  ],
+  "provenance_repair_evidence": {
+    "archived_gpu_gate_status": "PASS",
+    "canonical_bnb": true,
+    "python": "3.13.15 (main, Aug  6 2026, 11:06:22) [GCC 13.3.0]",
+    "torch": "2.11.0+cu128",
+    "bnb": "0.50.2",
+    "archived_cpu_tests": "6 passed, 14 warnings in 3.04s",
+    "source_manifest_current_matches": true,
+    "scope": "Archived component/admission-code gate and CPU tests; not full official task admission."
+  },
+  "startup_diagnostic": {
+    "original_comparator": "Failed: missing placement map; raw compare-map.json is a traceback, not JSON.",
+    "corrected_source": "/home/homelab/.t3/overnight/decentrathon-2026-10-31-round2/evidence/startup-r5/compare-map-corrected.json",
+    "control_text_map_s": 2.721595642000011,
+    "candidate_text_map_s": 0.5518546379998952,
+    "full_64_step_runs_completed": true,
+    "hook_evidence": "count/type metadata parity only; callable behavior NOT established",
+    "promotion": "Rejected by later whole-command map ABBA; diagnostic savings are not score savings."
+  }
+}

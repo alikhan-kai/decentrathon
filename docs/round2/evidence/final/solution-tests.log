@@ -1,0 +1,48 @@
+.......................................ss............sssssssssssssssssss [ 16%]
+sssssssssss.sssssssssssssssssssssssssssss............................... [ 33%]
+.....................s..s..s..s..s..s..s..s..s..s..s..s...........s..s.. [ 50%]
+s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..s..... [ 67%]
+.......................................s..s..s..s..s..s..s...s..s..s..s. [ 84%]
+.s..s..s..s..s..s..s..s..s..s..s..s..s..s..s........s..s............     [100%]
+=============================== warnings summary ===============================
+../../../usr/local/lib/python3.13/dist-packages/torch/jit/_script.py:365: 14 warnings
+  /usr/local/lib/python3.13/dist-packages/torch/jit/_script.py:365: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+solution/test_head_fallback.py::test_global_head_hooks_preserve_outputs_and_gradients[backward-pre]
+solution/test_head_fallback.py::test_global_head_hooks_preserve_outputs_and_gradients[backward]
+  /usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py:1885: UserWarning: For backward hooks to be called, module output should be a Tensor or a tuple of Tensors but received <class 'transformers.modeling_outputs.BaseModelOutputWithPast'>
+    return inner()
+
+solution/test_head_fallback.py::test_global_head_hooks_preserve_outputs_and_gradients[backward-pre]
+solution/test_head_fallback.py::test_global_head_hooks_preserve_outputs_and_gradients[backward]
+  /usr/local/lib/python3.13/dist-packages/torch/nn/modules/module.py:1885: UserWarning: For backward hooks to be called, module output should be a Tensor or a tuple of Tensors but received <class 'transformers.modeling_outputs.CausalLMOutputWithPast'>
+    return inner()
+
+solution/test_head_fallback.py::test_global_head_hooks_preserve_outputs_and_gradients[backward-pre]
+solution/test_head_fallback.py::test_global_head_hooks_preserve_outputs_and_gradients[backward]
+  /kaggle/working/round2-final-jsqvzk37/solution/test_head_fallback.py:126: UserWarning: Full backward hook is firing when gradients are computed with respect to module outputs since no inputs require gradients. See https://docs.pytorch.org/docs/main/generated/torch.nn.Module.html#torch.nn.Module.register_full_backward_hook for more details.
+    loss.backward()
+
+solution/test_rotary.py: 18 warnings
+  /usr/local/lib/python3.13/dist-packages/torch/jit/_script.py:1488: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+solution/test_rotary.py::test_jit_trace_uses_serializable_eager_graph
+  /usr/local/lib/python3.13/dist-packages/torch/jit/_trace.py:1006: DeprecationWarning: `torch.jit.trace` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+solution/test_rotary.py::test_jit_trace_uses_serializable_eager_graph
+  /usr/local/lib/python3.13/dist-packages/torch/jit/_serialization.py:89: DeprecationWarning: `torch.jit.save` is deprecated. Please switch to `torch.export`.
+    warnings.warn(
+
+solution/test_rotary.py::test_jit_trace_uses_serializable_eager_graph
+  /usr/local/lib/python3.13/dist-packages/torch/jit/_serialization.py:176: DeprecationWarning: `torch.jit.load` is deprecated. Please switch to `torch.export`.
+    warnings.warn(
+
+solution/test_rotary.py::test_named_inputs_keep_names_on_eager_fallback[cpu]
+  /usr/local/lib/python3.13/dist-packages/torch/_tensor.py:1393: UserWarning: Named tensors and all their associated APIs are an experimental feature and subject to change. Please do not use them for anything important until they are released as stable. (Triggered internally at /pytorch/c10/core/TensorImpl.h:1973.)
+    return super().refine_names(names)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+302 passed, 126 skipped, 42 warnings in 38.82s

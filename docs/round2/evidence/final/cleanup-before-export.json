@@ -1,0 +1,68 @@
+{
+  "events": [
+    {
+      "cleanup_verified": true,
+      "monotonic": 5558.367959284,
+      "tracked": {}
+    },
+    {
+      "cleanup_verified": true,
+      "monotonic": 5558.56408447,
+      "tracked": {
+        "2831": 1793434159.36
+      }
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/kaggle/working/postrun-r2-helper-3i_7j3_5/supervisor.py",
+        "--root",
+        "/kaggle/working/round2-final-jsqvzk37",
+        "--out",
+        "/kaggle/working/round2-postrun-r2-final",
+        "--integrity",
+        "/kaggle/working/postrun-r2-helper-3i_7j3_5/starter-integrity.json",
+        "--worker",
+        "verify",
+        "--worker-end",
+        "5888.516546918"
+      ],
+      "error": null,
+      "returncode": 0,
+      "stage": "integrity"
+    },
+    {
+      "cleanup_verified": true,
+      "monotonic": 5576.364824097,
+      "tracked": {
+        "2831": 1793434159.36,
+        "2832": 1793434159.56
+      }
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-m",
+        "pytest",
+        "tests",
+        "-q",
+        "-p",
+        "no:cacheprovider"
+      ],
+      "error": null,
+      "returncode": 0,
+      "stage": "raw79"
+    },
+    {
+      "cleanup_verified": true,
+      "monotonic": 5576.433780849,
+      "tracked": {
+        "2831": 1793434159.36,
+        "2832": 1793434159.56
+      }
+    }
+  ],
+  "meaning": "all helper-owned descendants exited; no same-user process cwd under completed root",
+  "verified": true
+}
