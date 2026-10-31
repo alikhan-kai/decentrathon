@@ -18,18 +18,38 @@ not work is worse than a crash.
 """
 
 import importlib
+import sys
+import time
 
-MODULES = ["swiglu", "head_loss", "rmsnorm", "nf4", "lora", "rotary"]
+# Per-module import/patch timings to stderr; off by default, switch on by editing this line.
+PRINT_TIMINGS = False
+
+MODULES = ["swiglu", "head_loss", "rmsnorm", "nf4", "lora", "rotary", "overhead"]
 
 
 def apply():
+    t_start = time.perf_counter()
+    timings = {}
     for name in MODULES:
+        t0 = time.perf_counter()
         module = importlib.import_module(f"{__name__}.{name}")
-        if not getattr(module, "ENABLED", False):
-            continue
-        patch = getattr(module, "patch", None)
-        if patch is not None:
-            patch()
+        t_import = time.perf_counter() - t0
+        is_enabled = getattr(module, "ENABLED", False)
+        t_patch = 0.0
+        if is_enabled:
+            patch = getattr(module, "patch", None)
+            if patch is not None:
+                tp0 = time.perf_counter()
+                patch()
+                t_patch = time.perf_counter() - tp0
+        timings[name] = (is_enabled, t_import, t_patch)
+
+    if not PRINT_TIMINGS:
+        return
+    print(f"[overhead] solution.apply() total: {time.perf_counter() - t_start:.3f}s", file=sys.stderr)
+    for mod, (enabled, t_import, t_patch) in timings.items():
+        print(f"  - {mod:10s} (enabled={enabled}): import={t_import:.4f}s, patch={t_patch:.4f}s",
+              file=sys.stderr)
 
 
 # Explicit isolated combined-r1 stage adapter; checkout registry is untouched.
