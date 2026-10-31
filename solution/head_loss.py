@@ -23,7 +23,7 @@ import triton.language as tl
 BLOCK = 2048
 CHUNK = 256
 IGNORE = -100
-CACHE_LOGITS_BYTES = 512 * 1024 * 1024
+CACHE_LOGITS_BYTES = 128 * 1024 * 1024
 
 
 @triton.jit
@@ -88,6 +88,19 @@ def head_loss_kernel(logits_ptr, target_ptr, stride, V, loss_ptr, ent_ptr, hit_p
             tl.store(base + offs, g.to(logits_ptr.dtype.element_ty), mask=mask)
 
 
+
+@triton.jit
+def _cache_labelled_logits(logits, saved, row_map, V: tl.constexpr,
+                          COUNT, BLOCK: tl.constexpr):
+    offsets = tl.program_id(0) * BLOCK + tl.arange(0, BLOCK)
+    row = offsets // V
+    column = offsets % V
+    dest_row = tl.load(row_map + row, mask=offsets < COUNT, other=-1)
+    value = tl.load(logits + offsets, mask=offsets < COUNT, other=0)
+    tl.store(saved + dest_row.to(tl.int64) * V + column, value,
+             mask=(offsets < COUNT) & (dest_row >= 0))
+
+
 class _FusedHeadLoss(torch.autograd.Function):
     @staticmethod
     def forward(ctx, hidden, weight, target, denom, chunk):
@@ -98,38 +111,50 @@ class _FusedHeadLoss(torch.autograd.Function):
         loss_row = torch.empty(n, dtype=torch.float32, device=h.device)
         ent = torch.empty_like(loss_row)
         hit = torch.empty(n, dtype=torch.int32, device=h.device)
-        cache = need and n * vocab * 2 <= CACHE_LOGITS_BYTES
-        saved_logits = torch.empty((n, vocab) if cache else (0,), dtype=torch.float16, device=h.device)
+        # Forward still computes entropy on every retained row. Only labelled
+        # rows can contribute to backward, so only those logits need retention.
+        rows = (torch.nonzero(target >= 0, as_tuple=False).flatten() if need
+                else torch.empty(0, dtype=torch.long, device=h.device))
+        labelled = rows.numel()
+        cached_rows = min(labelled, max(0, CACHE_LOGITS_BYTES // (vocab * 2))) if need else 0
+        cache = cached_rows > 0
+        compact = cache and cached_rows < n
+        row_map = None
+        if compact:
+            valid = target >= 0
+            rank = valid.to(torch.int64).cumsum(0) - 1
+            row_map = torch.where(valid & (rank < cached_rows), rank, -1)
+        saved_logits = torch.empty((cached_rows, vocab) if cache else (0,), dtype=torch.float16, device=h.device)
         if n > 0:
             wt = w.t()
-            logits_buf = None if cache else torch.empty((min(chunk, n), vocab), dtype=torch.float16, device=h.device)
+            logits_buf = None if cache and not compact else torch.empty((min(chunk, n), vocab), dtype=torch.float16, device=h.device)
             for s in range(0, n, chunk):
                 e = min(s + chunk, n)
                 c = e - s
-                logits = saved_logits[s:e] if cache else logits_buf[:c]
+                logits = saved_logits[s:e] if cache and not compact else logits_buf[:c]
                 torch.mm(h[s:e], wt, out=logits)          # [c, V] fp16
                 head_loss_kernel[(c,)](logits, target[s:e], vocab, vocab,
                                        loss_row[s:e], ent[s:e], hit[s:e], None,
                                        WITH_GRAD=False, BLOCK=BLOCK, num_warps=8)
+                if compact and labelled:
+                    _cache_labelled_logits[(triton.cdiv(c * vocab, 1024),)](
+                        logits, saved_logits, row_map[s:e], vocab, c * vocab, 1024)
             del logits_buf
         denom = torch.as_tensor(denom, dtype=torch.float32, device=h.device)
         ctx.hidden_dtype = hidden.dtype
         ctx.chunk = chunk
         ctx.cached_logits = cache
+        ctx.cached_rows = cached_rows
         if need:
-            ctx.save_for_backward(h, w, target, denom, saved_logits)
+            ctx.save_for_backward(h, w, target, denom, saved_logits, rows)
         ctx.mark_non_differentiable(loss_row, ent, hit)
         return loss_row.sum() / denom, loss_row, ent, hit
 
     @staticmethod
     def backward(ctx, grad_loss, *_):
-        h, w, target, denom, saved_logits = ctx.saved_tensors
+        h, w, target, denom, saved_logits, rows = ctx.saved_tensors
         grad_scale = grad_loss.float() / denom
-        # Ignored targets have identically zero dlogits. Compact only backward;
-        # forward still needs every retained row for entropy and other metrics.
-        # CUDA nonzero synchronizes to determine the compacted length once per
-        # backward. No explicit tensor-content readback is used.
-        rows = torch.nonzero(target >= 0, as_tuple=False).flatten()
+        # The forward established the same labelled-row order used by the cache.
         dh = torch.zeros_like(h)
         n, vocab = rows.numel(), w.shape[0]
         if n > 0:
@@ -143,11 +168,12 @@ class _FusedHeadLoss(torch.autograd.Function):
                 selected = rows[s:e]
                 target_chunk = target.index_select(0, selected)
                 logits = logits_buf[:c]
-                if ctx.cached_logits:
-                    torch.index_select(saved_logits, 0, selected, out=logits)
-                else:
-                    h_chunk = h.index_select(0, selected)
-                    torch.mm(h_chunk, wt, out=logits)
+                cached_c = max(0, min(e, ctx.cached_rows) - s)
+                if cached_c:
+                    logits[:cached_c].copy_(saved_logits[s:s + cached_c])
+                if cached_c < c:
+                    h_chunk = h.index_select(0, selected[cached_c:])
+                    torch.mm(h_chunk, wt, out=logits[cached_c:])
                 head_loss_kernel[(c,)](logits, target_chunk, vocab, vocab,
                                        None, None, None, grad_scale,
                                        WITH_GRAD=True, BLOCK=BLOCK, num_warps=8)
