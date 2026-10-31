@@ -3,13 +3,14 @@
 Forward and model storage stay unchanged. Temporary per-row INT8 weights are
 derived anew from NF4 each backward; no cross-step weight cache. The supplied
 challenge discussion explicitly permits this approximation (reply 2039 to 2037).
-Must pass full loss/quality gates before promotion. Not installed on import.
+Rejected for speed: all six T4 microbenchmarks were slower (0.39-0.71x).
+Eight focused tests passed; no full training benchmark. Not installed on import.
 """
 import torch
 import triton
 import triton.language as tl
 
-ENABLED = True
+ENABLED = False
 _original = None
 _patched = False
 _calls = 0
@@ -38,9 +39,9 @@ def nf4_dgrad_weight_int8(packed, scales8, scale_code, scale_absmax, offset,
     tl.store(row_scales + row, row_scale)
 
 
-@triton.jit
+@triton.jit(do_not_specialize=["M"])
 def nf4_dgrad_input_int8(grad, weight_scales, quant, grad_scales,
-                         M: tl.constexpr, N: tl.constexpr, BLOCK: tl.constexpr):
+                         M, N: tl.constexpr, BLOCK: tl.constexpr):
     row = tl.program_id(0)
     col = tl.arange(0, BLOCK)
     value = tl.load(grad + row * N + col, (row < M) & (col < N), 0).to(tl.float32)
@@ -49,7 +50,7 @@ def nf4_dgrad_input_int8(grad, weight_scales, quant, grad_scales,
     maximum = tl.max(tl.abs(value), 0)
     # Preserve nonfinite signaling for AMP: do not turn NaN/Inf gradients into
     # finite integers and accidentally execute an optimizer step.
-    bad = tl.max((tl.isnan(value) | (tl.abs(value) == float('inf'))).to(tl.int32), 0)
+    bad = tl.max(((value != value) | (tl.abs(value) == float('inf'))).to(tl.int32), 0)
     scale = tl.maximum(maximum / 127.0, 1.0e-20)
     scale = tl.where(bad != 0, float('nan'), scale)
     q = tl.extra.cuda.libdevice.nearbyint(tl.div_rn(value, scale))
@@ -69,7 +70,7 @@ def nf4_dgrad_output_int8(acc, scales, output, TOTAL, K: tl.constexpr, BLOCK: tl
 def input_gradient(grad, packed, state):
     n, k = state.shape
     m = grad.numel() // n
-    padded_m = triton.cdiv(m, 8) * 8
+    padded_m = triton.cdiv(m, 32) * 32
     grad = grad.contiguous()
     w8 = torch.empty((n, k), device=grad.device, dtype=torch.int8)
     ws = torch.empty(n, device=grad.device, dtype=torch.float32)
@@ -82,7 +83,9 @@ def input_gradient(grad, packed, state):
     nf4_dgrad_input_int8[(padded_m,)](
         grad, ws, g8, gs, m, n, triton.next_power_of_2(n),
         num_warps=8 if n > 4096 else 4, enable_fp_fusion=False)
-    accum = torch._int_mm(g8, w8)
+    # Turing IMMA requires TN in cuBLAS column-major notation. PyTorch's
+    # row-major left operand therefore needs a column-major right operand.
+    accum = torch._int_mm(g8, w8.t().contiguous().t())
     out = torch.empty((*grad.shape[:-1], k), device=grad.device, dtype=grad.dtype)
     nf4_dgrad_output_int8[(triton.cdiv(out.numel(), 1024),)](
         accum, gs, out, out.numel(), k, 1024, enable_fp_fusion=False)
