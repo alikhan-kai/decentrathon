@@ -1,0 +1,23 @@
+Testing /tmp/rotary-head-correct-r6/head_loss.py on cpu
+CPU HARNESS: NumPy scalar-index compatibility fix; kernel math unchanged
+EVIDENCE MODE: cpu; candidate=/tmp/rotary-head-correct-r6/head_loss.py; TRITON_INTERPRET=1; BLOCK=32
+test_actual_kernel_and_nondifferentiable_metrics (__main__.HeadLossRegression.test_actual_kernel_and_nondifferentiable_metrics) ... ok
+test_all_ignored_zero_denom_nan_loss_zero_gradients (__main__.HeadLossRegression.test_all_ignored_zero_denom_nan_loss_zero_gradients) ... /home/homelab/.t3/projects/decentrathon/.venv/lib/python3.13/site-packages/triton/runtime/interpreter.py:490: RuntimeWarning: invalid value encountered in multiply
+  output = op(lhs.data, rhs.data)
+ok
+test_cuda_real_gradscaler_fp32_parameter_fp32_hidden (__main__.HeadLossRegression.test_cuda_real_gradscaler_fp32_parameter_fp32_hidden) ... skipped 'CUDA-only: real GradScaler evidence unavailable on CPU'
+test_cuda_training_vocabulary_tail_and_multichunk (__main__.HeadLossRegression.test_cuda_training_vocabulary_tail_and_multichunk) ... skipped 'CUDA-only: full training vocabulary'
+test_installed_hooks_shifted_labels_left_padding_metrics (__main__.HeadLossRegression.test_installed_hooks_shifted_labels_left_padding_metrics) ... /home/homelab/.t3/projects/decentrathon/.venv/lib/python3.13/site-packages/torch/jit/_script.py:365: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+HOOK EVIDENCE: real tiny Qwen2, real Trainer.compute_loss
+ok
+test_large_upstream_recovers_exp_minus20_before_fp16_store (__main__.HeadLossRegression.test_large_upstream_recovers_exp_minus20_before_fp16_store) ... ok
+test_no_grad_multichunk_metrics (__main__.HeadLossRegression.test_no_grad_multichunk_metrics) ... ok
+test_random_multichunk_fp16_projection_fp32_ce (__main__.HeadLossRegression.test_random_multichunk_fp16_projection_fp32_ce) ... ok
+test_repeated_backward_uses_each_upstream_with_retain_graph (__main__.HeadLossRegression.test_repeated_backward_uses_each_upstream_with_retain_graph) ... ok
+test_small_weight_recovers_dh_before_fp16_gemm_rounding (__main__.HeadLossRegression.test_small_weight_recovers_dh_before_fp16_gemm_rounding) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 6.705s
+
+OK (skipped=2)

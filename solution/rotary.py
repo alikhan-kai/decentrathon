@@ -19,6 +19,7 @@ import functools
 import importlib
 
 import torch
+from torch.fx.experimental.proxy_tensor import get_proxy_mode
 
 
 def _eager_rope(q, k, cos, sin, unsqueeze_dim=1):
@@ -56,6 +57,7 @@ def _supports_triton(q, k, cos, sin, unsqueeze_dim=1):
     if (
         type(unsqueeze_dim) is not int or unsqueeze_dim != 1
         or torch.compiler.is_compiling() or torch.jit.is_tracing()
+        or get_proxy_mode() is not None
         or torch._C._are_functorch_transforms_active()
         or not all(_plain_strided(x) for x in tensors)
         or q.device.type != "cuda" or torch.version.hip is not None
@@ -226,7 +228,7 @@ class _FrozenRoPE(torch.autograd.Function):
         grad_q = grad_q if ctx.needs_input_grad[0] else None
         grad_k = grad_k if ctx.needs_input_grad[1] else None
         gradients = (grad_q, grad_k)
-        if torch.is_grad_enabled() or any(
+        if torch.is_grad_enabled() or get_proxy_mode() is not None or any(
             x is not None and (
                 not _plain_strided(x)
                 or torch.autograd.forward_ad.unpack_dual(x).tangent is not None

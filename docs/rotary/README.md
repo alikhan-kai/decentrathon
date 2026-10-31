@@ -2,11 +2,23 @@
 
 Person 3 / `feat/rotary`, based on the team's passing `feat/check4` commit
 `462a9f7`. Owns `solution/rotary.py`, `solution/residual_norm.py`, their tests,
-and this evidence directory. The team's head, NF4, RMSNorm, LoRA, registry,
-task and harness files are unchanged.
+and this evidence directory. The separately reviewed head correction from
+[PR #3](https://github.com/alikhan-kai/decentrathon/pull/3) is now merged into
+`solution/head_loss.py`. NF4, RMSNorm, LoRA, registry, task and harness are unchanged.
+
+The [follow-up research](RESEARCH.md) records the Reddit leads, primary technical
+references and rejected T4 experiments. Real-mode FX tracing now takes the eager
+RoPE path in both forward and backward. The merged
+[head-gradient correction](head_correction/README.md) fixes a demonstrated
+scale-before-cast defect in the team implementation and is used by the existing
+head registry entry.
+That correction now passes repeated full-training validation: **78.07 s median,
+8367 MiB, 7.0106% minimum eligible share**, all ten checks passed, evaluation
+loss **2.04966**, equal to the measured baseline. The archived standalone patch
+remains available for older checkouts; do not apply it again to this branch.
 
 **Rotary is ready for integrator selection.** Its conservative observed
-combined kernel share is **7.10%**, versus about **6.08–6.10%** in the later
+combined kernel share is **7.05%**, versus about **6.08–6.10%** in the later
 team reference repeats. The requested 8–9% margin is not yet established.
 The combined candidate passed all ten official checks across two repeats at
 **7.60% minimum share**, but residual fusion has not demonstrated an
@@ -22,7 +34,7 @@ experiment; both measured configurations are supplied.
   inputs and missing gradients, and saves only frozen cosine/sine tensors.
   Runtime token counts and flattened strides avoid recompilation for each
   padded length. Unsupported types, layouts and AD modes use eager fallback;
-  JIT tracing fallback is tested.
+  JIT and real-mode FX tracing fallbacks are tested.
 - **Attention residual plus RMSNorm:** one forward produces both the residual
   sum and normalized tensor; backward combines the two gradient branches in
   fp32 before casting the attention gradient to fp16. Only the first residual
@@ -58,14 +70,38 @@ python docs/rotary/stage.py --variant rotary --out /kaggle/working/rotary-valida
 
 The script creates a new directory with an explicit registry selection and a
 SHA-256 manifest, then prints the test/data/harness commands. It never edits
-the source checkout. `--variant team` stages the original team selection;
+the source checkout. `--variant team` stages the team registry selection with
+the current corrected head;
 `--variant combined` explicitly enables the residual experiment too. Always
 use one visible T4 (`CUDA_VISIBLE_DEVICES=0`), sequential runs, and the
 unchanged official harness. Compilation counts; each harness run clears its
 own compilation caches. Final shared integration still needs its own repeated
 baseline/solution verification.
 
-## Rotary training evidence
+Omit `--head-correction` on this branch: the correction is already installed.
+That flag is retained only for older checkouts containing the original head; its
+hash guard deliberately rejects applying the correction twice.
+
+## Validation before the head correction was merged
+
+The FX fallback fix passed **270 T4 tests, 126 skipped**, and all **79 official
+regressions**. Its unchanged training arithmetic passed [all ten official
+checks](evidence/r5-final-checks.json) in two repeats. The latest
+[raw result](evidence/r5-final-result.json) records:
+
+| Configuration | Command times, s | Peak MiB | Minimum eligible share | Eval loss |
+| --- | ---: | ---: | ---: | ---: |
+| Original baseline | 87.29 / 87.09 | 14345 | — | 2.04966 |
+| Team + rotary + FX fallback fix | 74.82 / 77.92 | 8367 | 7.0456% | 2.04969 |
+
+Median command time is 76.37 s versus 87.19 s. This is the entire team
+configuration's result, not an isolated speed gain from the tracing fix.
+[Source manifest](evidence/r5-final-manifest.json), logs and telemetry accompany
+the result. This historical configuration still used the defective head; automatic admission
+is not proof that every gradient matches. Current-source validation is the
+corrected R8 configuration linked above.
+
+## Earlier rotary training evidence
 
 The [initial full pair](evidence/r1-candidate-result.json) recorded original
 baseline **84.55 s / 14,345 MiB** versus candidate **75.63 s / 8,367 MiB**,

@@ -607,6 +607,40 @@ def test_batched_incoming_gradients_use_eager_backward(monkeypatch, backend, dty
             exact(value, oracle)
 
 
+def test_real_fx_trace_uses_eager_graph(monkeypatch):
+    from torch.fx.experimental.proxy_tensor import make_fx
+
+    tensors = inputs((1, 3, 3, 1, 18))
+
+    def reject_candidate_dispatch(x):
+        pytest.fail("real-mode FX tracing reached candidate tensor dispatch")
+
+    monkeypatch.setattr(rope, "_plain_strided", reject_candidate_dispatch)
+    traced = make_fx(lambda q, k, c, s: rope.apply_rotary_pos_emb(q, k, c, s),
+                     tracing_mode="real")(*tensors)
+    for actual, expected in zip(traced(*tensors), reference(*tensors)):
+        exact(actual, expected)
+
+
+@pytest.mark.parametrize("dtype", [torch.float16, torch.float32])
+def test_real_fx_backward_uses_eager_graph(monkeypatch, dtype):
+    from torch.fx.experimental.proxy_tensor import make_fx
+
+    q, k, c, s = inputs((1, 3, 3, 1, 18), dtype=dtype)
+    ctx = types.SimpleNamespace(saved_tensors=(c, s), needs_input_grad=(True, True))
+
+    def reject_launch(*args, **kwargs):
+        pytest.fail("real-mode FX backward attempted a kernel launch")
+
+    monkeypatch.setattr(rope, "_launch", reject_launch)
+    with torch.no_grad():
+        traced = make_fx(lambda dq, dk: rope._FrozenRoPE.backward(ctx, dq, dk)[:2],
+                         tracing_mode="real")(q, k)
+    for actual, expected in zip(traced(q, k),
+                                (transpose_reference(q, c, s), transpose_reference(k, c, s))):
+        exact(actual, expected)
+
+
 def test_jit_trace_uses_serializable_eager_graph(monkeypatch):
     def reject_layout_check(x):
         pytest.fail("JIT tracing reached candidate tensor dispatch")

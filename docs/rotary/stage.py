@@ -15,6 +15,8 @@ import shutil
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--variant", choices=("team", "rotary", "combined"), required=True)
+    parser.add_argument("--head-correction", action="store_true",
+                        help="Explicitly stage the separate loss-gradient correction")
     parser.add_argument("--out", type=Path, required=True, help="New, nonexisting directory")
     args = parser.parse_args()
     source = Path(__file__).resolve().parents[2]
@@ -26,6 +28,10 @@ def main():
     text = entry.read_text()
     if text.count(original) != 1:
         parser.error("Team registry changed; reconcile the explicit selection first")
+    if args.head_correction:
+        expected = "9692acc5d32318872f7b50b67e4e4c8d61d86a33dea2458f06443eddfd1c3934"
+        if hashlib.sha256((source / "solution/head_loss.py").read_bytes()).hexdigest() != expected:
+            parser.error("Team head changed; review the correction against that version first")
     extra = {"team": "", "rotary": ', "rotary"',
              "combined": ', "rotary", "residual_norm"'}[args.variant]
     destination.mkdir(parents=True)
@@ -37,6 +43,9 @@ def main():
                 shutil.copy2(path, target)
     for name in ("LICENSE", "NOTICE"):
         shutil.copy2(source / name, destination / name)
+    if args.head_correction:
+        shutil.copy2(Path(__file__).resolve().parent / "head_correction/head_loss.py",
+                     destination / "solution/head_loss.py")
     (destination / "solution/__init__.py").write_text(
         text.replace(original, original[:-1] + extra + "]"))
     for name, enabled in (("rotary", args.variant != "team"),
