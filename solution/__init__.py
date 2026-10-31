@@ -29,6 +29,8 @@ MODULES = ["swiglu", "head_loss", "rmsnorm", "nf4", "lora", "rotary", "overhead"
 
 def apply():
     t_start = time.perf_counter()
+    from .startup_metadata import prepare_trl_import
+    prepare_trl_import()
     timings = {}
     for name in MODULES:
         t0 = time.perf_counter()
