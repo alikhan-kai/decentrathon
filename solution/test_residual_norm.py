@@ -578,6 +578,14 @@ def test_cuda_qwen_peft_sdpa_autocast_gradscaler(patched, monkeypatch, scale):
     from peft import LoraConfig, get_peft_model
     from transformers import Qwen2Config, Qwen2Model
 
+    try:
+        import peft.import_utils
+        monkeypatch.setattr(peft.import_utils, 'is_torchao_available', lambda: False)
+        import peft.tuners.lora.torchao as torchao_dispatcher
+        monkeypatch.setattr(torchao_dispatcher, 'is_torchao_available', lambda: False)
+    except (ImportError, AttributeError):
+        pass
+
     # The patched fixture explicitly calls raw rn.patch(), irrespective of ENABLED.
     with torch.random.fork_rng(devices=[torch.cuda.current_device()]):
         torch.manual_seed(41)

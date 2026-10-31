@@ -28,7 +28,7 @@ from torch.fx.experimental.proxy_tensor import get_proxy_mode
 import triton
 import triton.language as tl
 
-ENABLED = False
+ENABLED = True
 MAX_HIDDEN = 8192
 NUM_WARPS = 4
 _patched = False
