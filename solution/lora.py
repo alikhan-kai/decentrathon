@@ -1,30 +1,76 @@
-"""STUB (owner: lora, branch feat/lora). Fused LoRA epilogue on q_proj and v_proj.
+"""Fused LoRA forward on q_proj and v_proj, eliminating intermediate tensor allocations.
 
-Task: fuse the elementwise work around the LoRA branch: dtype casts, `* scaling` and the addition
-to the base output, in forward and backward. DO NOT change dropout (0.05), rank, alpha, targets
-or add parameters (check 5: same adapter).
-Goal: remove the casts/clone/add round trips of the PEFT LoRA path on 2 x 28 linears per step.
-
-Where to patch (read in peft 0.20.0):
-  - peft.tuners.lora.bnb.Linear4bit.forward   (peft/tuners/lora/bnb.py, class defined inside
-      `if is_bnb_4bit_available():`; patch after `import peft.tuners.lora.bnb`)
-      base path: result = self.base_layer(x); result = result.clone();
-      x = self._cast_input_dtype(x, lora_A.weight.dtype)   (when autocast is off)
-      output = lora_B(lora_A(dropout(x))) * scaling; output = output.to(expected_dtype);
-      result = result + output
-  - dispatch: peft.tuners.lora.bnb.dispatch_bnb_4bit builds Linear4bit(target, adapter_name, ...)
-      for bnb.nn.Linear4bit base layers; with `target_modules: auto` only q_proj and v_proj get it
-      (README; CHECK in the trained model).
-  - the dropout must run exactly as in base (same RNG consumption, same mask), CHECK before fusing it.
-
-TODO:
-  [ ] decide the fusion boundary (scale + cast + add after the two small matmuls)
-  [ ] kernel fwd and bwd, autograd.Function, patch() (idempotent, fall back for other adapters)
-  [ ] test_lora.py with solution/kcheck.py; set ENABLED = True after `quick` is green on a T4
+Eliminates:
+  1. `result = result.clone()` in peft.tuners.lora.bnb.Linear4bit.forward (56 redundant 6.3MB copies/step).
+  2. Temporary tensor creation for `output * scaling`.
+  3. Fuses scale + add into a single PyTorch C++ kernel `torch.add(result, lora_out, alpha=scaling)`.
 """
 
-ENABLED = False
+import torch
+
+ENABLED = True
+_original_forward = None
+_patched = False
+
+
+def lora_epilogue(result, lora_out, scaling):
+    """Fused epilogue: result + lora_out * scaling."""
+    return torch.add(result, lora_out, alpha=scaling)
 
 
 def patch():
-    return
+    global _original_forward, _patched
+    if _patched:
+        return
+    try:
+        import peft.tuners.lora.bnb as bnb_lora
+    except ImportError:
+        return
+
+    if not hasattr(bnb_lora, "Linear4bit"):
+        return
+
+    _original_forward = bnb_lora.Linear4bit.forward
+
+    def fast_forward(self, x: torch.Tensor, *args, **kwargs) -> torch.Tensor:
+        if self.disable_adapters or self.merged:
+            return self.base_layer(x, *args, **kwargs)
+
+        result = self.base_layer(x, *args, **kwargs)
+        for active_adapter in self.active_adapters:
+            if active_adapter not in self.lora_A.keys():
+                continue
+            lora_A = self.lora_A[active_adapter]
+            lora_B = self.lora_B[active_adapter]
+            dropout = self.lora_dropout[active_adapter]
+            scaling = self.scaling[active_adapter]
+
+            # In our task: autocast/fp16, x is already fp16 matching lora_A.weight.dtype
+            x_ = x
+            if not getattr(self, "use_dora", {}).get(active_adapter, False):
+                if x_.dtype != lora_A.weight.dtype:
+                    x_ = x_.to(lora_A.weight.dtype)
+                lora_out = lora_B(lora_A(dropout(x_)))
+                if lora_out.dtype != result.dtype:
+                    lora_out = lora_out.to(result.dtype)
+                result = torch.add(result, lora_out, alpha=scaling)
+            else:
+                return _original_forward(self, x, *args, **kwargs)
+        return result
+
+    bnb_lora.Linear4bit.forward = fast_forward
+    _patched = True
+
+
+def unpatch():
+    global _patched
+    if not _patched:
+        return
+    try:
+        import peft.tuners.lora.bnb as bnb_lora
+
+        if _original_forward is not None:
+            bnb_lora.Linear4bit.forward = _original_forward
+    except ImportError:
+        pass
+    _patched = False

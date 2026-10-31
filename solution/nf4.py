@@ -93,7 +93,11 @@ def patch():
     def _dequantize_4bit_impl(A, absmax, blocksize, quant_type, dtype, out):
         if not _eligible(A, absmax, blocksize, quant_type, dtype, out):
             return _original(A, absmax, blocksize, quant_type, dtype, out=out)
-        dequantize_nf4(A.contiguous(), absmax.contiguous(), out)
+        if not A.is_contiguous():
+            A = A.contiguous()
+        if not absmax.is_contiguous():
+            absmax = absmax.contiguous()
+        dequantize_nf4(A, absmax, out)
 
     ops._dequantize_4bit_impl = _dequantize_4bit_impl
     _patched = True
