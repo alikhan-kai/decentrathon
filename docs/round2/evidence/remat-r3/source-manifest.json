@@ -1,0 +1,43 @@
+{
+  "baseline": {
+    "solution/rmsnorm.py": "60bb02df363aab45cb9a32639850888d7203d784f83295bc713d4a93acd5b2c5",
+    "solution/stage_adapter.py": "f05b89a5c6b1d753bd5436c310c1ca32d27e13ce4a7a0e8478fa7131dc3c6194",
+    "solution/bnb_provenance.py": "fe7a0c6fd7fa5597005e56f9be017020a5e25f4b3b816267c0abbc647f1c5905",
+    "solution/nf4.py": "94a4cd004cd83a09ec51794b9a05fd6d5da9d6e073f144b20e3e8a8cf9c93740",
+    "solution/head_loss.py": "fd66b7eef815487e5a80d201eab8dfc5706d1a1d0e83813ea90dfb7121a087b7",
+    "solution/swiglu.py": "e1dc639838c4c46ea0ed0aec3f0d904d360c92a91c601b943c9cfef85ca21c64",
+    "solution/packed.py": "263a8eb3bb7654aa2d152b78299308abbaed1b268c502b23ec56f88e48d595e2",
+    "solution/attention_adapter.py": "1add9019d245aba7872f79bee155a86d8bbaab8ba47f548c956f23d621827e14",
+    "solution/kcheck.py": "f6b29c27738e727d2c10811dd47d51ac004b0a9f7f910f01c9dd16eb99970daa",
+    "solution/attention_gqa.py": "f4d2cdafe0ece75c4a2510ce44acfec14a6f819040e16e0dca3b282b55ab3dd1",
+    "solution/rotary.py": "488522f8332e5402a85b5df74a9caaa080004c8ca9ab588f82c0f0ca292b2677",
+    "solution/hybrid_mlp.py": "89421a52d5025bc1b35e53b0723ded7216551db4309ca6ef0440098e3ab3f199",
+    "solution/stage_options.py": "3aff930958f2f91c94ae26a3fa21e07e5714671a6a9d96450c0094c38dcf2afd",
+    "solution/__init__.py": "66db347091a0789aa93fa87f4b2ebd0c719cb98d2c701dd346d36ce7c55e3db0",
+    "solution/swiglu_pack.py": "31548adc5021ca814156a162b3127adc6fa27d482c6aa13f0ba3c52687ab2e0e",
+    "solution/lora.py": "e923126c5fad64c23b08eefc42edc5cdf0092fb09230e14ee14d79a3c2e7a806",
+    "solution/native_half.py": "d9c492c675968ae9e3160da5f4e47a123e21ba6d7b639cc2bb62da1d25318cec",
+    "solution/residual_norm.py": "6b453981e8570a9e448accde1422d4fbfc766d330d432ec6082a6f72d6de473c"
+  },
+  "candidate": {
+    "solution/rmsnorm.py": "60bb02df363aab45cb9a32639850888d7203d784f83295bc713d4a93acd5b2c5",
+    "solution/stage_adapter.py": "f05b89a5c6b1d753bd5436c310c1ca32d27e13ce4a7a0e8478fa7131dc3c6194",
+    "solution/bnb_provenance.py": "fe7a0c6fd7fa5597005e56f9be017020a5e25f4b3b816267c0abbc647f1c5905",
+    "solution/nf4.py": "94a4cd004cd83a09ec51794b9a05fd6d5da9d6e073f144b20e3e8a8cf9c93740",
+    "solution/head_loss.py": "fd66b7eef815487e5a80d201eab8dfc5706d1a1d0e83813ea90dfb7121a087b7",
+    "solution/swiglu.py": "e1dc639838c4c46ea0ed0aec3f0d904d360c92a91c601b943c9cfef85ca21c64",
+    "solution/packed.py": "263a8eb3bb7654aa2d152b78299308abbaed1b268c502b23ec56f88e48d595e2",
+    "solution/attention_adapter.py": "1add9019d245aba7872f79bee155a86d8bbaab8ba47f548c956f23d621827e14",
+    "solution/kcheck.py": "f6b29c27738e727d2c10811dd47d51ac004b0a9f7f910f01c9dd16eb99970daa",
+    "solution/attention_gqa.py": "f4d2cdafe0ece75c4a2510ce44acfec14a6f819040e16e0dca3b282b55ab3dd1",
+    "solution/rotary.py": "488522f8332e5402a85b5df74a9caaa080004c8ca9ab588f82c0f0ca292b2677",
+    "solution/frozen_remat.py": "13167bdbc49ae33dab83bc1a97bea3baad6f1d60066cebe693612a33ad51a7a9",
+    "solution/hybrid_mlp.py": "fbf7edfda0af318641b1a3e64d4d76fb424e8a34310524c7e929845b3a56576f",
+    "solution/stage_options.py": "3aff930958f2f91c94ae26a3fa21e07e5714671a6a9d96450c0094c38dcf2afd",
+    "solution/__init__.py": "66db347091a0789aa93fa87f4b2ebd0c719cb98d2c701dd346d36ce7c55e3db0",
+    "solution/swiglu_pack.py": "31548adc5021ca814156a162b3127adc6fa27d482c6aa13f0ba3c52687ab2e0e",
+    "solution/lora.py": "e923126c5fad64c23b08eefc42edc5cdf0092fb09230e14ee14d79a3c2e7a806",
+    "solution/native_half.py": "d9c492c675968ae9e3160da5f4e47a123e21ba6d7b639cc2bb62da1d25318cec",
+    "solution/residual_norm.py": "6b453981e8570a9e448accde1422d4fbfc766d330d432ec6082a6f72d6de473c"
+  }
+}

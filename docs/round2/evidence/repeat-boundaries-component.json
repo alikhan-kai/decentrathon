@@ -1,0 +1,148 @@
+{
+  "status": "PASS",
+  "correctness": "PASS",
+  "performance_regressions": [],
+  "summaries": [
+    {
+      "N": 511,
+      "median_full_FB_wall_ms": {
+        "baseline": 2.79147275006153,
+        "candidate": 2.1368247499822246
+      },
+      "candidate_over_baseline": 0.765482933671885,
+      "memory": {
+        "baseline": {
+          "extra_peak_allocated_bytes": 14609408,
+          "base_allocated_bytes": 24365056,
+          "peak_reserved_bytes": 60817408
+        },
+        "candidate": {
+          "extra_peak_allocated_bytes": 21316608,
+          "base_allocated_bytes": 24365056,
+          "peak_reserved_bytes": 60817408
+        }
+      }
+    },
+    {
+      "N": 512,
+      "median_full_FB_wall_ms": {
+        "baseline": 2.699186249969898,
+        "candidate": 2.202400750036304
+      },
+      "candidate_over_baseline": 0.8159498997376953,
+      "memory": {
+        "baseline": {
+          "extra_peak_allocated_bytes": 14660608,
+          "base_allocated_bytes": 24379392,
+          "peak_reserved_bytes": 81788928
+        },
+        "candidate": {
+          "extra_peak_allocated_bytes": 21390336,
+          "base_allocated_bytes": 24379392,
+          "peak_reserved_bytes": 81788928
+        }
+      }
+    },
+    {
+      "N": 666,
+      "median_full_FB_wall_ms": {
+        "baseline": 2.826600249989042,
+        "candidate": 2.5588042500430674
+      },
+      "candidate_over_baseline": 0.9052586229881595,
+      "memory": {
+        "baseline": {
+          "extra_peak_allocated_bytes": 20990464,
+          "base_allocated_bytes": 26587136,
+          "peak_reserved_bytes": 81788928
+        },
+        "candidate": {
+          "extra_peak_allocated_bytes": 28473856,
+          "base_allocated_bytes": 26587136,
+          "peak_reserved_bytes": 81788928
+        }
+      }
+    },
+    {
+      "N": 767,
+      "median_full_FB_wall_ms": {
+        "baseline": 2.9747017500199036,
+        "candidate": 2.9016545000217775
+      },
+      "candidate_over_baseline": 0.9754438407152457,
+      "memory": {
+        "baseline": {
+          "extra_peak_allocated_bytes": 23172096,
+          "base_allocated_bytes": 28035072,
+          "peak_reserved_bytes": 81788928
+        },
+        "candidate": {
+          "extra_peak_allocated_bytes": 34601984,
+          "base_allocated_bytes": 28035072,
+          "peak_reserved_bytes": 81788928
+        }
+      }
+    },
+    {
+      "N": 768,
+      "median_full_FB_wall_ms": {
+        "baseline": 3.0620999999655396,
+        "candidate": 2.909632500063708
+      },
+      "candidate_over_baseline": 0.9502081904890279,
+      "memory": {
+        "baseline": {
+          "extra_peak_allocated_bytes": 23204864,
+          "base_allocated_bytes": 28049408,
+          "peak_reserved_bytes": 81788928
+        },
+        "candidate": {
+          "extra_peak_allocated_bytes": 34632704,
+          "base_allocated_bytes": 28049408,
+          "peak_reserved_bytes": 81788928
+        }
+      }
+    },
+    {
+      "N": 769,
+      "median_full_FB_wall_ms": {
+        "baseline": 3.418616500027838,
+        "candidate": 3.474986750006792
+      },
+      "candidate_over_baseline": 1.0164891996450889,
+      "memory": {
+        "baseline": {
+          "extra_peak_allocated_bytes": 23206912,
+          "base_allocated_bytes": 28063744,
+          "peak_reserved_bytes": 81788928
+        },
+        "candidate": {
+          "extra_peak_allocated_bytes": 23206912,
+          "base_allocated_bytes": 28063744,
+          "peak_reserved_bytes": 81788928
+        }
+      }
+    },
+    {
+      "N": 1024,
+      "median_full_FB_wall_ms": {
+        "baseline": 3.6345692500390214,
+        "candidate": 3.6685112499981187
+      },
+      "candidate_over_baseline": 1.009338658207911,
+      "memory": {
+        "baseline": {
+          "extra_peak_allocated_bytes": 29090816,
+          "base_allocated_bytes": 31719424,
+          "peak_reserved_bytes": 106954752
+        },
+        "candidate": {
+          "extra_peak_allocated_bytes": 29090816,
+          "base_allocated_bytes": 31719424,
+          "peak_reserved_bytes": 106954752
+        }
+      }
+    }
+  ],
+  "limits": "Component timing only; cutoff remains default-off; full workload untested."
+}

@@ -3,28 +3,16 @@
 Same lossless-save hypothesis as packed saves; no original kernel credit.
 No installer, registry entry, class patch, or broad public activation API.
 """
-import hashlib
-import inspect
-
 import torch
+from .bnb_provenance import canonical_bnb
 
 ENABLED = False
-BNB_HASHES = {
-    "Linear4bit.forward": "d52cf63457717cc718ca0a449dad0967171e679be90d5d2adcafe2e8a141093d",
-    "MatMul4Bit": "243126867f134209a5c94687f17b90bf20b1b9e5391d6299810b8053f6df070b",
-    "matmul_4bit": "a219d40d62264de60a424e8f9f1bab7656136eb7264a575d39d57a7e2f25ed4a",
-}
 
 
 def _validate_sources(starter, canonical_guards):
-    """One-time provenance check in addition to, never instead of, guards."""
-    import bitsandbytes as bnb
-    from bitsandbytes.autograd._functions import MatMul4Bit, matmul_4bit
-    assert bnb.__version__ == "0.50.2"
+    """Check loaded executable identity and repository-local starter provenance."""
     assert canonical_guards._verified_starter(starter)
-    objects = (bnb.nn.Linear4bit.forward, MatMul4Bit, matmul_4bit)
-    for name, obj in zip(BNB_HASHES, objects):
-        assert hashlib.sha256(inspect.getsource(obj).encode()).hexdigest() == BNB_HASHES[name], name
+    assert canonical_bnb(), "noncanonical-bnb-executable"
 
 
 class _NativeHalfSwiGLU(torch.autograd.Function):

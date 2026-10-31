@@ -1,0 +1,320 @@
+Map:   0%|          | 0/256 [00:00<?, ? examples/s][transformers] return_assistant_tokens_mask==True but chat template does not contain `{% generation %}` keyword.
+Map:  16%|█▌        | 40/256 [00:00<00:00, 384.39 examples/s]Map:  35%|███▌      | 90/256 [00:00<00:00, 447.46 examples/s]Map:  59%|█████▊    | 150/256 [00:00<00:00, 513.29 examples/s]Map:  79%|███████▉  | 202/256 [00:00<00:00, 514.45 examples/s]Map: 100%|██████████| 256/256 [00:00<00:00, 518.95 examples/s]Map: 100%|██████████| 256/256 [00:00<00:00, 465.11 examples/s]
+Map:   0%|          | 0/256 [00:00<?, ? examples/s]Map: 100%|██████████| 256/256 [00:00<00:00, 4840.25 examples/s]
+Map:   0%|          | 0/256 [00:00<?, ? examples/s]Map: 100%|██████████| 256/256 [00:00<00:00, 4735.44 examples/s]
+Map:   0%|          | 0/256 [00:00<?, ? examples/s]Map:  16%|█▌        | 41/256 [00:00<00:00, 402.57 examples/s]Map:  34%|███▍      | 88/256 [00:00<00:00, 435.55 examples/s]Map:  52%|█████▏    | 132/256 [00:00<00:00, 434.68 examples/s]Map:  69%|██████▉   | 177/256 [00:00<00:00, 437.24 examples/s]Map:  88%|████████▊ | 224/256 [00:00<00:00, 444.07 examples/s]Map: 100%|██████████| 256/256 [00:00<00:00, 407.84 examples/s]
+Map:   0%|          | 0/256 [00:00<?, ? examples/s]Map: 100%|██████████| 256/256 [00:00<00:00, 4021.99 examples/s]
+Map:   0%|          | 0/256 [00:00<?, ? examples/s]Map: 100%|██████████| 256/256 [00:00<00:00, 4430.60 examples/s]
+Map:   0%|          | 0/9 [00:00<?, ? examples/s]Map: 100%|██████████| 9/9 [00:00<00:00, 308.62 examples/s]
+Map:   0%|          | 0/9 [00:00<?, ? examples/s]Map: 100%|██████████| 9/9 [00:00<00:00, 1886.97 examples/s]
+Map:   0%|          | 0/9 [00:00<?, ? examples/s]Map: 100%|██████████| 9/9 [00:00<00:00, 1907.18 examples/s]
+Map:   0%|          | 0/3 [00:00<?, ? examples/s]Map: 100%|██████████| 3/3 [00:00<00:00, 337.63 examples/s]
+Map:   0%|          | 0/3 [00:00<?, ? examples/s]Map: 100%|██████████| 3/3 [00:00<00:00, 588.67 examples/s]
+Map:   0%|          | 0/3 [00:00<?, ? examples/s]Map: 100%|██████████| 3/3 [00:00<00:00, 597.51 examples/s]
+Map:   0%|          | 0/2 [00:00<?, ? examples/s]Map:  50%|█████     | 1/2 [00:00<00:00, 51.01 examples/s]
+Map:   0%|          | 0/256 [00:00<?, ? examples/s]Map:  16%|█▌        | 41/256 [00:00<00:00, 398.21 examples/s]Map:  34%|███▎      | 86/256 [00:00<00:00, 425.76 examples/s]Map:  54%|█████▍    | 139/256 [00:00<00:00, 467.44 examples/s]Map:  75%|███████▍  | 191/256 [00:00<00:00, 480.86 examples/s]Map:  95%|█████████▍| 242/256 [00:00<00:00, 488.77 examples/s]Map: 100%|██████████| 256/256 [00:00<00:00, 439.69 examples/s]
+Map:   0%|          | 0/256 [00:00<?, ? examples/s]Map:  18%|█▊        | 45/256 [00:00<00:00, 433.76 examples/s]Map:  37%|███▋      | 94/256 [00:00<00:00, 459.53 examples/s]Map:  61%|██████▏   | 157/256 [00:00<00:00, 530.83 examples/s]Map:  91%|█████████ | 232/256 [00:00<00:00, 515.08 examples/s]Map: 100%|██████████| 256/256 [00:00<00:00, 475.03 examples/s]
+{
+  "mode": "pinned_text_parity_gate",
+  "versions": {
+    "datasets": "4.8.5",
+    "soup-cli": "0.77.0",
+    "transformers": "5.16.1",
+    "trl": "0.29.1",
+    "torch": "2.11.0+cu128",
+    "peft": "0.20.0"
+  },
+  "native_template": true,
+  "template_provenance": "parent_trusted_snapshot_verified",
+  "trusted_manifest_sha256": "9912804346f339cf7d733dbcb2ab13d45594dd958c9cccbfc17885bcbaadd806",
+  "model_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "tokenizer_files_sha256": {
+    "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+    "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+  },
+  "template_sha256": "cd8e9439f0570856fd70470bf8889ebd8b5d1107207f67a5efb46e342330527f",
+  "public_source_sha256": "93d036d912bd81c337dc29893e13a76f36161d96f896ef4e02492e2f1a21a0dd",
+  "public_eval_source_sha256": "b7f85b78ba3186dce4deab7cfb8bf8dcf7998e1517c5749ac0f5005886c6f70e",
+  "cases": {
+    "public": {
+      "rows": 256,
+      "output_sha256": "3ee1c5e531fc5475baceaef897d17a39016f16c3ad21c2082cabddea78cedecc",
+      "features": {
+        "input_ids": {
+          "feature": {
+            "dtype": "int32",
+            "_type": "Value"
+          },
+          "_type": "List"
+        },
+        "labels": {
+          "feature": {
+            "dtype": "int64",
+            "_type": "Value"
+          },
+          "_type": "List"
+        },
+        "attention_mask": {
+          "feature": {
+            "dtype": "int8",
+            "_type": "Value"
+          },
+          "_type": "List"
+        }
+      },
+      "columns": [
+        "input_ids",
+        "labels",
+        "attention_mask"
+      ],
+      "rewind_input_fingerprint": "f3293e458634dc05b815e7b3287d3dd5bea0daaec2fefcf00124a2daa14ca647",
+      "collated_batches": 128,
+      "causal_counts_sha256": "783f913be7657355d174969750423e32df1a7fc991e94d0afe2999649f5472cc"
+    },
+    "public_eval": {
+      "rows": 256,
+      "output_sha256": "dd6eb6931bb8325e8725618efd66299ae73aff47567361714d77952dcce7efbf",
+      "features": {
+        "input_ids": {
+          "feature": {
+            "dtype": "int32",
+            "_type": "Value"
+          },
+          "_type": "List"
+        },
+        "labels": {
+          "feature": {
+            "dtype": "int64",
+            "_type": "Value"
+          },
+          "_type": "List"
+        },
+        "attention_mask": {
+          "feature": {
+            "dtype": "int8",
+            "_type": "Value"
+          },
+          "_type": "List"
+        }
+      },
+      "columns": [
+        "input_ids",
+        "labels",
+        "attention_mask"
+      ],
+      "rewind_input_fingerprint": "fad78be071e583ac99f52f6dff35002d84af939bf3c4ab5a7bbc71447b8c0753",
+      "collated_batches": 128,
+      "causal_counts_sha256": "7ad072e30f6a06e42cf9038dc9e0fd744c899e0573c79ff4d71cd2a019c9b461"
+    },
+    "robust": {
+      "rows": 9,
+      "output_sha256": "b7dfb9f39309f50febc8bde9cd89e614e091488125a570f6b7d3f692c5c40f71",
+      "features": {
+        "input_ids": {
+          "feature": {
+            "dtype": "int32",
+            "_type": "Value"
+          },
+          "_type": "List"
+        },
+        "labels": {
+          "feature": {
+            "dtype": "int64",
+            "_type": "Value"
+          },
+          "_type": "List"
+        },
+        "attention_mask": {
+          "feature": {
+            "dtype": "int8",
+            "_type": "Value"
+          },
+          "_type": "List"
+        }
+      },
+      "columns": [
+        "input_ids",
+        "labels",
+        "attention_mask"
+      ],
+      "rewind_input_fingerprint": "e5218e6e60b18ce18c3fdc59ff954e9ab5fac653ae0bfd4d27103ed6a92f5364",
+      "collated_batches": 6,
+      "causal_counts_sha256": "dbc13eed111cfa80385134aff98da85a25779f54e92ac6196aae13874935dc7d"
+    },
+    "retained": {
+      "rows": 3,
+      "output_sha256": "df6266f3eda44fb3048892fda643d5e5c666d5767a8a2b83945c28909f0f2f2e",
+      "features": {
+        "row_id": {
+          "dtype": "int64",
+          "_type": "Value"
+        },
+        "extra": {
+          "dtype": "string",
+          "_type": "Value"
+        },
+        "score": {
+          "dtype": "float64",
+          "_type": "Value"
+        },
+        "flag": {
+          "dtype": "bool",
+          "_type": "Value"
+        },
+        "empty": {
+          "dtype": "null",
+          "_type": "Value"
+        },
+        "input_ids": {
+          "feature": {
+            "dtype": "int32",
+            "_type": "Value"
+          },
+          "_type": "List"
+        },
+        "labels": {
+          "feature": {
+            "dtype": "int64",
+            "_type": "Value"
+          },
+          "_type": "List"
+        },
+        "attention_mask": {
+          "feature": {
+            "dtype": "int8",
+            "_type": "Value"
+          },
+          "_type": "List"
+        }
+      },
+      "columns": [
+        "row_id",
+        "extra",
+        "score",
+        "flag",
+        "empty",
+        "input_ids",
+        "labels",
+        "attention_mask"
+      ],
+      "rewind_input_fingerprint": "3c71fad485a49c20489cd9afe7f97016891109b5d3998acaa00ce6da79702bed",
+      "collated_batches": 2,
+      "causal_counts_sha256": "2f6d1ac27199d7ac45b0e44a1a79eaaf2c5ef32c6fdc84009994fbaacbc5c220"
+    }
+  },
+  "timings": [
+    {
+      "variant": "original",
+      "components_inclusive": {
+        "arrow_from_dict_inclusive": {
+          "calls": 1,
+          "seconds": 0.005673172000115301
+        },
+        "initial_arrow_from_list": {
+          "calls": 1,
+          "seconds": 0.005725710000206163
+        },
+        "dataset_map_inclusive": {
+          "calls": 1,
+          "seconds": 2.9334661560001223
+        },
+        "map_total": {
+          "calls": 1,
+          "seconds": 2.9392362449998473
+        }
+      }
+    },
+    {
+      "variant": "normalized",
+      "components_inclusive": {
+        "formatter_guard": {
+          "calls": 1,
+          "seconds": 0.007911851999779174
+        },
+        "arrow_from_dict_inclusive": {
+          "calls": 2,
+          "seconds": 0.02940419400056271
+        },
+        "initial_arrow_from_list": {
+          "calls": 1,
+          "seconds": 0.005603069999779109
+        },
+        "normalized_schema_guard": {
+          "calls": 1,
+          "seconds": 0.009683588999905623
+        },
+        "normalized_map_core_inclusive": {
+          "calls": 1,
+          "seconds": 0.5449263290001909
+        },
+        "map_total": {
+          "calls": 1,
+          "seconds": 0.5682298620004076
+        }
+      }
+    },
+    {
+      "variant": "normalized",
+      "components_inclusive": {
+        "formatter_guard": {
+          "calls": 1,
+          "seconds": 0.010062952000225778
+        },
+        "arrow_from_dict_inclusive": {
+          "calls": 2,
+          "seconds": 0.02888875899998311
+        },
+        "initial_arrow_from_list": {
+          "calls": 1,
+          "seconds": 0.009227776999978232
+        },
+        "normalized_schema_guard": {
+          "calls": 1,
+          "seconds": 0.010649069999999483
+        },
+        "normalized_map_core_inclusive": {
+          "calls": 1,
+          "seconds": 0.5658988710001722
+        },
+        "map_total": {
+          "calls": 1,
+          "seconds": 0.5959443039996586
+        }
+      }
+    },
+    {
+      "variant": "original",
+      "components_inclusive": {
+        "arrow_from_dict_inclusive": {
+          "calls": 1,
+          "seconds": 0.0054105639997032995
+        },
+        "initial_arrow_from_list": {
+          "calls": 1,
+          "seconds": 0.0055193700000018
+        },
+        "dataset_map_inclusive": {
+          "calls": 1,
+          "seconds": 2.6901432829999976
+        },
+        "map_total": {
+          "calls": 1,
+          "seconds": 2.6957260429999224
+        }
+      }
+    }
+  ],
+  "remaining": [
+    "actual model placement/quantization/hooks",
+    "actual training Rewind ids/counts/losses",
+    "official same-session T4 full runs"
+  ],
+  "causal_error": [
+    "ValueError",
+    "validation row 2: no causal-loss target remains after tokenization/truncation at data.max_length=512; the assistant response is absent or fully truncated. Increase data.max_length or shorten the prompt.",
+    "NoCausalLossTargetError",
+    "no causal-loss target remains after tokenization/truncation at data.max_length=512; the assistant response is absent or fully truncated. Increase data.max_length or shorten the prompt."
+  ],
+  "cuda_initialized": false,
+  "passed": true
+}
