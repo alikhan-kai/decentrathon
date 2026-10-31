@@ -231,11 +231,12 @@ def _install():
         cos, sin = position_embeddings
         query_states, key_states = mq.apply_rotary_pos_emb(query_states, key_states, cos, sin)
         dropout = 0.0 if not self.training else self.attention_dropout
+        from .attention_adapter import row_attention
         pieces, start = [], 0
         for n in lens:
             end = start + n
             # The only attention arithmetic change: explicit per-row helper/fallback.
-            from .attention_adapter import row_attention
+            # row_attention is imported above
             row_kwargs = dict(kwargs)
             row_kwargs.setdefault("past_key_values", past_key_values)
             row_kwargs.setdefault("sliding_window", self.sliding_window)

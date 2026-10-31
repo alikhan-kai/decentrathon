@@ -11,6 +11,7 @@ _HELPER_FLAGS = frozenset(('output_attentions', 'past_key_values', 'use_cache',
                            'position_bias', 'sliding_window', 'is_causal'))
 # The packing admission/position constructor already establishes these positions.
 _SCOPED_METADATA = frozenset(('position_ids', 'output_hidden_states', 'return_dict'))
+_packed_mod = None
 
 
 def reset_stats():
@@ -31,8 +32,10 @@ def stats():
 
 def row_attention(module, query, key, value, attention_mask, *, fallback,
                   dropout=0.0, scaling=None, **kwargs):
-    from . import packed
-    active=packed._ACTIVE.get()
+    global _packed_mod
+    if _packed_mod is None:
+        from . import packed as _packed_mod
+    active=_packed_mod._ACTIVE.get()
     in_scope=active is not None and id(module) in active[0]
     unknown=set(kwargs)-_HELPER_FLAGS-_SCOPED_METADATA
     result=None

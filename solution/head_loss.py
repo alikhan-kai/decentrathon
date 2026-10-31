@@ -20,7 +20,7 @@ import triton
 import triton.language as tl
 
 BLOCK = 2048
-CHUNK = 768
+CHUNK = 1536
 IGNORE = -100
 
 
