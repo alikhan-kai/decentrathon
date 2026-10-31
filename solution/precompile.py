@@ -46,33 +46,34 @@ def _specs():
     f16, f32, i32, i64, u8 = torch.float16, torch.float32, torch.int32, torch.int64, torch.uint8
     norm = dict(BLOCK=triton.next_power_of_2(HIDDEN), num_warps=rmsnorm.NUM_WARPS)
     head = dict(BLOCK=head_loss.BLOCK, num_warps=8)
+    rope = rotary._triton_kernel()
+
     specs = [
-        # nf4.dequantize_nf4: packed weight, absmax, code table, fp16 out, n = weights (all % 16 == 0)
+        # 1. Immediate forward kernels needed on Layer 0 first
+        (rmsnorm.rmsnorm_fwd_kernel, (f32, f32, f32, f32, HIDDEN, 1e-6), norm),
         (nf4.nf4_dequant_kernel, (u8, f32, f32, f16, HIDDEN * HIDDEN),
          dict(BYTES=nf4.BYTES_PER_PROGRAM, BLOCKSIZE=nf4.BLOCKSIZE, num_warps=nf4.NUM_WARPS)),
-        # FusedRMSNorm: fp32 residual stream, fp32 frozen weight
-        (rmsnorm.rmsnorm_fwd_kernel, (f32, f32, f32, f32, HIDDEN, 1e-6), norm),
-        (rmsnorm.rmsnorm_bwd_kernel, (f32, f32, f32, f32, f32, HIDDEN), norm),
-        # _FusedHeadLoss: fp16 logits chunk [c, V], int64 targets; forward stores rows, backward grads
-        (head_loss.head_loss_kernel, (f16, i64, VOCAB, VOCAB, f32, f32, i32, None),
-         dict(WITH_GRAD=False, **head)),
-        (head_loss.head_loss_kernel, (f16, i64, VOCAB, VOCAB, None, None, None, f32),
-         dict(WITH_GRAD=True, **head)),
     ]
-    rope = rotary._triton_kernel()
     if rope is not None:
-        # rotary._launch: fp32 Q/K and trig; counts, T and strides are do_not_specialize
-        for backward in (False, True):
-            specs.append((rope, (f32,) * 6 + (1000, 1000, 4, 1000, HEADS, KV_HEADS, HEAD_DIM)
-                          + (1000,) * 14 + (backward, 256),
-                          dict(num_warps=4, enable_fp_fusion=False)))
-    # Starter SwiGLU (not our kernel, but its compile is in the wall time too): native_half saves
-    # fp16 gate/up with an fp32 output; the recompute branch and eval run it in fp32.
+        specs.append((rope, (f32,) * 6 + (1000, 1000, 4, 1000, HEADS, KV_HEADS, HEAD_DIM)
+                      + (1000,) * 14 + (False, 256),
+                      dict(num_warps=4, enable_fp_fusion=False)))
     n = 2048 * 8960
-    for gate in (f16, f32):
-        specs.append((swiglu.example_swiglu_fwd_kernel, (gate, gate, f32, n), dict(BLOCK=swiglu.BLOCK)))
-        specs.append((swiglu.example_swiglu_bwd_kernel, (f32, gate, gate, f32, f32, n),
-                      dict(BLOCK=swiglu.BLOCK)))
+    specs.append((swiglu.example_swiglu_fwd_kernel, (f16, f16, f32, n), dict(BLOCK=swiglu.BLOCK)))
+    specs.append((swiglu.example_swiglu_fwd_kernel, (f32, f32, f32, n), dict(BLOCK=swiglu.BLOCK)))
+
+    # 2. Backward & loss kernels needed later in the step
+    specs.append((rmsnorm.rmsnorm_bwd_kernel, (f32, f32, f32, f32, f32, HIDDEN), norm))
+    if rope is not None:
+        specs.append((rope, (f32,) * 6 + (1000, 1000, 4, 1000, HEADS, KV_HEADS, HEAD_DIM)
+                      + (1000,) * 14 + (True, 256),
+                      dict(num_warps=4, enable_fp_fusion=False)))
+    specs.append((swiglu.example_swiglu_bwd_kernel, (f32, f16, f16, f32, f32, n), dict(BLOCK=swiglu.BLOCK)))
+    specs.append((swiglu.example_swiglu_bwd_kernel, (f32, f32, f32, f32, f32, n), dict(BLOCK=swiglu.BLOCK)))
+    specs.append((head_loss.head_loss_kernel, (f16, i64, VOCAB, VOCAB, f32, f32, i32, None),
+                  dict(WITH_GRAD=False, **head)))
+    specs.append((head_loss.head_loss_kernel, (f16, i64, VOCAB, VOCAB, None, None, None, f32),
+                  dict(WITH_GRAD=True, **head)))
     return specs
 
 
