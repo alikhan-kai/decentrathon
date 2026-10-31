@@ -1,13 +1,13 @@
 # Native-hybrid candidate r1
 
-**Status: single full run + component passes; formal admission pending.**
-The measured runtime completed one solution-only, seed-1, 64-step run on one
-visible Tesla T4: **58.51 s, 4421 MiB, eval loss 2.04943**. The accompanying
-79 official Soup regressions passed. These observations establish neither formal
-admission nor a speedup. The parent restarted the full T4 solution suite and
-ABBA after migrating the fallback fixture; those final results remain pending.
-The previous suite's 271 passed / 126 skipped / 27 fixture setup errors are
-historical evidence, not a successful full-suite result.
+**Status: final exact-candidate T4 ABBA completed; all ten official checks passed.**
+Solution 59.40 / 59.65 seconds, both 4421 MiB; harness median **59.52 seconds**.
+Base median 76.64 seconds / 14345 MiB: 1.2876x speedup, 3.2447x memory ratio.
+Evaluation loss 2.04944 versus 2.04969; minimum eligible share printed as 10.2%.
+298 solution tests passed (126 skipped), plus 79 official regressions.
+See [FINAL_VALIDATION.md](FINAL_VALIDATION.md) for recovered notebook evidence,
+exact provenance and the final raw archive/adapters export gap. Draft remains
+unmerged. Earlier failed fixture attempt is retained as historical evidence.
 
 Source: `/tmp/decentrathon-native-hybrid-stage-r1`, variant
 `packed_gqa_native_hybrid`, copied byte-for-byte onto parent
