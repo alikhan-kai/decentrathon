@@ -1,30 +1,21 @@
-"""Private experiment, ONLY after canonical_guards.MeasurementPatch.reason_for.
+"""Private experiment, ONLY after canonical_guards.SavedActivationPatch.reason_for.
 
 Same lossless-save hypothesis as packed saves; no original kernel credit.
 No installer, registry entry, class patch, or broad public activation API.
 """
-import hashlib
-import inspect
-
 import torch
 
 ENABLED = False
-BNB_HASHES = {
-    "Linear4bit.forward": "d52cf63457717cc718ca0a449dad0967171e679be90d5d2adcafe2e8a141093d",
-    "MatMul4Bit": "243126867f134209a5c94687f17b90bf20b1b9e5391d6299810b8053f6df070b",
-    "matmul_4bit": "a219d40d62264de60a424e8f9f1bab7656136eb7264a575d39d57a7e2f25ed4a",
-}
+PINNED_BNB = "0.50.2"
 
 
-def _validate_sources(starter, canonical_guards):
-    """One-time provenance check in addition to, never instead of, guards."""
+def _validate_versions():
+    """Reason string if the installed bitsandbytes is not the pinned one, else None. The decision
+    uses package versions only; no library source is read."""
     import bitsandbytes as bnb
-    from bitsandbytes.autograd._functions import MatMul4Bit, matmul_4bit
-    assert bnb.__version__ == "0.50.2"
-    assert canonical_guards._verified_starter(starter)
-    objects = (bnb.nn.Linear4bit.forward, MatMul4Bit, matmul_4bit)
-    for name, obj in zip(BNB_HASHES, objects):
-        assert hashlib.sha256(inspect.getsource(obj).encode()).hexdigest() == BNB_HASHES[name], name
+    if bnb.__version__ != PINNED_BNB:
+        return "unpinned-bitsandbytes-version"
+    return None
 
 
 class _NativeHalfSwiGLU(torch.autograd.Function):
@@ -64,7 +55,7 @@ class _NativeHalfSwiGLU(torch.autograd.Function):
 def _validated_entry(mlp, x, starter):
     """Caller MUST have just passed the EXISTING canonical runtime guards.
 
-    Also requires _validate_sources once and first-order-only caller contract.
+    Also requires _validate_versions once and first-order-only caller contract.
     Never hoist a shared x.to(float16) out of these TWO projection calls.
     """
     gate = mlp.gate_proj(x.to(torch.float16))

@@ -48,7 +48,6 @@ def _task_input_shape(x):
                  or (x.shape[0] == 1 and 1 <= x.shape[1] <= 2048)))
 
 
-BNB_FORWARD_SHA256 = "d52cf63457717cc718ca0a449dad0967171e679be90d5d2adcafe2e8a141093d"
 _active = None
 
 
@@ -102,7 +101,7 @@ def _global_hooks():
                if key.startswith("_global_") and "hook" in key)
 
 
-class MeasurementPatch:
+class SavedActivationPatch:
     def __init__(self, enabled=False, reason="disabled"):
         self.enabled, self.reason = enabled, reason
         self.packed_calls = 0
@@ -188,7 +187,7 @@ class MeasurementPatch:
         return None
 
 
-def install_for_measurement(*, enable=False, first_order_training=False, starter_module=None):
+def install_saved_activation_packing(*, enable=False, first_order_training=False, starter_module=None):
     """Call AFTER solution.apply(); supports installation before model creation.
 
     Defaults do nothing. Explicit first_order_training is a caller contract:
@@ -198,9 +197,9 @@ def install_for_measurement(*, enable=False, first_order_training=False, starter
     """
     global _active
     if not enable:
-        return MeasurementPatch(reason="disabled")
+        return SavedActivationPatch(reason="disabled")
     if not first_order_training:
-        return MeasurementPatch(reason="first-order-training-not-declared")
+        return SavedActivationPatch(reason="first-order-training-not-declared")
     if _active is not None:
         return _active
     import bitsandbytes as bnb
@@ -209,26 +208,22 @@ def install_for_measurement(*, enable=False, first_order_training=False, starter
     from transformers.activations import SiLUActivation
 
     if bnb.__version__ != "0.50.2" or transformers.__version__ != "5.16.1":
-        return MeasurementPatch(reason="unpinned-library-version")
+        return SavedActivationPatch(reason="unpinned-library-version")
     starter = starter_module or importlib.import_module("solution.swiglu")
     if not _verified_starter(starter):
-        return MeasurementPatch(reason="not-exact-r8-starter")
-    try:
-        forward_hash = hashlib.sha256(inspect.getsource(bnb.nn.Linear4bit.forward).encode()).hexdigest()
-    except (OSError, TypeError):
-        forward_hash = None
-    if forward_hash != BNB_FORWARD_SHA256:
-        return MeasurementPatch(reason="noncanonical-bnb-forward")
+        return SavedActivationPatch(reason="not-exact-r8-starter")
     baseline = Qwen2MLP.forward
     code = next(c for c in starter.patch_qwen2_mlp.__code__.co_consts
                 if inspect.iscode(c) and c.co_name == "forward")
     if getattr(baseline, "__code__", None) is not code:
-        return MeasurementPatch(reason="current-team-starter-not-installed-or-custom-forward")
+        return SavedActivationPatch(reason="current-team-starter-not-installed-or-custom-forward")
 
     from . import native_half
-    native_half._validate_sources(starter, importlib.import_module(__name__))
+    bad = native_half._validate_versions()
+    if bad:
+        return SavedActivationPatch(reason=bad)
 
-    handle = MeasurementPatch(enabled=True, reason="explicit-measurement-only")
+    handle = SavedActivationPatch(enabled=True, reason="explicit-install")
     handle.mlp_cls, handle.linear_cls, handle.params_cls = Qwen2MLP, bnb.nn.Linear4bit, bnb.nn.Params4bit
     handle.act_cls = SiLUActivation
     handle.linear_forward, handle.baseline = bnb.nn.Linear4bit.forward, baseline

@@ -21,10 +21,12 @@ def adapt_apply(original):
         packed.patch()
         from .stage_options import ENABLE_SAVE
         if ENABLE_SAVE:
-            from .swiglu_pack import install_for_measurement
-            _SAVE_HANDLE=install_for_measurement(enable=True,first_order_training=True)
+            from .swiglu_pack import install_saved_activation_packing
+            _SAVE_HANDLE=install_saved_activation_packing(enable=True,first_order_training=True)
             if not _SAVE_HANDLE.enabled:
-                raise RuntimeError('Explicit save stage installation declined: '+_SAVE_HANDLE.reason)
+                # Not a crash: the unmodified MLP path trains the same task, only slower / with more memory.
+                print('SAVED_ACTIVATION_PACKING DISABLED, ordinary MLP path in use: '+_SAVE_HANDLE.reason,
+                      flush=True)
         if not _REPORT_REGISTERED:
             from . import attention_adapter  # load while the staged package is present
             atexit.register(_report_stats)

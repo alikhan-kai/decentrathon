@@ -272,10 +272,12 @@ def patch_rope():
     """
     try:
         module = importlib.import_module("transformers.models.qwen2.modeling_qwen2")
-    except ImportError:
+    except ImportError as exc:
+        print(f"ROTARY NOT PATCHED: cannot import the Qwen2 module ({exc})", flush=True)
         return False
     original = getattr(module, "apply_rotary_pos_emb", None)
     if not callable(original):
+        print("ROTARY NOT PATCHED: Qwen2 module has no apply_rotary_pos_emb", flush=True)
         return False
     if getattr(original, "_soup_rope_original", None) is not None:
         return True
