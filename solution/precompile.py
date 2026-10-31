@@ -34,7 +34,7 @@ def _specs():
     import torch
     import triton
 
-    from . import head_loss, nf4, rmsnorm, rotary, swiglu
+    from . import dropout_pack, head_loss, nf4, rmsnorm, rotary, swiglu
 
     f16, f32, i32, i64, u8 = torch.float16, torch.float32, torch.int32, torch.int64, torch.uint8
     norm = dict(BLOCK=triton.next_power_of_2(HIDDEN), num_warps=rmsnorm.NUM_WARPS)
@@ -49,6 +49,7 @@ def _specs():
         (nf4.nf4_dequant_kernel, (u8, u8, f32, f32, f32, f32, f16, HIDDEN * HIDDEN),
          dict(BYTES=nf4.BYTES_PER_PROGRAM, BLOCKSIZE=nf4.BLOCKSIZE, BLOCKSIZE2=nf4.BLOCKSIZE2,
               NESTED=True, num_warps=nf4.NUM_WARPS)),
+        (dropout_pack.pack_dropout_mask, (torch.bool, u8, n, 128), {}),
         (rope, rope_args + (False, 256), rope_kwargs),
         (fwd, (f16, f16, f16, n), dict(BLOCK=swiglu.BLOCK)),
         (head_loss.head_loss_kernel, (f16, i64, VOCAB, VOCAB, f32, f32, i32, None),
@@ -58,6 +59,8 @@ def _specs():
         (bwd, (f16, f16, f16, f16, f16, n), dict(BLOCK=swiglu.BLOCK)),
         (rope, rope_args + (True, 256), rope_kwargs),
         (rmsnorm.rmsnorm_bwd_kernel, (f32, f32, f32, f32, f32, HIDDEN), norm),
+        (dropout_pack.packed_dropout_backward, (f32, u8, f32, n, 1.0 / 0.95, 512),
+         dict(enable_fp_fusion=False)),
     ]
     return [spec for spec in specs if spec[0] is not None]
 

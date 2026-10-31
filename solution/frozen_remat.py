@@ -1,7 +1,7 @@
 """Private frozen-NF4 branch rematerialization, after unchanged PR7 guards.
 
 Only hybrid_mlp's N > 1024 branch calls this helper. Down remains outside;
-only the original FP32 hidden input is saved across forward/backward. This is
+only the canonical FP16 projection input is saved across forward/backward. This is
 first-order eager training only, exactly as declared to PR7's installer.
 
 Uses the unchanged starter kernels. ALL starter SwiGLU credit stays excluded.
@@ -37,7 +37,11 @@ class _FrozenBranchRemat(torch.autograd.Function):
         ctx.cpu_rng = torch.get_rng_state()
         ctx.cuda_rng = torch.cuda.get_rng_state(hidden.device)
         ctx.cuda_amp, ctx.cpu_amp = _autocast_state("cuda"), _autocast_state("cpu")
-        ctx.save_for_backward(hidden)
+        ctx.hidden_dtype = hidden.dtype
+        # Both canonical frozen projections consume this exact FP16 rounding.
+        # Backward needs those projection inputs, not their pre-cast FP32 values.
+        # Keep the TWO outer FP32 edges: half cotangents must never add in FP16.
+        ctx.save_for_backward(hidden.to(torch.float16))
         gate, up = _project(module, hidden)
         # Canonical bnb returns contiguous half. Keep the starter's layout
         # normalization even if that implementation detail changes.
@@ -93,7 +97,7 @@ class _FrozenBranchRemat(torch.autograd.Function):
         (dhidden_gate,) = torch.autograd.grad(gate_edge, hidden_gate, dgate16,
                                             create_graph=False, allow_unused=False)
         del gate_edge, dgate16
-        return dhidden_up, dhidden_gate, None, None
+        return dhidden_up.to(ctx.hidden_dtype), dhidden_gate.to(ctx.hidden_dtype), None, None
 
     @staticmethod
     def jvp(ctx, *tangents):

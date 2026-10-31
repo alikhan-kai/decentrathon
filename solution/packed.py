@@ -12,6 +12,7 @@ from collections import Counter
 from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass
+from itertools import accumulate
 
 import torch
 
@@ -212,7 +213,11 @@ def _install():
         position_embeddings = self.rotary_emb(hidden_states, positions)
         cos, sin = position_embeddings
         position_embeddings_16 = (cos.to(torch.float16), sin.to(torch.float16))
-        token = _ACTIVE.set((frozenset(id(layer.self_attn) for layer in self.layers), lens, position_embeddings_16))
+        cumulative = torch.tensor([0, *accumulate(lens)], dtype=torch.int32, device=hidden_states.device)
+        grouped_cumulative = torch.tensor([0, *accumulate(lens * 2)], dtype=torch.int32,
+                                           device=hidden_states.device)
+        token = _ACTIVE.set((frozenset(id(layer.self_attn) for layer in self.layers), lens,
+                             position_embeddings_16, cumulative, max(lens), grouped_cumulative))
         try:
             for decoder_layer in self.layers[: self.config.num_hidden_layers]:
                 hidden_states = decoder_layer(hidden_states, attention_mask=None, position_embeddings=position_embeddings,
@@ -263,18 +268,27 @@ def _install():
                     and query_states.requires_grad and value_states.requires_grad):
                 cos16, sin16 = active[2]
                 query_states, key_states = mq.apply_rotary_pos_emb(query_states, key_states, cos16, sin16)
-                k16 = repeat_kv(key_states, 6)
-                v16 = repeat_kv(value_states, 6)
-                pieces, start = [], 0
-                for n in lens:
-                    end = start + n
-                    pieces.append(F.scaled_dot_product_attention(
-                        query_states[:, :, start:end], k16[:, :, start:end], v16[:, :, start:end],
-                        attn_mask=None, dropout_p=dropout, is_causal=True,
-                        scale=self.scaling, enable_gqa=False,
-                    ))
-                    start = end
-                attn_output = torch.cat(pieces, dim=2).transpose(1, 2).contiguous().reshape(*input_shape, -1)
+                from .varlen_attention import try_grouped_attention, try_packed_attention
+                attention = try_grouped_attention(query_states, key_states, value_states,
+                                                  active[5], active[4], dropout=dropout,
+                                                  scale=self.scaling)
+                if attention is None:
+                    k16 = repeat_kv(key_states, 6)
+                    v16 = repeat_kv(value_states, 6)
+                    attention = try_packed_attention(query_states, k16, v16, active[3], active[4],
+                                                     dropout=dropout, scale=self.scaling)
+                if attention is None:
+                    pieces, start = [], 0
+                    for n in lens:
+                        end = start + n
+                        pieces.append(F.scaled_dot_product_attention(
+                            query_states[:, :, start:end], k16[:, :, start:end], v16[:, :, start:end],
+                            attn_mask=None, dropout_p=dropout, is_causal=True,
+                            scale=self.scaling, enable_gqa=False,
+                        ))
+                        start = end
+                    attention = torch.cat(pieces, dim=2)
+                attn_output = attention.transpose(1, 2).contiguous().reshape(*input_shape, -1)
                 return self.o_proj(attn_output).to(torch.float32), None
             query_states = query_states.to(torch.float32)
             key_states = key_states.to(torch.float32)

@@ -60,7 +60,8 @@ def patch():
             scaling = self.scaling[active_adapter]
 
             x_ = self._cast_input_dtype(x, lora_A.weight.dtype)
-            lora_out = lora_B(lora_A(dropout(x_)))
+            from .dropout_pack import dropout_or_pack
+            lora_out = lora_B(lora_A(dropout_or_pack(dropout, x_)))
             if lora_out.dtype != result_dtype:
                 lora_out = lora_out.to(result_dtype)
             result = torch.add(result, lora_out, alpha=scaling)

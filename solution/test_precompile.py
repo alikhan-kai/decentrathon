@@ -14,11 +14,12 @@ N = 300  # packed tokens, not a multiple of 16
 
 
 def _kernels():
-    from solution import head_loss, nf4, rmsnorm, rotary, swiglu
+    from solution import dropout_pack, head_loss, nf4, rmsnorm, rotary, swiglu
 
     return [nf4.nf4_dequant_kernel, rmsnorm.rmsnorm_fwd_kernel, rmsnorm.rmsnorm_bwd_kernel,
             head_loss.head_loss_kernel, rotary._triton_kernel(),
-            swiglu.example_swiglu_fwd_kernel, swiglu.example_swiglu_bwd_kernel]
+            swiglu.example_swiglu_fwd_kernel, swiglu.example_swiglu_bwd_kernel,
+            dropout_pack.pack_dropout_mask, dropout_pack.packed_dropout_backward]
 
 
 def _run_training_launches():
@@ -37,6 +38,9 @@ def _run_training_launches():
     )
 
     x = torch.randn(1, N, HIDDEN, device=dev, requires_grad=True)
+    from solution.dropout_pack import dropout_or_pack
+    dropout_or_pack(torch.nn.Dropout(.05).train(), x).sum().backward()
+    x.grad = None
     rmsnorm.rmsnorm(x, torch.rand(HIDDEN, device=dev), 1e-6).sum().backward()
 
     hidden = torch.randn(N, HIDDEN, device=dev, requires_grad=True)
