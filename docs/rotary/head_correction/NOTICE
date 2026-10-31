@@ -1,7 +1,0 @@
-The test-only rewind_reference.py contains excerpts of Soup 0.77.0's
-soup_cli/trainer/rewind_hf.py (RewindState and row_losses_from_token_losses).
-Source project: https://github.com/MakazhanAlpamys/Soup
-Copyright 2026 Makazhan Alpamys and the Soup contributors.
-Licensed under Apache License 2.0; see the accompanying LICENSE.
-The excerpt adds imports and a source-identification docstring for isolated tests.
-It is not imported by the production solution and does not replace the recorder.
