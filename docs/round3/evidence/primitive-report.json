@@ -1,0 +1,408 @@
+{
+  "status": "PRIMITIVE_BITWISE_PASS_PREPARED_AND_FULL_TASK_REQUIRED",
+  "integrity": {
+    "status": "PASS",
+    "baseline": "released remat_plus_half",
+    "runtime_files": {
+      "baseline": 21,
+      "candidate": 21
+    },
+    "changed_files": [
+      "solution/frozen_remat.py",
+      "solution/hybrid_mlp.py",
+      "solution/native_half.py"
+    ],
+    "starter_guards_registry_provenance_unchanged": true,
+    "native_remat_ast_delta": "forward output dtype, half grad ingress, final down widening; native layout fallback preserved",
+    "compiled_files": 56,
+    "artifact_files": 80
+  },
+  "encoding_cases": [
+    {
+      "operand": 0,
+      "scale": 1.0,
+      "encodings": 65536,
+      "nan_payload_or_sign_differences": 0
+    },
+    {
+      "operand": 0,
+      "scale": 65536.0,
+      "encodings": 65536,
+      "nan_payload_or_sign_differences": 0
+    },
+    {
+      "operand": 0,
+      "scale": 1.52587890625e-05,
+      "encodings": 65536,
+      "nan_payload_or_sign_differences": 0
+    },
+    {
+      "operand": 1,
+      "scale": 1.0,
+      "encodings": 65536,
+      "nan_payload_or_sign_differences": 0
+    },
+    {
+      "operand": 1,
+      "scale": 65536.0,
+      "encodings": 65536,
+      "nan_payload_or_sign_differences": 0
+    },
+    {
+      "operand": 1,
+      "scale": 1.52587890625e-05,
+      "encodings": 65536,
+      "nan_payload_or_sign_differences": 0
+    }
+  ],
+  "full_mlp_cases": [
+    {
+      "n": 1024,
+      "h": 1536,
+      "i": 8960,
+      "order": "ABBAABBA",
+      "measurements": [
+        {
+          "arm": "baseline",
+          "cuda_ms": 14.45958423614502,
+          "wall_ms": 14.53837700000804,
+          "peak_extra_bytes": 132530176
+        },
+        {
+          "arm": "candidate",
+          "cuda_ms": 13.879743576049805,
+          "wall_ms": 14.015183000083198,
+          "peak_extra_bytes": 105381888
+        },
+        {
+          "arm": "candidate",
+          "cuda_ms": 13.569215774536133,
+          "wall_ms": 13.645415999690158,
+          "peak_extra_bytes": 105381888
+        },
+        {
+          "arm": "baseline",
+          "cuda_ms": 14.540639877319336,
+          "wall_ms": 14.62695200007147,
+          "peak_extra_bytes": 132530176
+        },
+        {
+          "arm": "baseline",
+          "cuda_ms": 14.478015899658203,
+          "wall_ms": 14.557191000221792,
+          "peak_extra_bytes": 132530176
+        },
+        {
+          "arm": "candidate",
+          "cuda_ms": 13.491456031799316,
+          "wall_ms": 13.595142000212945,
+          "peak_extra_bytes": 105381888
+        },
+        {
+          "arm": "candidate",
+          "cuda_ms": 13.47059154510498,
+          "wall_ms": 13.559977000113577,
+          "peak_extra_bytes": 105381888
+        },
+        {
+          "arm": "baseline",
+          "cuda_ms": 14.48739242553711,
+          "wall_ms": 14.572764000149618,
+          "peak_extra_bytes": 132530176
+        }
+      ],
+      "median": {
+        "baseline": {
+          "cuda_ms": 14.482704162597656,
+          "wall_ms": 14.564977500185705,
+          "peak_extra_bytes": 132530176.0
+        },
+        "candidate": {
+          "cuda_ms": 13.530335903167725,
+          "wall_ms": 13.620278999951552,
+          "peak_extra_bytes": 105381888.0
+        }
+      },
+      "delta_candidate_minus_baseline": {
+        "cuda_ms": -0.9523682594299316,
+        "wall_ms": -0.9446985002341535,
+        "peak_extra_bytes": -27148288.0
+      }
+    },
+    {
+      "n": 1025,
+      "h": 1536,
+      "i": 8960,
+      "order": "ABBAABBA",
+      "measurements": [
+        {
+          "arm": "baseline",
+          "cuda_ms": 19.939327239990234,
+          "wall_ms": 20.03916300009223,
+          "peak_extra_bytes": 124322304
+        },
+        {
+          "arm": "candidate",
+          "cuda_ms": 18.901792526245117,
+          "wall_ms": 18.971470999986195,
+          "peak_extra_bytes": 104941568
+        },
+        {
+          "arm": "candidate",
+          "cuda_ms": 18.911008834838867,
+          "wall_ms": 18.983329000093363,
+          "peak_extra_bytes": 104941568
+        },
+        {
+          "arm": "baseline",
+          "cuda_ms": 19.834880828857422,
+          "wall_ms": 19.911023000076966,
+          "peak_extra_bytes": 124322304
+        },
+        {
+          "arm": "baseline",
+          "cuda_ms": 19.809823989868164,
+          "wall_ms": 19.895762000032846,
+          "peak_extra_bytes": 124322304
+        },
+        {
+          "arm": "candidate",
+          "cuda_ms": 18.92153549194336,
+          "wall_ms": 19.003534000148647,
+          "peak_extra_bytes": 104941568
+        },
+        {
+          "arm": "candidate",
+          "cuda_ms": 18.887680053710938,
+          "wall_ms": 18.979023000156303,
+          "peak_extra_bytes": 104941568
+        },
+        {
+          "arm": "baseline",
+          "cuda_ms": 19.882368087768555,
+          "wall_ms": 19.963703000030364,
+          "peak_extra_bytes": 124322304
+        }
+      ],
+      "median": {
+        "baseline": {
+          "cuda_ms": 19.85862445831299,
+          "wall_ms": 19.937363000053665,
+          "peak_extra_bytes": 124322304.0
+        },
+        "candidate": {
+          "cuda_ms": 18.906400680541992,
+          "wall_ms": 18.981176000124833,
+          "peak_extra_bytes": 104941568.0
+        }
+      },
+      "delta_candidate_minus_baseline": {
+        "cuda_ms": -0.9522237777709961,
+        "wall_ms": -0.9561869999288319,
+        "peak_extra_bytes": -19380736.0
+      }
+    },
+    {
+      "n": 2048,
+      "h": 1536,
+      "i": 8960,
+      "order": "ABBAABBA",
+      "measurements": [
+        {
+          "arm": "baseline",
+          "cuda_ms": 31.963584899902344,
+          "wall_ms": 32.05322999974669,
+          "peak_extra_bytes": 249561088
+        },
+        {
+          "arm": "candidate",
+          "cuda_ms": 30.134368896484375,
+          "wall_ms": 30.231547999846953,
+          "peak_extra_bytes": 212860928
+        },
+        {
+          "arm": "candidate",
+          "cuda_ms": 30.040224075317383,
+          "wall_ms": 30.157426000187115,
+          "peak_extra_bytes": 212860928
+        },
+        {
+          "arm": "baseline",
+          "cuda_ms": 31.979520797729492,
+          "wall_ms": 32.059213999673375,
+          "peak_extra_bytes": 249561088
+        },
+        {
+          "arm": "baseline",
+          "cuda_ms": 32.32883071899414,
+          "wall_ms": 32.42818900025668,
+          "peak_extra_bytes": 249561088
+        },
+        {
+          "arm": "candidate",
+          "cuda_ms": 30.300447463989258,
+          "wall_ms": 30.40247399985674,
+          "peak_extra_bytes": 212860928
+        },
+        {
+          "arm": "candidate",
+          "cuda_ms": 30.08710479736328,
+          "wall_ms": 30.184336999809602,
+          "peak_extra_bytes": 212860928
+        },
+        {
+          "arm": "baseline",
+          "cuda_ms": 31.94806480407715,
+          "wall_ms": 32.02886200006105,
+          "peak_extra_bytes": 249561088
+        }
+      ],
+      "median": {
+        "baseline": {
+          "cuda_ms": 31.971552848815918,
+          "wall_ms": 32.05622199971003,
+          "peak_extra_bytes": 249561088.0
+        },
+        "candidate": {
+          "cuda_ms": 30.110736846923828,
+          "wall_ms": 30.207942499828278,
+          "peak_extra_bytes": 212860928.0
+        }
+      },
+      "delta_candidate_minus_baseline": {
+        "cuda_ms": -1.8608160018920898,
+        "wall_ms": -1.8482794998817553,
+        "peak_extra_bytes": -36700160.0
+      }
+    },
+    {
+      "n": 4096,
+      "h": 1536,
+      "i": 8960,
+      "order": "ABBAABBA",
+      "measurements": [
+        {
+          "arm": "baseline",
+          "cuda_ms": 59.557823181152344,
+          "wall_ms": 59.650193999914336,
+          "peak_extra_bytes": 490733568
+        },
+        {
+          "arm": "candidate",
+          "cuda_ms": 55.830078125,
+          "wall_ms": 55.91683600005126,
+          "peak_extra_bytes": 417333248
+        },
+        {
+          "arm": "candidate",
+          "cuda_ms": 55.704864501953125,
+          "wall_ms": 55.7952290000685,
+          "peak_extra_bytes": 417333248
+        },
+        {
+          "arm": "baseline",
+          "cuda_ms": 59.60825729370117,
+          "wall_ms": 59.70285000012154,
+          "peak_extra_bytes": 490733568
+        },
+        {
+          "arm": "baseline",
+          "cuda_ms": 59.635135650634766,
+          "wall_ms": 59.74594400004207,
+          "peak_extra_bytes": 490733568
+        },
+        {
+          "arm": "candidate",
+          "cuda_ms": 55.75235366821289,
+          "wall_ms": 55.85545699977956,
+          "peak_extra_bytes": 417333248
+        },
+        {
+          "arm": "candidate",
+          "cuda_ms": 55.712223052978516,
+          "wall_ms": 55.80978600028175,
+          "peak_extra_bytes": 417333248
+        },
+        {
+          "arm": "baseline",
+          "cuda_ms": 59.53046417236328,
+          "wall_ms": 59.65245600009439,
+          "peak_extra_bytes": 490733568
+        }
+      ],
+      "median": {
+        "baseline": {
+          "cuda_ms": 59.58304023742676,
+          "wall_ms": 59.677653000107966,
+          "peak_extra_bytes": 490733568.0
+        },
+        "candidate": {
+          "cuda_ms": 55.7322883605957,
+          "wall_ms": 55.832621500030655,
+          "peak_extra_bytes": 417333248.0
+        }
+      },
+      "delta_candidate_minus_baseline": {
+        "cuda_ms": -3.8507518768310547,
+        "wall_ms": -3.8450315000773116,
+        "peak_extra_bytes": -73400320.0
+      }
+    }
+  ],
+  "seconds": 22.269035550999888,
+  "deterministic_enabled": true,
+  "deterministic_warn_only": false,
+  "cublas_workspace_config": ":4096:8",
+  "torch": "2.11.0+cu128",
+  "bnb": "0.50.2",
+  "device": "Tesla T4",
+  "source_hashes": {
+    "baseline": {
+      "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "NOTICE": "2f0089a88e9623e5f6eba497796f279c2fdb3a15be1df0973e4d0055d35876e4",
+      "solution/__init__.py": "66db347091a0789aa93fa87f4b2ebd0c719cb98d2c701dd346d36ce7c55e3db0",
+      "solution/attention_adapter.py": "1add9019d245aba7872f79bee155a86d8bbaab8ba47f548c956f23d621827e14",
+      "solution/attention_gqa.py": "f4d2cdafe0ece75c4a2510ce44acfec14a6f819040e16e0dca3b282b55ab3dd1",
+      "solution/bnb_provenance.py": "fe7a0c6fd7fa5597005e56f9be017020a5e25f4b3b816267c0abbc647f1c5905",
+      "solution/frozen_remat.py": "838b194fa2ea442ae8d3f3bbcc4b1128e6dddc46a762c3c17a552c2565c1e329",
+      "solution/head_loss.py": "fd66b7eef815487e5a80d201eab8dfc5706d1a1d0e83813ea90dfb7121a087b7",
+      "solution/hybrid_mlp.py": "fbf7edfda0af318641b1a3e64d4d76fb424e8a34310524c7e929845b3a56576f",
+      "solution/kcheck.py": "f6b29c27738e727d2c10811dd47d51ac004b0a9f7f910f01c9dd16eb99970daa",
+      "solution/lora.py": "e923126c5fad64c23b08eefc42edc5cdf0092fb09230e14ee14d79a3c2e7a806",
+      "solution/native_half.py": "d9ffe58b1ffaa5dd1c962ab5bc490a1f4597ba44c540dd5098417bed4a69d9de",
+      "solution/nf4.py": "94a4cd004cd83a09ec51794b9a05fd6d5da9d6e073f144b20e3e8a8cf9c93740",
+      "solution/packed.py": "263a8eb3bb7654aa2d152b78299308abbaed1b268c502b23ec56f88e48d595e2",
+      "solution/residual_norm.py": "6b453981e8570a9e448accde1422d4fbfc766d330d432ec6082a6f72d6de473c",
+      "solution/rmsnorm.py": "60bb02df363aab45cb9a32639850888d7203d784f83295bc713d4a93acd5b2c5",
+      "solution/rotary.py": "488522f8332e5402a85b5df74a9caaa080004c8ca9ab588f82c0f0ca292b2677",
+      "solution/stage_adapter.py": "f05b89a5c6b1d753bd5436c310c1ca32d27e13ce4a7a0e8478fa7131dc3c6194",
+      "solution/stage_options.py": "3aff930958f2f91c94ae26a3fa21e07e5714671a6a9d96450c0094c38dcf2afd",
+      "solution/swiglu.py": "e1dc639838c4c46ea0ed0aec3f0d904d360c92a91c601b943c9cfef85ca21c64",
+      "solution/swiglu_pack.py": "31548adc5021ca814156a162b3127adc6fa27d482c6aa13f0ba3c52687ab2e0e"
+    },
+    "candidate": {
+      "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "NOTICE": "2f0089a88e9623e5f6eba497796f279c2fdb3a15be1df0973e4d0055d35876e4",
+      "solution/__init__.py": "66db347091a0789aa93fa87f4b2ebd0c719cb98d2c701dd346d36ce7c55e3db0",
+      "solution/attention_adapter.py": "1add9019d245aba7872f79bee155a86d8bbaab8ba47f548c956f23d621827e14",
+      "solution/attention_gqa.py": "f4d2cdafe0ece75c4a2510ce44acfec14a6f819040e16e0dca3b282b55ab3dd1",
+      "solution/bnb_provenance.py": "fe7a0c6fd7fa5597005e56f9be017020a5e25f4b3b816267c0abbc647f1c5905",
+      "solution/frozen_remat.py": "29755cd064d335aaf1dff6eeaae3ca75c540bdbb2475c1deee8569a73189db9b",
+      "solution/head_loss.py": "fd66b7eef815487e5a80d201eab8dfc5706d1a1d0e83813ea90dfb7121a087b7",
+      "solution/hybrid_mlp.py": "4bec25c65ffd35bcba616b2ed3307dde70b9549c1146a7506c30b12b39c9e9ff",
+      "solution/kcheck.py": "f6b29c27738e727d2c10811dd47d51ac004b0a9f7f910f01c9dd16eb99970daa",
+      "solution/lora.py": "e923126c5fad64c23b08eefc42edc5cdf0092fb09230e14ee14d79a3c2e7a806",
+      "solution/native_half.py": "8b8f4d9485d40328162fa4a8a198796e7613a9a4cfe724d5b87d59bc6f5fd47f",
+      "solution/nf4.py": "94a4cd004cd83a09ec51794b9a05fd6d5da9d6e073f144b20e3e8a8cf9c93740",
+      "solution/packed.py": "263a8eb3bb7654aa2d152b78299308abbaed1b268c502b23ec56f88e48d595e2",
+      "solution/residual_norm.py": "6b453981e8570a9e448accde1422d4fbfc766d330d432ec6082a6f72d6de473c",
+      "solution/rmsnorm.py": "60bb02df363aab45cb9a32639850888d7203d784f83295bc713d4a93acd5b2c5",
+      "solution/rotary.py": "488522f8332e5402a85b5df74a9caaa080004c8ca9ab588f82c0f0ca292b2677",
+      "solution/stage_adapter.py": "f05b89a5c6b1d753bd5436c310c1ca32d27e13ce4a7a0e8478fa7131dc3c6194",
+      "solution/stage_options.py": "3aff930958f2f91c94ae26a3fa21e07e5714671a6a9d96450c0094c38dcf2afd",
+      "solution/swiglu.py": "e1dc639838c4c46ea0ed0aec3f0d904d360c92a91c601b943c9cfef85ca21c64",
+      "solution/swiglu_pack.py": "31548adc5021ca814156a162b3127adc6fa27d482c6aa13f0ba3c52687ab2e0e"
+    }
+  },
+  "limits": "Diagnostic private helpers only; unchanged canonical BNB identity. Finite bits exact, stress nonfinite classes/Inf signs exact; half NaN payload/sign unspecified. No full-task claim or original-kernel credit."
+}

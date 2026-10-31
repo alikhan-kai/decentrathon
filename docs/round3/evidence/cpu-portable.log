@@ -1,0 +1,9 @@
+...........................ssssss....................................... [ 82%]
+...........sss.                                                          [100%]
+=============================== warnings summary ===============================
+solution/test_frozen_remat.py: 18 warnings
+  /home/homelab/.t3/projects/decentrathon/.venv/lib/python3.13/site-packages/torch/jit/_script.py:1488: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+78 passed, 9 skipped, 18 warnings in 3.81s
