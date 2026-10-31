@@ -91,6 +91,23 @@ def patch():
     if _patched:
         return
 
+    import os
+    os.environ["HF_HUB_OFFLINE"] = "1"
+    os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
+    os.environ["TRANSFORMERS_NO_ADVISORY_WARNINGS"] = "1"
+
+    import gc
+    try:
+        gc.freeze()
+    except Exception:
+        pass
+
+    try:
+        import torch
+        torch.backends.cudnn.benchmark = True
+    except Exception:
+        pass
+
     if PACKAGES_CACHE:
         _patch_packages_distributions()
     if ALLOCATOR_WARMUP:
