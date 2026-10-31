@@ -5,9 +5,10 @@ the loss, TRL's entropy, TRL's accuracy and the rewind log. Here:
   * rows used by attention or a shifted target are retained before the head;
   * the head runs `chunk` rows at a time; one Triton kernel reads each logits chunk and produces
     per-row loss, entropy and argmax-hit;
-  * backward recomputes logits chunks and scales softmax - onehot in fp32 before storing fp16
+  * backward reuses bounded FP16 logits (or recomputes chunks) and scales softmax - onehot in fp32 before storing fp16
     dlogits and taking dlogits @ W. The frozen lm_head never needs a weight gradient, and no
-    full logits or unscaled fp16 gradient is saved across forward/backward.
+    unscaled fp16 gradient is saved across forward/backward. Bounded FP16 logits
+    caching avoids projection recomputation; larger inputs retain the remat path.
 Design idea (chunking the head + loss, hooking the causal-LM forward and the trainer's
 compute_loss) is the same as Soup's own `stream_loss_chunk` (soup_cli/utils/stream_loss_chunk.py,
 Apache-2.0); the Triton kernel and this code are new.
@@ -22,6 +23,7 @@ import triton.language as tl
 BLOCK = 2048
 CHUNK = 256
 IGNORE = -100
+CACHE_LOGITS_BYTES = 512 * 1024 * 1024
 
 
 @triton.jit
@@ -96,13 +98,15 @@ class _FusedHeadLoss(torch.autograd.Function):
         loss_row = torch.empty(n, dtype=torch.float32, device=h.device)
         ent = torch.empty_like(loss_row)
         hit = torch.empty(n, dtype=torch.int32, device=h.device)
+        cache = need and n * vocab * 2 <= CACHE_LOGITS_BYTES
+        saved_logits = torch.empty((n, vocab) if cache else (0,), dtype=torch.float16, device=h.device)
         if n > 0:
             wt = w.t()
-            logits_buf = torch.empty((min(chunk, n), vocab), dtype=torch.float16, device=h.device)
+            logits_buf = None if cache else torch.empty((min(chunk, n), vocab), dtype=torch.float16, device=h.device)
             for s in range(0, n, chunk):
                 e = min(s + chunk, n)
                 c = e - s
-                logits = logits_buf[:c]
+                logits = saved_logits[s:e] if cache else logits_buf[:c]
                 torch.mm(h[s:e], wt, out=logits)          # [c, V] fp16
                 head_loss_kernel[(c,)](logits, target[s:e], vocab, vocab,
                                        loss_row[s:e], ent[s:e], hit[s:e], None,
@@ -111,14 +115,15 @@ class _FusedHeadLoss(torch.autograd.Function):
         denom = torch.as_tensor(denom, dtype=torch.float32, device=h.device)
         ctx.hidden_dtype = hidden.dtype
         ctx.chunk = chunk
+        ctx.cached_logits = cache
         if need:
-            ctx.save_for_backward(h, w, target, denom)
+            ctx.save_for_backward(h, w, target, denom, saved_logits)
         ctx.mark_non_differentiable(loss_row, ent, hit)
         return loss_row.sum() / denom, loss_row, ent, hit
 
     @staticmethod
     def backward(ctx, grad_loss, *_):
-        h, w, target, denom = ctx.saved_tensors
+        h, w, target, denom, saved_logits = ctx.saved_tensors
         grad_scale = grad_loss.float() / denom
         # Ignored targets have identically zero dlogits. Compact only backward;
         # forward still needs every retained row for entropy and other metrics.
@@ -136,10 +141,13 @@ class _FusedHeadLoss(torch.autograd.Function):
                 e = min(s + ctx.chunk, n)
                 c = e - s
                 selected = rows[s:e]
-                h_chunk = h.index_select(0, selected)
                 target_chunk = target.index_select(0, selected)
                 logits = logits_buf[:c]
-                torch.mm(h_chunk, wt, out=logits)         # same fp16 projection as forward
+                if ctx.cached_logits:
+                    torch.index_select(saved_logits, 0, selected, out=logits)
+                else:
+                    h_chunk = h.index_select(0, selected)
+                    torch.mm(h_chunk, wt, out=logits)
                 head_loss_kernel[(c,)](logits, target_chunk, vocab, vocab,
                                        None, None, None, grad_scale,
                                        WITH_GRAD=True, BLOCK=BLOCK, num_warps=8)
