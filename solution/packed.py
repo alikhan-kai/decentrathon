@@ -210,7 +210,9 @@ def _install():
         _STATS["packed_steps"].append((sum(lens), len(lens) * attention_mask.shape[1]))
         hidden_states = self.embed_tokens(input_ids.reshape(-1)[flat_index]).unsqueeze(0)        # [1, N, H]
         position_embeddings = self.rotary_emb(hidden_states, positions)
-        token = _ACTIVE.set((frozenset(id(layer.self_attn) for layer in self.layers), lens))
+        cos, sin = position_embeddings
+        position_embeddings_16 = (cos.to(torch.float16), sin.to(torch.float16))
+        token = _ACTIVE.set((frozenset(id(layer.self_attn) for layer in self.layers), lens, position_embeddings_16))
         try:
             for decoder_layer in self.layers[: self.config.num_hidden_layers]:
                 hidden_states = decoder_layer(hidden_states, attention_mask=None, position_embeddings=position_embeddings,
@@ -234,13 +236,8 @@ def _install():
             raise RuntimeError("packed: attention layout mismatch")
         input_shape = hidden_states.shape[:-1]
         hidden_shape = (*input_shape, -1, self.head_dim)
-        query_states = self.q_proj(hidden_states).view(hidden_shape).transpose(1, 2)
-        key_states = self.k_proj(hidden_states).view(hidden_shape).transpose(1, 2)
-        value_states = self.v_proj(hidden_states).view(hidden_shape).transpose(1, 2)
-        cos, sin = position_embeddings
-        query_states, key_states = mq.apply_rotary_pos_emb(query_states, key_states, cos, sin)
         dropout = 0.0 if not self.training else self.attention_dropout
-        if (self.training and torch.is_grad_enabled()
+        if (len(active) >= 3 and self.training and torch.is_grad_enabled()
                 and attention_mask is None and past_key_values is None
                 and self.sliding_window is None and getattr(self, "is_causal", True)
                 and getattr(self, "num_key_value_groups", None) == 6
@@ -254,27 +251,40 @@ def _install():
                 and kwargs.get("return_dict") in (None, True)
                 and not (set(kwargs) - _fast_attn_kwargs)
                 and min(lens) > 1
-                and query_states.dtype == torch.float32
-                and key_states.dtype == torch.float32
-                and value_states.dtype == torch.float32
-                and query_states.requires_grad and value_states.requires_grad
+                and hidden_states.dtype == torch.float32
                 and torch.is_autocast_enabled("cuda")
                 and torch.get_autocast_dtype("cuda") == torch.float16
-                and _pinned_versions() and _is_t4(query_states.device.index)):
-            q16 = query_states.to(torch.float16)
-            k16 = repeat_kv(key_states.to(torch.float16), 6)
-            v16 = repeat_kv(value_states.to(torch.float16), 6)
-            pieces, start = [], 0
-            for n in lens:
-                end = start + n
-                pieces.append(F.scaled_dot_product_attention(
-                    q16[:, :, start:end], k16[:, :, start:end], v16[:, :, start:end],
-                    attn_mask=None, dropout_p=dropout, is_causal=True,
-                    scale=self.scaling, enable_gqa=False,
-                ))
-                start = end
-            attn_output = torch.cat(pieces, dim=2).transpose(1, 2).contiguous().reshape(*input_shape, -1)
-            return self.o_proj(attn_output), None
+                and _pinned_versions() and _is_t4(hidden_states.device.index)):
+            query_states = self.q_proj(hidden_states.to(torch.float16)).view(hidden_shape).transpose(1, 2)
+            key_states = self.k_proj(hidden_states.to(torch.float16)).view(hidden_shape).transpose(1, 2)
+            value_states = self.v_proj(hidden_states.to(torch.float16)).view(hidden_shape).transpose(1, 2)
+            if (query_states.dtype == torch.float16 and key_states.dtype == torch.float16
+                    and value_states.dtype == torch.float16
+                    and query_states.requires_grad and value_states.requires_grad):
+                cos16, sin16 = active[2]
+                query_states, key_states = mq.apply_rotary_pos_emb(query_states, key_states, cos16, sin16)
+                k16 = repeat_kv(key_states, 6)
+                v16 = repeat_kv(value_states, 6)
+                pieces, start = [], 0
+                for n in lens:
+                    end = start + n
+                    pieces.append(F.scaled_dot_product_attention(
+                        query_states[:, :, start:end], k16[:, :, start:end], v16[:, :, start:end],
+                        attn_mask=None, dropout_p=dropout, is_causal=True,
+                        scale=self.scaling, enable_gqa=False,
+                    ))
+                    start = end
+                attn_output = torch.cat(pieces, dim=2).transpose(1, 2).contiguous().reshape(*input_shape, -1)
+                return self.o_proj(attn_output).to(torch.float32), None
+            query_states = query_states.to(torch.float32)
+            key_states = key_states.to(torch.float32)
+            value_states = value_states.to(torch.float32)
+        else:
+            query_states = self.q_proj(hidden_states).view(hidden_shape).transpose(1, 2)
+            key_states = self.k_proj(hidden_states).view(hidden_shape).transpose(1, 2)
+            value_states = self.v_proj(hidden_states).view(hidden_shape).transpose(1, 2)
+        cos, sin = position_embeddings
+        query_states, key_states = mq.apply_rotary_pos_emb(query_states, key_states, cos, sin)
         from .attention_adapter import row_attention
         pieces, start = [], 0
         for n in lens:

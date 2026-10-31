@@ -1,9 +1,9 @@
 """Compile this solution's Triton kernels on a worker thread while Soup loads the model.
 
 The harness starts every run with an empty Triton cache, so the kernel specializations the training
-step needs used to be compiled inside step 1. patch() starts one worker thread right after apply()'s
-Python imports finish so compilation overlaps C++/Rust/CUDA model loading, NF4 quantization, LoRA
-setup and dataset preparation without GIL contention during Python imports.
+step needs used to be compiled inside step 1. patch() starts one worker thread at the start of
+apply() so compilation overlaps both library imports and C++/Rust/CUDA model loading, NF4
+quantization, LoRA setup and dataset preparation.
 
 Only the exact 9 specializations launched during training are compiled, in order of first use in
 step 1 (forward then backward), with per-kernel readiness events so early forward launches never
@@ -40,7 +40,7 @@ def _specs():
     norm = dict(BLOCK=triton.next_power_of_2(HIDDEN), num_warps=rmsnorm.NUM_WARPS)
     head = dict(BLOCK=head_loss.BLOCK, num_warps=8)
     rope = rotary._triton_kernel()
-    rope_args = (f32,) * 6 + (1000, 1000, 4, 1000, HEADS, KV_HEADS, HEAD_DIM) + (1000,) * 14
+    rope_args = (f16,) * 6 + (1000, 1000, 4, 1000, HEADS, KV_HEADS, HEAD_DIM) + (1000,) * 14
     rope_kwargs = dict(num_warps=4, enable_fp_fusion=False)
     n = 2048 * 8960
     fwd, bwd = swiglu.example_swiglu_fwd_kernel, swiglu.example_swiglu_bwd_kernel

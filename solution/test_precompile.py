@@ -46,9 +46,10 @@ def _run_training_launches():
     head_loss.fused_head_loss(hidden, weight, target, N - 7)[0].backward()
     del weight
 
-    q = torch.randn(1, N, HEADS, HEAD_DIM, device=dev).transpose(1, 2).requires_grad_()
-    k = torch.randn(1, N, KV_HEADS, HEAD_DIM, device=dev).transpose(1, 2).requires_grad_()
-    cos, sin = torch.randn(1, N, HEAD_DIM, device=dev), torch.randn(1, N, HEAD_DIM, device=dev)
+    q = torch.randn(1, N, HEADS, HEAD_DIM, dtype=torch.float16, device=dev).transpose(1, 2).requires_grad_()
+    k = torch.randn(1, N, KV_HEADS, HEAD_DIM, dtype=torch.float16, device=dev).transpose(1, 2).requires_grad_()
+    cos = torch.randn(1, N, HEAD_DIM, dtype=torch.float16, device=dev)
+    sin = torch.randn(1, N, HEAD_DIM, dtype=torch.float16, device=dev)
     oq, ok = rotary.apply_rotary_pos_emb(q, k, cos, sin)
     (oq.sum() + ok.sum()).backward()
 
