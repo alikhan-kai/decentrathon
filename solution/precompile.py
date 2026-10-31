@@ -1,9 +1,9 @@
 """Compile this solution's Triton kernels on a worker thread while Soup loads the model.
 
 The harness starts every run with an empty Triton cache, so the kernel specializations the training
-step needs used to be compiled inside step 1. patch() starts one worker thread at the start of
-apply() so compilation overlaps both library imports and C++/Rust/CUDA model loading, NF4
-quantization, LoRA setup and dataset preparation.
+step needs used to be compiled inside step 1. patch() starts one worker thread right after apply()'s
+Python imports finish so compilation overlaps C++/Rust/CUDA model loading, NF4 quantization, LoRA
+setup and dataset preparation without GIL contention during Python imports.
 
 Only the exact 9 specializations launched during training are compiled, in order of first use in
 step 1 (forward then backward), with per-kernel readiness events so early forward launches never

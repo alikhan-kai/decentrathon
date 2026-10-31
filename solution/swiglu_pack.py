@@ -49,7 +49,7 @@ def _verified_starter(starter):
 # all-native path already allows, so a step above 1024 rows never saves more than one at 1024 did.
 # Fixed constants: no step, seed or dataset lookup, nothing measured at runtime.
 LAYER_BUDGET = True
-NATIVE_KB, REMAT_KB, BUDGET_ROWS = 68.8, 39.0, 1000
+NATIVE_KB, REMAT_KB, BUDGET_ROWS = 68.8, 39.0, 940
 
 
 def native_layers(n, layers):
