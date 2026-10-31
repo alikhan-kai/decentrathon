@@ -19,9 +19,10 @@ def _half_if_exact(weight):
     exact = torch.ones((), device=weight.device, dtype=torch.bool)
     source = weight.detach().reshape(-1)
     packed = half.reshape(-1)
-    for start in range(0, source.numel(), 1 << 20):
-        original = source[start:start + (1 << 20)]
-        restored = packed[start:start + (1 << 20)].float()
+    step = 1 << 24
+    for start in range(0, source.numel(), step):
+        original = source[start:start + step]
+        restored = packed[start:start + step].float()
         exact &= torch.isfinite(original).all()
         exact &= (original.view(torch.int32) == restored.view(torch.int32)).all()
     return half if bool(exact) else None

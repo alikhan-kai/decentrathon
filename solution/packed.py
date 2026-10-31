@@ -177,9 +177,16 @@ def _report_stats():
 
 
 def _install():
-    from transformers.integrations.sdpa_attention import sdpa_attention_forward
+    import torch.nn.functional as F
+    from transformers.integrations.sdpa_attention import repeat_kv, sdpa_attention_forward
     from transformers.modeling_outputs import BaseModelOutputWithPast
     from transformers.models.qwen2 import modeling_qwen2 as mq
+    from .attention_gqa import _is_t4, _pinned_versions
+
+    _fast_attn_kwargs = frozenset((
+        "output_attentions", "past_key_values", "use_cache", "position_bias",
+        "sliding_window", "is_causal", "position_ids", "output_hidden_states", "return_dict",
+    ))
 
     original_model_forward = mq.Qwen2Model.forward
     original_attention_forward = mq.Qwen2Attention.forward
@@ -233,6 +240,41 @@ def _install():
         cos, sin = position_embeddings
         query_states, key_states = mq.apply_rotary_pos_emb(query_states, key_states, cos, sin)
         dropout = 0.0 if not self.training else self.attention_dropout
+        if (self.training and torch.is_grad_enabled()
+                and attention_mask is None and past_key_values is None
+                and self.sliding_window is None and getattr(self, "is_causal", True)
+                and getattr(self, "num_key_value_groups", None) == 6
+                and not getattr(getattr(self, "config", None), "output_attentions", False)
+                and not kwargs.get("output_attentions", False)
+                and not kwargs.get("use_cache", False)
+                and kwargs.get("position_bias") is None
+                and kwargs.get("sliding_window") is None
+                and kwargs.get("is_causal", True)
+                and kwargs.get("output_hidden_states") in (None, False)
+                and kwargs.get("return_dict") in (None, True)
+                and not (set(kwargs) - _fast_attn_kwargs)
+                and min(lens) > 1
+                and query_states.dtype == torch.float32
+                and key_states.dtype == torch.float32
+                and value_states.dtype == torch.float32
+                and query_states.requires_grad and value_states.requires_grad
+                and torch.is_autocast_enabled("cuda")
+                and torch.get_autocast_dtype("cuda") == torch.float16
+                and _pinned_versions() and _is_t4(query_states.device.index)):
+            q16 = query_states.to(torch.float16)
+            k16 = repeat_kv(key_states.to(torch.float16), 6)
+            v16 = repeat_kv(value_states.to(torch.float16), 6)
+            pieces, start = [], 0
+            for n in lens:
+                end = start + n
+                pieces.append(F.scaled_dot_product_attention(
+                    q16[:, :, start:end], k16[:, :, start:end], v16[:, :, start:end],
+                    attn_mask=None, dropout_p=dropout, is_causal=True,
+                    scale=self.scaling, enable_gqa=False,
+                ))
+                start = end
+            attn_output = torch.cat(pieces, dim=2).transpose(1, 2).contiguous().reshape(*input_shape, -1)
+            return self.o_proj(attn_output), None
         from .attention_adapter import row_attention
         pieces, start = [], 0
         for n in lens:

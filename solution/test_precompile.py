@@ -27,16 +27,13 @@ def _run_training_launches():
 
     dev = "cuda"
     n = HIDDEN * HIDDEN
-    packed_w = torch.randint(0, 256, (n // 2, 1), dtype=torch.uint8, device=dev)
-    out_w = torch.empty(HIDDEN, HIDDEN, dtype=torch.float16, device=dev)
-    nf4.dequantize_nf4(packed_w, torch.rand(n // 64, device=dev), out_w)
     nf4.dequantize_nf4_nested(
-        packed_w,
+        torch.randint(0, 256, (n // 2, 1), dtype=torch.uint8, device=dev),
         torch.randint(0, 256, (n // 64,), dtype=torch.uint8, device=dev),
         torch.rand(256, device=dev),
         torch.rand((n // 64 + 255) // 256, device=dev),
         torch.tensor(0.5, dtype=torch.float32, device=dev),
-        out_w,
+        torch.empty(HIDDEN, HIDDEN, dtype=torch.float16, device=dev),
     )
 
     x = torch.randn(1, N, HIDDEN, device=dev, requires_grad=True)
@@ -55,14 +52,10 @@ def _run_training_launches():
     oq, ok = rotary.apply_rotary_pos_emb(q, k, cos, sin)
     (oq.sum() + ok.sum()).backward()
 
-    for dtype in (torch.float16, torch.float32):
-        gate = torch.randn(1, N, 8960, dtype=dtype, device=dev, requires_grad=True)
-        up = torch.randn(1, N, 8960, dtype=dtype, device=dev, requires_grad=True)
-        if dtype == torch.float16:
-            out = native_half._NativeHalfSwiGLU.apply(gate, up, swiglu)
-        else:
-            out = swiglu.swiglu(gate, up)
-        out.sum().backward()
+    gate = torch.randn(1, N, 8960, dtype=torch.float16, device=dev, requires_grad=True)
+    up = torch.randn(1, N, 8960, dtype=torch.float16, device=dev, requires_grad=True)
+    out = native_half._NativeHalfSwiGLU.apply(gate, up, swiglu)
+    out.sum().backward()
     torch.cuda.synchronize()
 
 
